@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Init Next.js & Dependencies",
+  "description": "Scaffolds the application and installs required packages. Sets up the foundational codebase, styling framework, dark mode provider, and third-party SDKs.",
+  "version": "1",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "npx create-next-app@latest nigms-app --tailwind --eslint --app && cd nigms-app && npm install @supabase/supabase-js stripe resend next-themes lucide-react"
+  }
+}

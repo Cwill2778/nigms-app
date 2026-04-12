@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Push DB Schema & RLS Policies",
+  "description": "Applies the required tables (users, work_orders, payments) and security rules to the database. Ensures the backend infrastructure matches Kiro's code and that security rules separating Charles's data from Client data are enforced.",
+  "version": "1",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "npx supabase db push"
+  }
+}

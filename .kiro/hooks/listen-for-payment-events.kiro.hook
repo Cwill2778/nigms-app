@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Listen for Payment Events",
+  "description": "Forwards Stripe payment events to the local development environment. Allows testing of \"15% deposit\" and \"paid in full\" triggers to verify they properly update the client's account balance and trigger automated email receipts.",
+  "version": "1",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "stripe listen --forward-to localhost:3000/api/webhooks/stripe"
+  }
+}
