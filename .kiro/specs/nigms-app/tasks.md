@@ -167,7 +167,7 @@ Implement the NIGMS App as a Next.js (App Router) + TypeScript application with 
     - Each function catches Resend errors, logs with context, and returns without throwing
     - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5, 12.6_
 
-  - [~] 12.2 Write property test for email errors never block primary operations (Property 24)
+  - [ ] 12.2 Write property test for email errors never block primary operations (Property 24)
     - **Property 24: Email errors never block primary operations**
     - **Validates: Requirements 12.6**
 
@@ -179,11 +179,11 @@ Implement the NIGMS App as a Next.js (App Router) + TypeScript application with 
     - Return 200 within 5 seconds for valid events
     - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5, 11.6, 12.3_
 
-  - [~] 13.2 Write property test for webhook signature verification (Property 22)
+  - [ ] 13.2 Write property test for webhook signature verification (Property 22)
     - **Property 22: Webhook signature verification gates all processing**
     - **Validates: Requirements 11.2, 11.3**
 
-  - [~] 13.3 Write property test for webhook updates payment status correctly (Property 23)
+  - [ ] 13.3 Write property test for webhook updates payment status correctly (Property 23)
     - **Property 23: Webhook updates payment status correctly**
     - **Validates: Requirements 11.4, 11.5, 6.6, 12.3**
 
@@ -195,11 +195,11 @@ Implement the NIGMS App as a Next.js (App Router) + TypeScript application with 
     - On submit call Supabase `signInWithPassword`; display generic "Invalid credentials" error on failure (no field hint); redirect based on `requires_password_reset` flag
     - _Requirements: 5.1, 5.2, 5.3, 5.7, 5.8_
 
-  - [~] 15.2 Write property test for session cookie is always HttpOnly (Property 8)
+  - [ ] 15.2 Write property test for session cookie is always HttpOnly (Property 8)
     - **Property 8: Session cookie is always HttpOnly**
     - **Validates: Requirements 5.2, 13.1**
 
-  - [~] 15.3 Write property test for invalid credentials produce a generic error (Property 9)
+  - [ ] 15.3 Write property test for invalid credentials produce a generic error (Property 9)
     - **Property 9: Invalid credentials produce a generic error**
     - **Validates: Requirements 5.3**
 
@@ -208,15 +208,15 @@ Implement the NIGMS App as a Next.js (App Router) + TypeScript application with 
     - Display `username` as read-only text (no input element); validate password match and non-empty before submit; on success call Supabase `updateUser`, set `requires_password_reset = false` in `public.users`, redirect to `/dashboard`
     - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5, 14.6_
 
-  - [~] 16.2 Write property test for password mismatch produces a validation error (Property 26)
+  - [ ] 16.2 Write property test for password mismatch produces a validation error (Property 26)
     - **Property 26: Password mismatch always produces a validation error**
     - **Validates: Requirements 14.5**
 
-  - [~] 16.3 Write property test for successful password reset clears the reset flag (Property 27)
+  - [ ] 16.3 Write property test for successful password reset clears the reset flag (Property 27)
     - **Property 27: Successful password reset clears the reset flag**
     - **Validates: Requirements 14.4**
 
-  - [~] 16.4 Write property test for username is read-only on the password reset screen (Property 28)
+  - [ ] 16.4 Write property test for username is read-only on the password reset screen (Property 28)
     - **Property 28: Username is read-only on the password reset screen**
     - **Validates: Requirements 14.2**
 
@@ -231,11 +231,11 @@ Implement the NIGMS App as a Next.js (App Router) + TypeScript application with 
   - [x] 17.3 Create `components/DashboardSummary.tsx` showing project status and outstanding balance
     - _Requirements: 6.1_
 
-  - [~] 17.4 Write property test for client dashboard renders all work orders and payments (Property 12)
+  - [ ] 17.4 Write property test for client dashboard renders all work orders and payments (Property 12)
     - **Property 12: Client dashboard renders all work orders and payments**
     - **Validates: Requirements 6.1, 6.2, 6.3**
 
-  - [~] 17.5 Write property test for Pay Balance action appears for positive outstanding balance (Property 13)
+  - [ ] 17.5 Write property test for Pay Balance action appears for positive outstanding balance (Property 13)
     - **Property 13: Pay Balance action appears for any positive outstanding balance**
     - **Validates: Requirements 6.4**
 
@@ -253,18 +253,18 @@ Implement the NIGMS App as a Next.js (App Router) + TypeScript application with 
     - Validate required fields (title) client-side; on submit POST to Supabase; set `status = 'pending'` and `client_id = auth.uid()`
     - _Requirements: 7.1, 7.2, 7.3_
 
-  - [~] 19.2 Write property test for new work order created with pending status and correct client ID (Property 14)
+  - [ ] 19.2 Write property test for new work order created with pending status and correct client ID (Property 14)
     - **Property 14: New work order is always created with pending status and correct client ID**
     - **Validates: Requirements 7.2**
 
-  - [~] 19.3 Write property test for work order form validation rejects incomplete submissions (Property 15)
+  - [ ] 19.3 Write property test for work order form validation rejects incomplete submissions (Property 15)
     - **Property 15: Work order form validation rejects incomplete submissions**
     - **Validates: Requirements 7.3**
 
 - [x] 20. Checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [~] 21. Implement admin layout and client management
+- [ ] 21. Implement admin layout and client management
   - [x] 21.1 Create `app/(admin)/layout.tsx` with admin auth guard (403 for non-admin, redirect to `/login` for unauthenticated)
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
@@ -284,11 +284,11 @@ Implement the NIGMS App as a Next.js (App Router) + TypeScript application with 
     - Show client info; include password reset action (generates new temp password, sets reset flag, calls `sendPasswordResetEmail`); include account deactivation action
     - _Requirements: 9.4, 9.6_
 
-  - [~] 21.6 Write property test for new client always has requires_password_reset = true (Property 17)
+  - [ ] 21.6 Write property test for new client always has requires_password_reset = true (Property 17)
     - **Property 17: New client always has requires_password_reset = true**
     - **Validates: Requirements 9.3**
 
-  - [~] 21.7 Write property test for welcome email is sent for every new client (Property 18)
+  - [ ] 21.7 Write property test for welcome email is sent for every new client (Property 18)
     - **Property 18: Welcome email is sent for every new client**
     - **Validates: Requirements 9.5, 12.1**
 
@@ -306,11 +306,11 @@ Implement the NIGMS App as a Next.js (App Router) + TypeScript application with 
     - `ManualPaymentForm`: record offline payment; create `payments` record with `method = 'manual'`; call `sendPaymentConfirmationEmail`
     - _Requirements: 10.2, 10.4, 10.5, 12.4_
 
-  - [~] 22.4 Write property test for work order status update persists and triggers email (Property 20)
+  - [ ] 22.4 Write property test for work order status update persists and triggers email (Property 20)
     - **Property 20: Work order status update persists and triggers email**
     - **Validates: Requirements 10.3, 12.2**
 
-  - [~] 22.5 Write property test for manual payment creates a record and triggers email (Property 21)
+  - [ ] 22.5 Write property test for manual payment creates a record and triggers email (Property 21)
     - **Property 21: Manual payment creates a record and triggers email**
     - **Validates: Requirements 10.4, 10.5, 12.4**
 
@@ -318,7 +318,7 @@ Implement the NIGMS App as a Next.js (App Router) + TypeScript application with 
   - Create `app/(admin)/dashboard/page.tsx` with summary stats: total clients, open work orders, recent payments
   - _Requirements: 8.1_
 
-- [~] 24. Wire root entry point and remaining public routes
+- [ ] 24. Wire root entry point and remaining public routes
   - [x] 24.1 Update `app/page.tsx` to redirect authenticated admin to `/dashboard` (admin), authenticated client to `/dashboard` (client), or render the public landing page
     - _Requirements: 1.1_
 
