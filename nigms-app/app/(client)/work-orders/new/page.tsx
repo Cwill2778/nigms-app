@@ -6,7 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FormError from "@/components/FormError";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { createBrowserClient } from "@/lib/supabase";
+import { createBrowserClient } from "@/lib/supabase-browser";
 
 export default function NewWorkOrderPage() {
   const router = useRouter();

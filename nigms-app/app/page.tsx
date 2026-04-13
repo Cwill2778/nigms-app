@@ -20,7 +20,7 @@ export default async function RootPage() {
     .single();
 
   if (profile?.role === 'admin') {
-    redirect('/admin/dashboard');
+    redirect('/admin/admin-dashboard');
   }
 
   if (profile?.requires_password_reset) {

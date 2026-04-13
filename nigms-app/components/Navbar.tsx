@@ -7,7 +7,7 @@ import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
-import { createBrowserClient } from "@/lib/supabase";
+import { createBrowserClient } from "@/lib/supabase-browser";
 import type { User } from "@supabase/supabase-js";
 import type { UserProfile } from "@/lib/types";
 
@@ -59,7 +59,7 @@ export default function Navbar() {
 
   const authLinks = user
     ? role === "admin"
-      ? [{ href: "/admin/dashboard", label: "Admin Dashboard" }]
+      ? [{ href: "/admin/admin-dashboard", label: "Admin Dashboard" }]
       : [{ href: "/dashboard", label: "Dashboard" }]
     : [{ href: "/login", label: "Login" }];
 
