@@ -59,17 +59,17 @@ export default function Navbar() {
 
   const authLinks = user
     ? role === "admin"
-      ? [{ href: "/admin/admin-dashboard", label: "Admin Dashboard" }]
+      ? [{ href: "/admin-dashboard", label: "Admin Dashboard" }]
       : [{ href: "/dashboard", label: "Dashboard" }]
     : [{ href: "/login", label: "Login" }];
 
   const allLinks = [...publicLinks, ...authLinks];
 
   return (
-    <nav className="w-full border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+    <nav className="w-full bg-[#0a1f44] border-b border-[#0a1f44]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-28">
-          {/* Logo — swaps between light and dark variants */}
+          {/* Logo */}
           <Link href="/" className="shrink-0">
             <Image
               src={resolvedTheme === "dark" ? "/logo-dark.svg" : "/logo-light.svg"}
@@ -87,7 +87,7 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+                className="text-sm text-gray-200 hover:text-orange-400 transition-colors"
               >
                 {link.label}
               </Link>
@@ -95,7 +95,7 @@ export default function Navbar() {
             {user && (
               <button
                 onClick={handleLogout}
-                className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+                className="text-sm text-gray-200 hover:text-orange-400 transition-colors"
               >
                 Logout
               </button>
@@ -109,7 +109,7 @@ export default function Navbar() {
             <button
               onClick={() => setMenuOpen((o) => !o)}
               aria-label="Toggle menu"
-              className="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="p-2 rounded-md text-gray-200 hover:bg-[#162d5e] transition-colors"
             >
               {menuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -119,13 +119,13 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-3 flex flex-col gap-3">
+        <div className="md:hidden border-t border-[#162d5e] bg-[#0a1f44] px-4 py-3 flex flex-col gap-3">
           {allLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setMenuOpen(false)}
-              className="text-sm text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors"
+              className="text-sm text-gray-200 hover:text-orange-400 transition-colors"
             >
               {link.label}
             </Link>
@@ -133,7 +133,7 @@ export default function Navbar() {
           {user && (
             <button
               onClick={() => { setMenuOpen(false); handleLogout(); }}
-              className="text-left text-sm text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors"
+              className="text-left text-sm text-gray-200 hover:text-orange-400 transition-colors"
             >
               Logout
             </button>

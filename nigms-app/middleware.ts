@@ -10,7 +10,7 @@ const CLIENT_ROUTES = ['/dashboard', '/update-password'];
 const CLIENT_PREFIXES = ['/work-orders/', '/payments/'];
 
 // Admin route prefixes (both URL forms)
-const ADMIN_PREFIXES = ['/admin/'];
+const ADMIN_PREFIXES = ['/admin-dashboard', '/clients', '/payments', '/work-orders'];
 
 function isPublicRoute(pathname: string): boolean {
   if (PUBLIC_ROUTES.includes(pathname)) return true;
@@ -99,7 +99,7 @@ export async function middleware(request: NextRequest) {
     }
     // Rule 4: Admin session + non-admin route → redirect to /admin/dashboard
     const adminDashUrl = request.nextUrl.clone();
-    adminDashUrl.pathname = '/admin/dashboard';
+    adminDashUrl.pathname = '/admin-dashboard';
     return NextResponse.redirect(adminDashUrl);
   }
 

@@ -35,7 +35,7 @@ export default async function RootPage() {
       .eq('id', session.user.id)
       .single();
 
-    if (profile?.role === 'admin') redirect('/admin/admin-dashboard');
+    if (profile?.role === 'admin') redirect('/admin-dashboard');
     if (profile?.requires_password_reset) redirect('/update-password');
     redirect('/dashboard');
   }
@@ -55,10 +55,10 @@ export default async function RootPage() {
               Professional handyman and maintenance services you can count on. From repairs to renovations — we get it done right.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="/book" className="inline-flex items-center justify-center px-6 py-3 rounded-md bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-medium transition-colors">
+              <a href="/book" className="inline-flex items-center justify-center px-6 py-3 rounded-md bg-orange-500 hover:bg-orange-600 text-white font-medium transition-colors">
                 Book a Service
               </a>
-              <a href="/projects" className="inline-flex items-center justify-center px-6 py-3 rounded-md border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 font-medium transition-colors">
+              <a href="/projects" className="inline-flex items-center justify-center px-6 py-3 rounded-md border border-orange-500 text-orange-600 dark:text-orange-400 hover:bg-orange-500 hover:text-white font-medium transition-colors">
                 View All Projects
               </a>
             </div>

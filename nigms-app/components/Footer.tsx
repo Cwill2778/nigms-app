@@ -16,18 +16,18 @@ const EMAIL_HREF = `mailto:${EMAIL}`;
 
 export default function Footer() {
   return (
-    <footer className="w-full border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 mt-auto">
+    <footer className="w-full bg-[#0a1f44] border-t border-[#162d5e] mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
         {/* Contact section */}
         <div className="mb-8 text-center">
-          <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-1">
+          <p className="text-sm font-semibold text-gray-300 uppercase tracking-wide mb-1">
             Point of Contact
           </p>
-          <p className="text-base font-bold text-gray-900 dark:text-white mb-1">
+          <p className="text-base font-bold text-white mb-1">
             Charles Willis
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+          <p className="text-sm text-gray-400 mb-6">
             Proudly Serving the Residents of North Georgia
           </p>
 
@@ -36,7 +36,7 @@ export default function Footer() {
             {/* Call */}
             <a
               href={PHONE_HREF}
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-md bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white text-sm font-medium transition-colors"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-md bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium transition-colors"
             >
               <Phone size={15} />
               Call {PHONE}
@@ -45,7 +45,7 @@ export default function Footer() {
             {/* Text */}
             <a
               href={SMS_HREF}
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-md border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 text-sm font-medium transition-colors"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-md border border-orange-500 text-orange-400 hover:bg-orange-500 hover:text-white text-sm font-medium transition-colors"
             >
               <Phone size={15} />
               Text {PHONE}
@@ -54,7 +54,7 @@ export default function Footer() {
             {/* Email */}
             <a
               href={EMAIL_HREF}
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-md border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 text-sm font-medium transition-colors"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-md border border-orange-500 text-orange-400 hover:bg-orange-500 hover:text-white text-sm font-medium transition-colors"
             >
               <Mail size={15} />
               {EMAIL}
@@ -63,8 +63,8 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-gray-200 dark:border-gray-700 pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+        <div className="border-t border-[#162d5e] pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <p className="text-sm text-gray-400">
             &copy; {new Date().getFullYear()} Nailed It General Maintenance Solutions. All rights reserved.
           </p>
           <nav className="flex flex-wrap gap-x-4 gap-y-2">
@@ -72,7 +72,7 @@ export default function Footer() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                className="text-sm text-gray-400 hover:text-orange-400 transition-colors"
               >
                 {link.label}
               </Link>
