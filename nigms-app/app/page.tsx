@@ -46,12 +46,12 @@ export default async function RootPage() {
     <div className="flex flex-col min-h-screen">
       <Navbar />
       <main className="flex-1">
-        <section className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+        <section className="relative overflow-hidden animated-gradient border-b border-gray-200 dark:border-gray-700">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center relative z-10">
             <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white tracking-tight">
               Nailed It General Maintenance Services
             </h1>
-            <p className="mt-4 text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="mt-4 text-lg text-gray-600 dark:text-gray-200 max-w-2xl mx-auto">
               Professional handyman and maintenance services you can count on. From repairs to renovations — we get it done right.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">

@@ -68,15 +68,15 @@ export default function Navbar() {
   return (
     <nav className="w-full border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-28">
           {/* Logo — swaps between light and dark variants */}
           <Link href="/" className="shrink-0">
             <Image
               src={resolvedTheme === "dark" ? "/logo-dark.svg" : "/logo-light.svg"}
               alt="Nailed It General Maintenance Solutions"
-              width={200}
-              height={50}
-              className="h-10 w-auto object-contain"
+              width={400}
+              height={100}
+              className="h-20 w-auto object-contain"
               priority
             />
           </Link>
