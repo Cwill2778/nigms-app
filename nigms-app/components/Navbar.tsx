@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
@@ -13,7 +12,6 @@ import type { UserProfile } from "@/lib/types";
 
 export default function Navbar() {
   const router = useRouter();
-  const { resolvedTheme } = useTheme();
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<UserProfile["role"] | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -53,7 +51,6 @@ export default function Navbar() {
 
   const publicLinks = [
     { href: "/", label: "Home" },
-    { href: "/projects", label: "Projects" },
     { href: "/book", label: "Book a Service" },
   ];
 
@@ -61,7 +58,10 @@ export default function Navbar() {
     ? role === "admin"
       ? [{ href: "/admin-dashboard", label: "Admin Dashboard" }]
       : [{ href: "/dashboard", label: "Dashboard" }]
-    : [{ href: "/login", label: "Login" }];
+    : [
+        { href: "/login", label: "Login" },
+        { href: "/signup", label: "Create Account" },
+      ];
 
   const allLinks = [...publicLinks, ...authLinks];
 
@@ -72,7 +72,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="shrink-0">
             <Image
-              src={resolvedTheme === "dark" ? "/logo-dark.svg" : "/logo-light.svg"}
+              src="/logo-navy.svg"
               alt="Nailed It General Maintenance Solutions"
               width={400}
               height={100}

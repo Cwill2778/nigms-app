@@ -2,8 +2,8 @@ import { createServerClient } from '@supabase/ssr';
 import { NextRequest, NextResponse } from 'next/server';
 
 // Routes that require no authentication
-const PUBLIC_ROUTES = ['/', '/login', '/book', '/projects'];
-const PUBLIC_PREFIXES = ['/legal/', '/api/newsletter', '/api/promo/', '/api/booking', '/api/webhooks/'];
+const PUBLIC_ROUTES = ['/', '/login', '/signup', '/book', '/projects'];
+const PUBLIC_PREFIXES = ['/legal/', '/api/newsletter', '/api/promo/', '/api/booking', '/api/webhooks/', '/api/auth/signup', '/api/auth/login'];
 
 // Routes that require an authenticated client (non-admin)
 const CLIENT_ROUTES = ['/dashboard', '/update-password'];

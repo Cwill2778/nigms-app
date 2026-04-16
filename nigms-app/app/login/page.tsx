@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FormError from "@/components/FormError";
@@ -9,6 +10,9 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const justSignedUp = searchParams.get("signup") === "success";
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -46,9 +50,21 @@ export default function LoginPage() {
       <Navbar />
       <main className="flex flex-1 items-center justify-center px-4 py-12">
         <div className="w-full max-w-sm">
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6 text-center">
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2 text-center">
             Sign in to your account
           </h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-6">
+            Don&apos;t have an account?{" "}
+            <Link href="/signup" className="text-orange-500 hover:text-orange-600 font-medium">
+              Create one
+            </Link>
+          </p>
+
+          {justSignedUp && (
+            <div className="mb-4 rounded-md bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 px-4 py-3 text-sm text-green-700 dark:text-green-400 text-center">
+              Account created! Sign in below.
+            </div>
+          )}
 
           <form
             onSubmit={handleSubmit}
@@ -97,7 +113,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="flex items-center justify-center gap-2 rounded-md bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-medium px-4 py-2 transition-colors"
+              className="flex items-center justify-center gap-2 rounded-md bg-orange-500 hover:bg-orange-600 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-medium px-4 py-2 transition-colors"
             >
               {loading && <LoadingSpinner size="sm" />}
               {loading ? "Signing in…" : "Sign in"}

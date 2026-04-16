@@ -1,27 +1,26 @@
- import { redirect } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import { createServerClient } from '@/lib/supabase';
 import { createClient } from "@supabase/supabase-js";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import ProjectGrid from "@/components/ProjectGrid";
+import BeforeAfterGallery from "@/components/BeforeAfterGallery";
 import NewsletterForm from "@/components/NewsletterForm";
-import type { WorkOrder } from "@/lib/types";
+import type { GalleryItem } from "@/components/BeforeAfterGallery";
 
-async function getCurrentProjects(): Promise<WorkOrder[]> {
+async function getGalleryItems(): Promise<GalleryItem[]> {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
   const { data, error } = await supabase
-    .from("work_orders")
+    .from("gallery")
     .select("*")
-    .in("status", ["in_progress", "pending"])
-    .order("created_at", { ascending: false });
+    .order("sort_order", { ascending: true });
   if (error) {
-    console.error("[landing] failed to fetch projects", error);
+    console.error("[gallery] fetch error", error);
     return [];
   }
-  return (data ?? []) as WorkOrder[];
+  return (data ?? []) as GalleryItem[];
 }
 
 export default async function RootPage() {
@@ -40,12 +39,13 @@ export default async function RootPage() {
     redirect('/dashboard');
   }
 
-  const projects = await getCurrentProjects();
+  const galleryItems = await getGalleryItems();
 
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
       <main className="flex-1">
+        {/* Hero */}
         <section className="relative overflow-hidden animated-gradient border-b border-gray-200 dark:border-gray-700">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center relative z-10">
             <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white tracking-tight">
@@ -58,18 +58,20 @@ export default async function RootPage() {
               <a href="/book" className="inline-flex items-center justify-center px-6 py-3 rounded-md bg-orange-500 hover:bg-orange-600 text-white font-medium transition-colors">
                 Book a Service
               </a>
-              <a href="/projects" className="inline-flex items-center justify-center px-6 py-3 rounded-md border border-orange-500 text-orange-600 dark:text-orange-400 hover:bg-orange-500 hover:text-white font-medium transition-colors">
-                View All Projects
-              </a>
             </div>
           </div>
         </section>
+
+        {/* Before & After Gallery */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">
-            Current &amp; Upcoming Projects
-          </h2>
-          <ProjectGrid projects={projects} />
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Our Work</h2>
+            <p className="mt-2 text-gray-500 dark:text-gray-400">Tap any photo to see the transformation.</p>
+          </div>
+          <BeforeAfterGallery items={galleryItems} />
         </section>
+
+        {/* Newsletter */}
         <section className="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
