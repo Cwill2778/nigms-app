@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
@@ -71,13 +70,11 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-28">
           {/* Logo */}
           <Link href="/" className="shrink-0">
-            <Image
-              src="/logo-navy.svg"
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/nailedItGeneralMaintenance/Standard (image)/White on Transparent.png"
               alt="Nailed It General Maintenance Solutions"
-              width={400}
-              height={100}
-              className="h-20 w-auto object-contain"
-              priority
+              style={{ height: '80px', width: 'auto' }}
             />
           </Link>
 

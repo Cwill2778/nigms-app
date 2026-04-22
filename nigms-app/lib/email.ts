@@ -110,24 +110,25 @@ export async function sendNewsletterConfirmationEmail(email: string): Promise<vo
 }
 
 export async function sendBookingConfirmationEmail(
-  email: string,
+  client: { email: string; name: string },
   booking: { serviceType: string; preferredDate: string }
 ): Promise<void> {
   try {
     await resend.emails.send({
       from: FROM,
-      to: email,
-      subject: "NIGMS — Booking Confirmation",
+      to: client.email,
+      subject: "NIGMS — Quote Request Received",
       html: `
-        <h2>Booking Confirmed!</h2>
-        <p>Thank you for booking with Nailed It General Maintenance Services.</p>
+        <h2>Quote Request Received!</h2>
+        <p>Hi ${client.name},</p>
+        <p>Thanks for reaching out to Nailed It General Maintenance Services. We've received your quote request and will get back to you within 1–2 business days.</p>
         <p><strong>Service:</strong> ${booking.serviceType}</p>
         <p><strong>Preferred Date:</strong> ${booking.preferredDate}</p>
-        <p>We will be in touch to confirm your appointment.</p>
+        <p>If you have any questions in the meantime, feel free to reply to this email.</p>
         <p>— The NIGMS Team</p>
       `,
     });
   } catch (err) {
-    console.error("[email] sendBookingConfirmationEmail failed", { email, booking, err });
+    console.error("[email] sendBookingConfirmationEmail failed", { email: client.email, booking, err });
   }
 }

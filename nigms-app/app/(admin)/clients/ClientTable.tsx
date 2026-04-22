@@ -7,9 +7,10 @@ import type { UserProfile } from '@/lib/types';
 
 interface ClientTableProps {
   clients: UserProfile[];
+  onViewClient?: (clientId: string) => void;
 }
 
-export default function ClientTable({ clients }: ClientTableProps) {
+export default function ClientTable({ clients, onViewClient }: ClientTableProps) {
   const [search, setSearch] = useState('');
 
   const filtered = clients.filter((c) =>
@@ -49,7 +50,11 @@ export default function ClientTable({ clients }: ClientTableProps) {
               </tr>
             ) : (
               filtered.map((client) => (
-                <tr key={client.id}>
+                <tr
+                  key={client.id}
+                  onClick={() => onViewClient?.(client.id)}
+                  className={onViewClient ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50' : ''}
+                >
                   <td className="py-3 px-4 text-sm font-medium text-gray-900 dark:text-white">
                     {client.username}
                   </td>

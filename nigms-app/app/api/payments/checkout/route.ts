@@ -1,7 +1,9 @@
 import { createServerClient as _createServerClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
+import type Stripe from 'stripe';
 import type { CheckoutRequest } from '@/lib/types';
 
 export async function POST(request: NextRequest) {
@@ -85,6 +87,31 @@ export async function POST(request: NextRequest) {
       success_url: `${process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'}/dashboard?payment=success`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'}/dashboard?payment=cancelled`,
     });
+
+    // Insert a pending payment record so the webhook can update it on success
+    const serviceClient = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    const paymentIntentId =
+      typeof session.payment_intent === 'string'
+        ? session.payment_intent
+        : (session.payment_intent as Stripe.PaymentIntent | null)?.id ?? null;
+
+    const { error: insertError } = await serviceClient.from('payments').insert({
+      work_order_id: workOrderId,
+      client_id: workOrder.client_id,
+      amount,
+      method: 'stripe',
+      status: 'pending',
+      stripe_payment_intent_id: paymentIntentId,
+    });
+
+    if (insertError) {
+      console.error('[checkout] failed to insert pending payment record:', insertError);
+      // Don't block the user — webhook will upsert on success if this fails
+    }
 
     return NextResponse.json({ url: session.url }, { status: 200 });
   } catch (err) {

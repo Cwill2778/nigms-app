@@ -17,13 +17,13 @@ export const metadata: Metadata = {
   title: "Nailed It General Maintenance Solutions",
   description: "Professional handyman and general maintenance services.",
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
-    apple: "/favicon.svg",
+    icon: "/nailedItGeneralMaintenance/Web and Apps/favicon/favicon-128.png",
+    shortcut: "/nailedItGeneralMaintenance/Web and Apps/favicon/favicon-128.png",
+    apple: "/nailedItGeneralMaintenance/Web and Apps/favicon/favicon-180.png",
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

@@ -19,6 +19,16 @@ export default function Footer() {
     <footer className="w-full bg-[#0a1f44] border-t border-[#162d5e] mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
+        {/* Logo */}
+        <div className="flex justify-center mb-8">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/nailedItGeneralMaintenance/Icons/Icon-Default.png"
+            alt="Nailed It General Maintenance Solutions"
+            style={{ height: '80px', width: 'auto' }}
+          />
+        </div>
+
         {/* Contact section */}
         <div className="mb-8 text-center">
           <p className="text-sm font-semibold text-gray-300 uppercase tracking-wide mb-1">

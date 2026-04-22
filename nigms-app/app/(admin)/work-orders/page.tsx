@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import WorkOrderTable from './WorkOrderTable';
+import WorkOrdersPageClient from './WorkOrdersPageClient';
 import type { WorkOrder } from '@/lib/types';
 
 async function getAllWorkOrders(): Promise<WorkOrder[]> {
@@ -24,11 +24,5 @@ async function getAllWorkOrders(): Promise<WorkOrder[]> {
 
 export default async function AdminWorkOrdersPage() {
   const workOrders = await getAllWorkOrders();
-
-  return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col gap-8">
-      <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Work Orders</h1>
-      <WorkOrderTable workOrders={workOrders} />
-    </div>
-  );
+  return <WorkOrdersPageClient workOrders={workOrders} />;
 }

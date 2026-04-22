@@ -1,11 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import PromoCodeInput from "@/components/PromoCodeInput";
-import LoadingSpinner from "@/components/LoadingSpinner";
 import FormError from "@/components/FormError";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const SERVICE_TYPES = [
   "General Repairs",
@@ -20,326 +17,311 @@ const SERVICE_TYPES = [
   "Other",
 ];
 
-interface Step1Data {
+const REFERRAL_SOURCES = [
+  "Google Search",
+  "Facebook",
+  "Instagram",
+  "Word of Mouth / Friend",
+  "Nextdoor",
+  "Flyer / Mailer",
+  "Returning Customer",
+  "Other",
+];
+
+interface FormData {
   name: string;
   email: string;
   phone: string;
   serviceType: string;
   preferredDate: string;
-  quotedAmount: string;
+  propertyAddress: string;
+  budgetEstimate: string;
+  referralSource: string;
+  referralCode: string;
+  notes: string;
+  agreedToTerms: boolean;
 }
 
+const EMPTY: FormData = {
+  name: "",
+  email: "",
+  phone: "",
+  serviceType: "",
+  preferredDate: "",
+  propertyAddress: "",
+  budgetEstimate: "",
+  referralSource: "",
+  referralCode: "",
+  notes: "",
+  agreedToTerms: false,
+};
+
 export default function BookPage() {
-  const [step, setStep] = useState(1);
-  const [step1, setStep1] = useState<Step1Data>({
-    name: "",
-    email: "",
-    phone: "",
-    serviceType: "",
-    preferredDate: "",
-    quotedAmount: "",
-  });
-  const [paymentOption, setPaymentOption] = useState<"deposit" | "full">("deposit");
-  const [depositWaived, setDepositWaived] = useState(false);
-  const [step1Error, setStep1Error] = useState<string | null>(null);
-  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [form, setForm] = useState<FormData>(EMPTY);
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
-  const quotedAmount = parseFloat(step1.quotedAmount) || 0;
-  const depositAmount = Math.round(quotedAmount * 0.15 * 100) / 100;
+  function set(field: keyof FormData, value: string | boolean) {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  }
 
-  function validateStep1(): boolean {
-    if (!step1.name.trim()) { setStep1Error("Name is required."); return false; }
-    if (!step1.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(step1.email)) {
-      setStep1Error("A valid email address is required.");
-      return false;
+  function validate(): boolean {
+    if (!form.name.trim()) { setError("Full name is required."); return false; }
+    if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      setError("A valid email address is required."); return false;
     }
-    if (!step1.phone.trim()) { setStep1Error("Phone number is required."); return false; }
-    if (!step1.serviceType) { setStep1Error("Please select a service type."); return false; }
-    if (!step1.preferredDate) { setStep1Error("Preferred date is required."); return false; }
-    if (!step1.quotedAmount || quotedAmount <= 0) {
-      setStep1Error("Please enter a valid quoted amount.");
-      return false;
-    }
-    setStep1Error(null);
+    if (!form.phone.trim()) { setError("Phone number is required."); return false; }
+    if (!form.serviceType) { setError("Please select a service type."); return false; }
+    if (!form.preferredDate) { setError("Preferred date is required."); return false; }
+    if (!form.propertyAddress.trim()) { setError("Property address is required."); return false; }
+    if (!form.budgetEstimate.trim()) { setError("Budget estimate is required."); return false; }
+    if (!form.referralSource) { setError("Please tell us how you heard about us."); return false; }
+    if (!form.agreedToTerms) { setError("You must agree to the Terms of Service to continue."); return false; }
+    setError(null);
     return true;
-  }
-
-  function handleStep1Next(e: React.FormEvent) {
-    e.preventDefault();
-    if (validateStep1()) setStep(2);
-  }
-
-  async function handlePromoApply(code: string) {
-    const res = await fetch("/api/promo/validate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code }),
-    });
-    const data = await res.json();
-    if (!data.valid) throw new Error("Invalid promo code.");
-    if (data.waivesDeposit) setDepositWaived(true);
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitError(null);
+    if (!validate()) return;
     setLoading(true);
-
     try {
       const res = await fetch("/api/booking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: step1.name,
-          email: step1.email,
-          phone: step1.phone,
-          serviceType: step1.serviceType,
-          preferredDate: step1.preferredDate,
-          quotedAmount,
-          paymentOption: depositWaived ? "deposit" : paymentOption,
-        }),
+        body: JSON.stringify(form),
       });
-
       const data = await res.json();
-
       if (!res.ok) {
-        setSubmitError(data.message ?? "Something went wrong. Please try again.");
+        setError(data.message ?? "Something went wrong. Please try again.");
         return;
       }
-
-      if (depositWaived) {
-        // No payment needed — redirect to a success page
-        window.location.href = "/book/success";
-        return;
-      }
-
-      if (data.url) {
-        window.location.href = data.url;
-      }
+      setSubmitted(true);
     } catch {
-      setSubmitError("Network error. Please try again.");
+      setError("Network error. Please try again.");
     } finally {
       setLoading(false);
     }
   }
 
+  if (submitted) {
+    return (
+      <main className="flex-1 flex items-center justify-center px-4 py-16">
+        <div className="max-w-md w-full text-center border-2 border-[#4A4A4A] p-10 bg-white dark:bg-gray-900">
+          <div className="text-5xl mb-4">🔨</div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            Quote Request Received!
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300 text-sm">
+            Thanks, <strong>{form.name}</strong>. We&apos;ll review your request and get back to you within 1–2 business days with a quote.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <main className="flex-1 max-w-xl mx-auto w-full px-4 sm:px-6 py-12">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-          Book a Service
+    <main className="flex-1 max-w-2xl mx-auto w-full px-4 sm:px-6 py-12">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+          Request a Free Quote
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">
-          Step {step} of 2
+          No payment required. Fill out the form below and we&apos;ll get back to you within 1–2 business days.
         </p>
 
-        {/* Step indicator */}
-        <div className="flex gap-2 mb-8">
-          {[1, 2].map((s) => (
-            <div
-              key={s}
-              className={`h-1.5 flex-1 rounded-full transition-colors ${
-                s <= step
-                  ? "bg-blue-600 dark:bg-blue-500"
-                  : "bg-gray-200 dark:bg-gray-700"
-              }`}
+        <form onSubmit={handleSubmit} className="space-y-5">
+
+          {/* Name */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Full Name <span className="text-orange-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={form.name}
+              onChange={(e) => set("name", e.target.value)}
+              placeholder="Jane Smith"
+              className="w-full border-2 border-[#4A4A4A] bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-orange-500"
             />
-          ))}
-        </div>
+          </div>
 
-        {step === 1 && (
-          <form onSubmit={handleStep1Next} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Full Name
-              </label>
-              <input
-                type="text"
-                value={step1.name}
-                onChange={(e) => setStep1({ ...step1, name: e.target.value })}
-                placeholder="Charles Willis"
-                className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+          {/* Email */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Email Address <span className="text-orange-500">*</span>
+            </label>
+            <input
+              type="email"
+              value={form.email}
+              onChange={(e) => set("email", e.target.value)}
+              placeholder="you@example.com"
+              className="w-full border-2 border-[#4A4A4A] bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-orange-500"
+            />
+          </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Email Address
-              </label>
-              <input
-                type="email"
-                value={step1.email}
-                onChange={(e) => setStep1({ ...step1, email: e.target.value })}
-                placeholder="you@example.com"
-                className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+          {/* Phone */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Phone Number <span className="text-orange-500">*</span>
+            </label>
+            <input
+              type="tel"
+              value={form.phone}
+              onChange={(e) => set("phone", e.target.value)}
+              placeholder="(555) 000-0000"
+              className="w-full border-2 border-[#4A4A4A] bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-orange-500"
+            />
+          </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                value={step1.phone}
-                onChange={(e) => setStep1({ ...step1, phone: e.target.value })}
-                placeholder="(555) 000-0000"
-                className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Service Type
-              </label>
-              <select
-                value={step1.serviceType}
-                onChange={(e) => setStep1({ ...step1, serviceType: e.target.value })}
-                className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Select a service...</option>
-                {SERVICE_TYPES.map((s) => (
-                  <option key={s} value={s}>{s}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Preferred Date
-              </label>
-              <input
-                type="date"
-                value={step1.preferredDate}
-                onChange={(e) => setStep1({ ...step1, preferredDate: e.target.value })}
-                min={new Date().toISOString().split("T")[0]}
-                className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Quoted Amount ($)
-              </label>
-              <input
-                type="number"
-                value={step1.quotedAmount}
-                onChange={(e) => setStep1({ ...step1, quotedAmount: e.target.value })}
-                placeholder="0.00"
-                min="0"
-                step="0.01"
-                className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <FormError message={step1Error} />
-
-            <button
-              type="submit"
-              className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white text-sm font-medium rounded-md transition-colors"
+          {/* Service Type */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Service Type <span className="text-orange-500">*</span>
+            </label>
+            <select
+              value={form.serviceType}
+              onChange={(e) => set("serviceType", e.target.value)}
+              className="w-full border-2 border-[#4A4A4A] bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-orange-500"
             >
-              Continue to Payment
-            </button>
-          </form>
-        )}
+              <option value="">Select a service...</option>
+              {SERVICE_TYPES.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+          </div>
 
-        {step === 2 && (
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Summary */}
-            <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 p-4 text-sm space-y-1">
-              <p className="font-medium text-gray-900 dark:text-white">{step1.serviceType}</p>
-              <p className="text-gray-500 dark:text-gray-400">{step1.name} · {step1.preferredDate}</p>
-              <p className="text-gray-700 dark:text-gray-300">
-                Quoted: <strong>${quotedAmount.toFixed(2)}</strong>
-              </p>
-            </div>
+          {/* Preferred Date */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Preferred Service Date <span className="text-orange-500">*</span>
+            </label>
+            <input
+              type="date"
+              value={form.preferredDate}
+              onChange={(e) => set("preferredDate", e.target.value)}
+              min={new Date().toISOString().split("T")[0]}
+              className="w-full border-2 border-[#4A4A4A] bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-orange-500"
+            />
+          </div>
 
-            {/* Promo code */}
-            <div>
-              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Have a promo code?
-              </p>
-              <PromoCodeInput onApply={handlePromoApply} disabled={depositWaived} />
-              {depositWaived && (
-                <p className="mt-2 text-sm font-medium text-green-600 dark:text-green-400">
-                  Deposit waived — you can proceed without payment.
-                </p>
-              )}
-            </div>
+          {/* Property Address */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Property Address to be Serviced <span className="text-orange-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={form.propertyAddress}
+              onChange={(e) => set("propertyAddress", e.target.value)}
+              placeholder="123 Main St, City, State, ZIP"
+              className="w-full border-2 border-[#4A4A4A] bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-orange-500"
+            />
+          </div>
 
-            {/* Payment options */}
-            {!depositWaived && (
-              <div>
-                <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Payment Option
-                </p>
-                <div className="space-y-2">
-                  <label className="flex items-start gap-3 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="paymentOption"
-                      value="deposit"
-                      checked={paymentOption === "deposit"}
-                      onChange={() => setPaymentOption("deposit")}
-                      className="mt-0.5"
-                    />
-                    <div>
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">
-                        Pay Deposit — ${depositAmount.toFixed(2)}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        15% of quoted amount due now; remainder due on completion.
-                      </p>
-                    </div>
-                  </label>
-                  <label className="flex items-start gap-3 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="paymentOption"
-                      value="full"
-                      checked={paymentOption === "full"}
-                      onChange={() => setPaymentOption("full")}
-                      className="mt-0.5"
-                    />
-                    <div>
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">
-                        Pay in Full — ${quotedAmount.toFixed(2)}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Full amount due now.
-                      </p>
-                    </div>
-                  </label>
-                </div>
-              </div>
-            )}
+          {/* Budget Estimate */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Budget Estimate <span className="text-orange-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={form.budgetEstimate}
+              onChange={(e) => set("budgetEstimate", e.target.value)}
+              placeholder="e.g. $500 – $1,000"
+              className="w-full border-2 border-[#4A4A4A] bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-orange-500"
+            />
+          </div>
 
-            <FormError message={submitError} />
+          {/* How did you hear about us */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              How Did You Hear About Us? <span className="text-orange-500">*</span>
+            </label>
+            <select
+              value={form.referralSource}
+              onChange={(e) => set("referralSource", e.target.value)}
+              className="w-full border-2 border-[#4A4A4A] bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-orange-500"
+            >
+              <option value="">Select an option...</option>
+              {REFERRAL_SOURCES.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+          </div>
 
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                disabled={loading}
-                className="flex-1 py-2.5 px-4 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-sm font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
-              >
-                Back
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white text-sm font-medium rounded-md transition-colors disabled:opacity-50"
-              >
-                {loading && <LoadingSpinner size="sm" />}
-                {depositWaived ? "Confirm Booking" : "Proceed to Payment"}
-              </button>
-            </div>
-          </form>
-        )}
+          {/* Referral Code (optional) */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Referral Code <span className="text-xs text-gray-400">(optional)</span>
+            </label>
+            <input
+              type="text"
+              value={form.referralCode}
+              onChange={(e) => set("referralCode", e.target.value)}
+              placeholder="Enter referral code if you have one"
+              className="w-full border-2 border-[#4A4A4A] bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-orange-500"
+            />
+          </div>
+
+          {/* Additional Notes */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Additional Notes
+            </label>
+            <textarea
+              value={form.notes}
+              onChange={(e) => set("notes", e.target.value)}
+              placeholder="Describe the work needed, any special considerations, etc."
+              rows={4}
+              className="w-full border-2 border-[#4A4A4A] bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 resize-none"
+            />
+          </div>
+
+          {/* Terms of Service */}
+          <div className="border-2 border-[#4A4A4A] bg-gray-50 dark:bg-gray-800/50 p-4">
+            <p className="text-xs text-gray-600 dark:text-gray-400 mb-3 leading-relaxed">
+              By submitting this form, you agree to our{" "}
+              <a href="/legal/terms" target="_blank" className="text-orange-500 hover:underline font-medium">
+                Terms of Service
+              </a>
+              ,{" "}
+              <a href="/legal/privacy" target="_blank" className="text-orange-500 hover:underline font-medium">
+                Privacy Policy
+              </a>
+              , and{" "}
+              <a href="/legal/data-use" target="_blank" className="text-orange-500 hover:underline font-medium">
+                Data Use Policy
+              </a>
+              . Submitting a quote request does not constitute a binding contract or guarantee of service.
+              Nailed It General Maintenance Services reserves the right to decline any request. A representative
+              will contact you to confirm details before any work is scheduled.
+            </p>
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={form.agreedToTerms}
+                onChange={(e) => set("agreedToTerms", e.target.checked)}
+                className="mt-0.5 accent-orange-500"
+              />
+              <span className="text-sm text-gray-700 dark:text-gray-300">
+                I have read and agree to the Terms of Service, Privacy Policy, and Data Use Policy.{" "}
+                <span className="text-orange-500">*</span>
+              </span>
+            </label>
+          </div>
+
+          <FormError message={error} />
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white text-sm font-semibold uppercase tracking-widest transition-colors border-2 border-orange-600"
+          >
+            {loading && <LoadingSpinner size="sm" />}
+            Submit Quote Request
+          </button>
+        </form>
       </main>
-      <Footer />
-    </div>
   );
 }

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import StatusBadge from '@/components/StatusBadge';
 import type { WorkOrder, WorkOrderStatus } from '@/lib/types';
 
@@ -9,15 +8,16 @@ const ALL_STATUSES: WorkOrderStatus[] = ['pending', 'in_progress', 'completed', 
 
 interface WorkOrderTableProps {
   workOrders: WorkOrder[];
+  onViewWorkOrder?: (workOrderId: string) => void;
 }
 
-export default function WorkOrderTable({ workOrders }: WorkOrderTableProps) {
+export default function WorkOrderTable({ workOrders, onViewWorkOrder }: WorkOrderTableProps) {
   const [statusFilter, setStatusFilter] = useState<WorkOrderStatus | 'all'>('all');
   const [clientFilter, setClientFilter] = useState('');
 
   const filtered = workOrders.filter((wo) => {
     const matchesStatus = statusFilter === 'all' || wo.status === statusFilter;
-    const matchesClient = clientFilter === '' || wo.client_id.includes(clientFilter);
+    const matchesClient = clientFilter === '' || (wo.client_id ?? '').includes(clientFilter);
     return matchesStatus && matchesClient;
   });
 
@@ -74,7 +74,7 @@ export default function WorkOrderTable({ workOrders }: WorkOrderTableProps) {
                     {wo.title}
                   </td>
                   <td className="py-3 px-4 text-sm text-gray-500 dark:text-gray-400 font-mono text-xs">
-                    {wo.client_id.slice(0, 8)}…
+                    {wo.client_id ? `${wo.client_id.slice(0, 8)}…` : '—'}
                   </td>
                   <td className="py-3 px-4">
                     <StatusBadge status={wo.status} />
@@ -92,12 +92,13 @@ export default function WorkOrderTable({ workOrders }: WorkOrderTableProps) {
                     }).format(new Date(wo.created_at))}
                   </td>
                   <td className="py-3 px-4 text-right">
-                    <Link
-                      href={`/admin/work-orders/${wo.id}`}
+                    <button
+                      type="button"
+                      onClick={() => onViewWorkOrder?.(wo.id)}
                       className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
                     >
                       View
-                    </Link>
+                    </button>
                   </td>
                 </tr>
               ))

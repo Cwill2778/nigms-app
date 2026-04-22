@@ -2,6 +2,10 @@ import { redirect } from 'next/navigation';
 import { createServerClient } from '@/lib/supabase';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SteelFrameContainer from '@/components/SteelFrameContainer';
+import AdminSidebarClient from '@/components/AdminSidebarClient';
+import { SidebarNavItem } from '@/components/IndustrialSidebar';
+import { LayoutDashboard, Users, ClipboardList, CreditCard } from 'lucide-react';
 
 export default async function AdminLayout({
   children,
@@ -33,11 +37,23 @@ export default async function AdminLayout({
     );
   }
 
+  const adminNavItems: SidebarNavItem[] = [
+    { href: '/admin-dashboard', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
+    { href: '/clients', label: 'Clients', icon: <Users size={18} /> },
+    { href: '/work-orders', label: 'Work Orders', icon: <ClipboardList size={18} /> },
+    { href: '/payments', label: 'Payments', icon: <CreditCard size={18} /> },
+  ];
+
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-950">
-      <Navbar />
-      <main className="flex-1">{children}</main>
-      <Footer />
-    </div>
+    <>
+      <div className="md:hidden"><Navbar /></div>
+      <SteelFrameContainer>
+        <div className="flex flex-1">
+          <AdminSidebarClient staticItems={adminNavItems} />
+          <main className="flex-1">{children}</main>
+        </div>
+      </SteelFrameContainer>
+      <div className="md:hidden"><Footer /></div>
+    </>
   );
 }
