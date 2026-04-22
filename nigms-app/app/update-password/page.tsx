@@ -16,6 +16,8 @@ export default function UpdatePasswordPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const [isAdmin, setIsAdmin] = useState(false);
+
   useEffect(() => {
     const supabase = createBrowserClient();
     async function fetchProfile() {
@@ -26,11 +28,12 @@ export default function UpdatePasswordPage() {
 
       const { data } = await supabase
         .from("users")
-        .select("username")
+        .select("username, role")
         .eq("id", user.id)
         .single();
 
       setUsername(data?.username ?? null);
+      setIsAdmin(data?.role === "admin");
     }
     fetchProfile();
   }, []);
@@ -68,7 +71,7 @@ export default function UpdatePasswordPage() {
         return;
       }
 
-      router.push("/dashboard");
+      router.push(isAdmin ? "/admin-dashboard" : "/dashboard");
     } catch {
       setError("An unexpected error occurred. Please try again.");
     } finally {

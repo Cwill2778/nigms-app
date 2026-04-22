@@ -35,8 +35,9 @@ export default async function RootPage() {
       .eq('id', session.user.id)
       .single();
 
-    if (profile?.role === 'admin') redirect('/admin-dashboard');
+    if (profile?.role === 'admin' && !profile?.requires_password_reset) redirect('/admin-dashboard');
     if (profile?.requires_password_reset) redirect('/update-password');
+    if (profile?.role === 'admin') redirect('/admin-dashboard');
     redirect('/dashboard');
   }
 

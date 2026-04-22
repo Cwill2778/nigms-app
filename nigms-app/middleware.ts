@@ -93,11 +93,15 @@ export async function middleware(request: NextRequest) {
 
   // ── Rules 3 & 4: Admin session ─────────────────────────────────────────────
   if (role === 'admin') {
+    // Allow admins who need to reset their password to reach /update-password
+    if (requiresPasswordReset && pathname === '/update-password') {
+      return response;
+    }
     if (isAdminRoute(pathname)) {
       // Rule 3: Admin session + admin route → allow
       return response;
     }
-    // Rule 4: Admin session + non-admin route → redirect to /admin/dashboard
+    // Rule 4: Admin session + non-admin route → redirect to /admin-dashboard
     const adminDashUrl = request.nextUrl.clone();
     adminDashUrl.pathname = '/admin-dashboard';
     return NextResponse.redirect(adminDashUrl);
