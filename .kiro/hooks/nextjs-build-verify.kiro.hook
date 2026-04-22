@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Next.js Build Verification",
+  "description": "Runs a full Next.js production build after a spec task completes to catch hydration errors, routing issues, or server/client component conflicts.",
+  "version": "1",
+  "when": {
+    "type": "postTaskExecution"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A spec task just completed. Run `npm run build` in the nigms-app directory to verify the production build succeeds. If it fails, diagnose the terminal output, fix the errors, and rebuild until it passes cleanly."
+  }
+}

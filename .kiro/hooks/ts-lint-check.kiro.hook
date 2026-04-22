@@ -1,0 +1,17 @@
+{
+  "enabled": true,
+  "name": "Type Safety & Lint Enforcement",
+  "description": "Runs lint and TypeScript checks after saving any .ts or .tsx file. If errors are found, fixes them before moving on.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "nigms-app/**/*.ts",
+      "nigms-app/**/*.tsx"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A .ts or .tsx file was just saved. Run `npm run lint` and `npx tsc --noEmit` in the nigms-app directory. If there are any errors or warnings, read the output, fix the referenced code, and re-run until both commands pass cleanly before proceeding."
+  }
+}
