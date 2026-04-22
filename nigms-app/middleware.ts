@@ -80,11 +80,13 @@ export async function middleware(request: NextRequest) {
   }
 
   // ── Authenticated: fetch profile from public.users ──────────────────────────
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from('users')
     .select('role, requires_password_reset')
     .eq('id', session.user.id)
     .single();
+
+  console.log('[middleware] user:', session.user.id, 'profile:', profile, 'error:', profileError);
 
   // Graceful handling: user exists in auth but not yet in public.users
   // Treat as a client with reset required so they can't access anything sensitive
