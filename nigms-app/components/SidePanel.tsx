@@ -11,10 +11,11 @@ interface SidePanelProps {
   width?: "md" | "lg" | "xl";
 }
 
+// On mobile the panel always takes full width; fixed pixel widths apply at sm+ breakpoint
 const widthMap = {
-  md: "w-[400px]",
-  lg: "w-[600px]",
-  xl: "w-[800px]",
+  md: "w-full sm:w-[400px]",
+  lg: "w-full sm:w-[600px]",
+  xl: "w-full sm:w-[800px]",
 };
 
 export default function SidePanel({

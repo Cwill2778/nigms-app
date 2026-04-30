@@ -11,11 +11,8 @@ export default function SteelFrameContainer({
 }: SteelFrameContainerProps) {
   return (
     <div
-      className={`m-4 flex flex-col min-h-[calc(100vh-2rem)]${className ? ` ${className}` : ""}`}
+      className={`sm:mx-2 md:mx-4 sm:my-2 md:my-4 flex flex-col min-h-screen sm:min-h-[calc(100vh-1rem)] md:min-h-[calc(100vh-2rem)]${className ? ` ${className}` : ""}`}
       style={{
-        /* Navy border so it's visible in both light and dark mode —
-           the navy token is dark enough to show on a light page background
-           and distinct enough to show on the dark steel background */
         border: "2px solid var(--color-navy-bright)",
         background: "var(--color-bg-base)",
       }}

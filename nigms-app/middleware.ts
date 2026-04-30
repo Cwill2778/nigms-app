@@ -30,10 +30,10 @@ const PUBLIC_PREFIXES = [
  * Admin routes — only accessible to users with role = 'admin'.
  *
  * Includes:
- *  - /admin-dashboard        (main admin page)
- *  - /clients, /payments     (admin route-group pages, no /admin/ prefix in URL)
- *  - /work-orders            (shared path — admin sees all, client sees own)
- *  - /api/admin/*            (all admin API endpoints)
+ * - /admin-dashboard        (main admin page)
+ * - /clients, /payments     (admin route-group pages, no /admin/ prefix in URL)
+ * - /work-orders            (shared path — admin sees all, client sees own)
+ * - /api/admin/* (all admin API endpoints)
  *
  * NOTE: /work-orders is listed here so that the middleware can distinguish
  * between an admin visiting /work-orders (allowed) and a client visiting
@@ -128,17 +128,12 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
-  // ── Authenticated: fetch role, password-reset flag, and onboarding state ──
-  const { data: profile } = await supabase
-    .from('users')
-    .select('role, requires_password_reset')
-    .eq('id', session.user.id)
-    .single();
-
-  // Graceful fallback: if the profile row doesn't exist yet (e.g. race
-  // condition during signup), treat the user as a client requiring a reset.
-  const role = profile?.role ?? 'client';
-  const requiresPasswordReset = profile?.requires_password_reset ?? true;
+  // ── Authenticated: read data directly from the JWT (Instant!) ──
+  const userMeta = session.user.user_metadata || {};
+  
+  // Extract role and state directly from the token, bypassing database queries
+  const role = userMeta.role ?? 'client';
+  const requiresPasswordReset = userMeta.requires_password_reset === true;
 
   // ── Admin ──────────────────────────────────────────────────────────────────
   // Requirement 10.5: admin → /admin-dashboard when accessing non-admin routes.
@@ -211,13 +206,8 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith('/api/promo/');
 
   if (!isOnboardingRoute) {
-    const { data: onboardingState } = await supabase
-      .from('onboarding_states')
-      .select('onboarding_complete')
-      .eq('user_id', session.user.id)
-      .maybeSingle();
-
-    const onboardingComplete = onboardingState?.onboarding_complete ?? true;
+    // Read directly from JWT metadata instead of querying the 'onboarding_states' table
+    const onboardingComplete = userMeta.onboarding_complete === true;
 
     if (!onboardingComplete) {
       const propertyUrl = request.nextUrl.clone();

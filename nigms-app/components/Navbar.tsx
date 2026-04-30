@@ -68,7 +68,7 @@ export default function Navbar() {
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-28">
+        <div className="flex items-center justify-between h-16 md:h-28">
 
           {/* Logo — white version always works on navy background */}
           <Link href="/" className="shrink-0">
@@ -76,7 +76,7 @@ export default function Navbar() {
             <img
               src="/nailedItGeneralMaintenance/Standard (image)/White on Transparent.png"
               alt="Nailed It General Maintenance Solutions"
-              style={{ height: "80px", width: "auto" }}
+              className="h-10 md:h-20 w-auto"
             />
           </Link>
 

@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createServerClient } from '@/lib/supabase';
 import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import SteelFrameContainer from '@/components/SteelFrameContainer';
 import ClientSidebarClient from '@/components/ClientSidebarClient';
 import { SidebarNavItem } from '@/components/IndustrialSidebar';
@@ -82,12 +81,9 @@ export default async function ClientLayout({
       <SteelFrameContainer>
         <div className="flex flex-1">
           <ClientSidebarClient staticItems={clientNavItems} />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 pb-[60px] md:pb-0">{children}</main>
         </div>
       </SteelFrameContainer>
-      <div className="md:hidden">
-        <Footer />
-      </div>
     </>
   );
 }

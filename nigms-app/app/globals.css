@@ -656,3 +656,31 @@ a:hover { color: var(--color-accent-orange-hover); }
 .portal-theme .btn-secondary:hover {
   background-color: rgba(27, 42, 74, 0.05);
 }
+
+/* ============================================================
+   MOBILE-FIRST UTILITIES
+   ============================================================ */
+
+/* iOS safe area support for the fixed bottom tab bar */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .mobile-bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom);
+    height: calc(60px + env(safe-area-inset-bottom));
+  }
+  .mobile-bottom-safe {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Ensure tables scroll horizontally on small screens */
+.table-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Minimum touch target size (WCAG 2.5.5) */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}

@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createServerClient } from '@/lib/supabase';
 import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import SteelFrameContainer from '@/components/SteelFrameContainer';
 import AdminSidebarClient from '@/components/AdminSidebarClient';
 import { SidebarNavItem } from '@/components/IndustrialSidebar';
@@ -50,10 +49,9 @@ export default async function AdminLayout({
       <SteelFrameContainer>
         <div className="flex flex-1">
           <AdminSidebarClient staticItems={adminNavItems} />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 pb-[60px] md:pb-0">{children}</main>
         </div>
       </SteelFrameContainer>
-      <div className="md:hidden"><Footer /></div>
     </>
   );
 }

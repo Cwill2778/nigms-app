@@ -26,11 +26,16 @@ export async function POST(request: NextRequest) {
   const baseUsername = email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '');
   const username = `${baseUsername}_${Math.floor(Math.random() * 9000) + 1000}`;
 
-  // Create the auth user
+  // Create the auth user AND inject the metadata for the Middleware to read instantly
   const { data: authData, error: authError } = await supabase.auth.admin.createUser({
     email,
     password,
     email_confirm: true, // auto-confirm so they can log in immediately
+    user_metadata: {
+      role: 'client',
+      requires_password_reset: false,
+      onboarding_complete: false
+    }
   });
 
   if (authError || !authData.user) {
