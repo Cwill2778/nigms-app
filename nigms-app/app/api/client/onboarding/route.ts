@@ -75,5 +75,13 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
+  // If onboarding is now complete, write it into the JWT so the middleware
+  // sees it immediately without a database round-trip.
+  if (onboarding_complete === true) {
+    await supabase.auth.updateUser({
+      data: { onboarding_complete: true },
+    });
+  }
+
   return NextResponse.json({ success: true });
 }

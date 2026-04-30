@@ -7,8 +7,6 @@ import WorkOrderCard from '@/components/WorkOrderCard';
 import PayBalanceButton from '@/components/PayBalanceButton';
 import DashboardProductTour from '@/components/DashboardProductTour';
 import PaymentStatusToast from '@/components/PaymentStatusToast';
-import FeatureGate from '@/components/FeatureGate';
-import TimeTrackerWidget from '@/components/TimeTrackerWidget';
 import PropertyManagement from '@/components/PropertyManagement';
 import ActiveProjectTracker from '@/components/ActiveProjectTracker';
 import BeforeAfterGallery from '@/components/BeforeAfterGallery';
@@ -19,8 +17,6 @@ import MaintenanceReminders from '@/components/MaintenanceReminders';
 import ROITracker from '@/components/ROITracker';
 import EmergencyDispatch from '@/components/EmergencyDispatch';
 import type { WorkOrder, Payment } from '@/lib/types';
-
-// ─── Dashboard Page ───────────────────────────────────────────────────────────
 
 export default async function DashboardPage() {
   const supabase = await createServerClient();
@@ -37,7 +33,6 @@ export default async function DashboardPage() {
     { data: workOrders },
     { data: payments },
     { data: onboardingState },
-    { data: subscription },
   ] = await Promise.all([
     supabase
       .from('work_orders')
@@ -54,15 +49,6 @@ export default async function DashboardPage() {
       .select('tour_complete')
       .eq('user_id', session.user.id)
       .single(),
-    // Fetch the most recent active subscription for this client
-    supabase
-      .from('subscriptions')
-      .select('tier, minutes_used, monthly_allocation_minutes')
-      .eq('user_id', session.user.id)
-      .eq('status', 'active')
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle(),
   ]);
 
   const safeWorkOrders: WorkOrder[] = workOrders ?? [];
@@ -70,18 +56,7 @@ export default async function DashboardPage() {
   const showTour =
     (onboardingState as { tour_complete: boolean } | null)?.tour_complete === false;
 
-  // Current subscription tier — null means no active subscription
-  const currentTier =
-    (subscription as { tier: string; minutes_used: number; monthly_allocation_minutes: number } | null)
-      ?.tier ?? null;
-  const minutesUsed =
-    (subscription as { tier: string; minutes_used: number; monthly_allocation_minutes: number } | null)
-      ?.minutes_used ?? 0;
-  const monthlyAllocation =
-    (subscription as { tier: string; minutes_used: number; monthly_allocation_minutes: number } | null)
-      ?.monthly_allocation_minutes ?? 0;
-
-  // Work orders with an outstanding balance (quoted > paid for that order)
+  // Work orders with an outstanding balance
   const paidByWorkOrder = safePayments
     .filter((p) => p.status === 'paid')
     .reduce<Record<string, number>>((acc, p) => {
@@ -105,10 +80,12 @@ export default async function DashboardPage() {
 
       {/* Page header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Dashboard</h1>
+        <h1 className="text-2xl font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+          Dashboard
+        </h1>
         <Link
           href="/work-orders/new"
-          className="text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md transition-colors"
+          className="btn-primary text-sm px-4 py-2"
         >
           + New Work Order
         </Link>
@@ -120,16 +97,10 @@ export default async function DashboardPage() {
       <section
         id="active-projects"
         className="card"
-        style={{
-          background: 'var(--color-bg-surface)',
-          border: '1px solid var(--color-steel-dim)',
-        }}
+        style={{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-steel-dim)' }}
       >
         <div className="card-header">
-          <h2
-            className="card-header-title"
-            style={{ color: 'var(--color-steel-shine)', fontSize: '0.8rem' }}
-          >
+          <h2 className="card-header-title" style={{ color: 'var(--color-steel-shine)', fontSize: '0.8rem' }}>
             Active Project Tracker
           </h2>
         </div>
@@ -138,47 +109,14 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      {/* ── 2. Time Tracker Widget ─────────────────────────────────── */}
-      {monthlyAllocation > 0 && (
-        <section
-          id="time-tracker"
-          className="card"
-          style={{
-            background: 'var(--color-bg-surface)',
-            border: '1px solid var(--color-steel-dim)',
-          }}
-        >
-          <div className="card-header">
-            <h2
-              className="card-header-title"
-              style={{ color: 'var(--color-steel-shine)', fontSize: '0.8rem' }}
-            >
-              Time Tracker
-            </h2>
-          </div>
-          <div className="card-body">
-            <TimeTrackerWidget
-              minutesUsed={minutesUsed}
-              monthlyAllocation={monthlyAllocation}
-            />
-          </div>
-        </section>
-      )}
-
-      {/* ── 3. Before/After Gallery ────────────────────────────────── */}
+      {/* ── 2. Before/After Gallery ────────────────────────────────── */}
       <section
         id="gallery"
         className="card"
-        style={{
-          background: 'var(--color-bg-surface)',
-          border: '1px solid var(--color-steel-dim)',
-        }}
+        style={{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-steel-dim)' }}
       >
         <div className="card-header">
-          <h2
-            className="card-header-title"
-            style={{ color: 'var(--color-steel-shine)', fontSize: '0.8rem' }}
-          >
+          <h2 className="card-header-title" style={{ color: 'var(--color-steel-shine)', fontSize: '0.8rem' }}>
             Before / After Gallery
           </h2>
         </div>
@@ -187,20 +125,14 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      {/* ── 4. Appointment Management ─────────────────────────────── */}
+      {/* ── 3. Appointment Management ─────────────────────────────── */}
       <section
         id="appointments"
         className="card"
-        style={{
-          background: 'var(--color-bg-surface)',
-          border: '1px solid var(--color-steel-dim)',
-        }}
+        style={{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-steel-dim)' }}
       >
         <div className="card-header">
-          <h2
-            className="card-header-title"
-            style={{ color: 'var(--color-steel-shine)', fontSize: '0.8rem' }}
-          >
+          <h2 className="card-header-title" style={{ color: 'var(--color-steel-shine)', fontSize: '0.8rem' }}>
             Appointment Management
           </h2>
         </div>
@@ -209,20 +141,14 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      {/* ── 5. Quote & Invoice Hub ─────────────────────────────────── */}
+      {/* ── 4. Quote & Invoice Hub ─────────────────────────────────── */}
       <section
         id="billing"
         className="card"
-        style={{
-          background: 'var(--color-bg-surface)',
-          border: '1px solid var(--color-steel-dim)',
-        }}
+        style={{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-steel-dim)' }}
       >
         <div className="card-header">
-          <h2
-            className="card-header-title"
-            style={{ color: 'var(--color-steel-shine)', fontSize: '0.8rem' }}
-          >
+          <h2 className="card-header-title" style={{ color: 'var(--color-steel-shine)', fontSize: '0.8rem' }}>
             Quote &amp; Invoice Hub
           </h2>
         </div>
@@ -231,7 +157,7 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      {/* ── 6. Communication Portal ────────────────────────────────── */}
+      {/* ── 5. Communication Portal ────────────────────────────────── */}
       <section
         id="messages"
         className="card"
@@ -244,10 +170,7 @@ export default async function DashboardPage() {
         }}
       >
         <div className="card-header">
-          <h2
-            className="card-header-title"
-            style={{ color: 'var(--color-steel-shine)', fontSize: '0.8rem' }}
-          >
+          <h2 className="card-header-title" style={{ color: 'var(--color-steel-shine)', fontSize: '0.8rem' }}>
             Communication Portal
           </h2>
         </div>
@@ -256,20 +179,14 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      {/* ── 7. Maintenance Reminders ───────────────────────────────── */}
+      {/* ── 6. Maintenance Reminders ───────────────────────────────── */}
       <section
         id="maintenance"
         className="card"
-        style={{
-          background: 'var(--color-bg-surface)',
-          border: '1px solid var(--color-steel-dim)',
-        }}
+        style={{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-steel-dim)' }}
       >
         <div className="card-header">
-          <h2
-            className="card-header-title"
-            style={{ color: 'var(--color-steel-shine)', fontSize: '0.8rem' }}
-          >
+          <h2 className="card-header-title" style={{ color: 'var(--color-steel-shine)', fontSize: '0.8rem' }}>
             Maintenance Reminders
           </h2>
         </div>
@@ -278,67 +195,59 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      {/* ── 8. Property Management ─────────────────────────────────── */}
+      {/* ── 7. Property Management ─────────────────────────────────── */}
       <section id="properties">
         <PropertyManagement />
       </section>
 
-      {/* ── 9. ROI Tracker (Elite / VIP) ──────────────────────────── */}
-      <FeatureGate tier={currentTier} feature="ROI_Tracker">
-        <section
-          id="roi-tracker"
-          className="card card-steel"
-          style={{
-            background: 'var(--color-bg-surface)',
-            border: '1px solid var(--color-steel-dim)',
-          }}
-        >
-          <div className="card-header">
-            <h2
-              className="card-header-title"
-              style={{ color: 'var(--color-steel-shine)', fontSize: '0.8rem' }}
-            >
-              ROI Tracker
-            </h2>
-          </div>
-          <div className="card-body">
-            <ROITracker />
-          </div>
-        </section>
-      </FeatureGate>
+      {/* ── 8. ROI Tracker ────────────────────────────────────────── */}
+      <section
+        id="roi-tracker"
+        className="card card-steel"
+        style={{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-steel-dim)' }}
+      >
+        <div className="card-header">
+          <h2 className="card-header-title" style={{ color: 'var(--color-steel-shine)', fontSize: '0.8rem' }}>
+            ROI Tracker
+          </h2>
+        </div>
+        <div className="card-body">
+          <ROITracker />
+        </div>
+      </section>
 
-      {/* ── 10. Emergency Dispatch (Elite / VIP) ──────────────────── */}
-      <FeatureGate tier={currentTier} feature="Emergency_Dispatch">
-        <section
-          id="emergency-dispatch"
-          className="card"
-          style={{
-            background: 'var(--color-bg-surface)',
-            border: '1px solid var(--color-steel-dim)',
-            borderTop: '2px solid var(--color-error)',
-          }}
-        >
-          <div className="card-header">
-            <h2
-              className="card-header-title"
-              style={{ color: 'var(--color-steel-shine)', fontSize: '0.8rem' }}
-            >
-              Emergency Dispatch
-            </h2>
-          </div>
-          <div className="card-body">
-            <EmergencyDispatch />
-          </div>
-        </section>
-      </FeatureGate>
+      {/* ── 9. Emergency Dispatch ─────────────────────────────────── */}
+      <section
+        id="emergency-dispatch"
+        className="card"
+        style={{
+          background: 'var(--color-bg-surface)',
+          border: '1px solid var(--color-steel-dim)',
+          borderTop: '2px solid var(--color-error)',
+        }}
+      >
+        <div className="card-header">
+          <h2 className="card-header-title" style={{ color: 'var(--color-steel-shine)', fontSize: '0.8rem' }}>
+            Emergency Dispatch
+          </h2>
+        </div>
+        <div className="card-body">
+          <EmergencyDispatch />
+        </div>
+      </section>
 
       {/* ── All Work Orders ────────────────────────────────────────── */}
       <section id="work-orders">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <h2
+          className="text-lg font-semibold mb-4"
+          style={{ color: 'var(--color-text-primary)' }}
+        >
           All Work Orders
         </h2>
         {safeWorkOrders.length === 0 ? (
-          <p className="text-sm text-gray-500 dark:text-gray-400">No work orders yet.</p>
+          <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>
+            No work orders yet.
+          </p>
         ) : (
           <div className="flex flex-col gap-3">
             {safeWorkOrders.map((wo) => {

@@ -151,6 +151,11 @@ export async function POST(request: NextRequest) {
       .update({ onboarding_complete: true, updated_at: new Date().toISOString() })
       .eq('user_id', session.user.id);
 
+    // Write onboarding_complete into the JWT so the middleware sees it immediately
+    await supabase.auth.updateUser({
+      data: { onboarding_complete: true },
+    });
+
     return NextResponse.json({
       success: true,
       code_type: 'vip_bypass',
