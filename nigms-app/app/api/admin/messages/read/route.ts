@@ -21,7 +21,7 @@ async function getAdminSession() {
     .eq('id', session.user.id)
     .single();
 
-  if (profile?.role !== 'admin') return null;
+  if ((profile as { role: string } | null)?.role !== 'admin') return null;
   return session;
 }
 

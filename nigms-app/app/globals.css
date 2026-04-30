@@ -1,64 +1,658 @@
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600&display=swap");
 
 @variant dark (&:where(.dark, .dark *));
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ============================================================
+   NAILED IT GENERAL MAINTENANCE — INDUSTRIAL NOIR DESIGN SYSTEM
+   ============================================================
+
+   COLOR PALETTE
+   ─────────────────────────────────────────────────────────────
+   Backgrounds — warm dark steel (no purple, no blue-grey)
+     --color-bg-base        #111110   Forge Black        — page background
+     --color-bg-surface     #1A1917   Dark Steel         — cards, panels
+     --color-bg-elevated    #222120   Lifted Steel       — modals, dropdowns, inputs
+     --color-bg-overlay     #2C2B29   Steel Overlay      — hover states, tooltips
+
+   Metallic / Steel (warm-toned borders & dividers)
+     --color-steel-dim      #38352F   Dim Forge          — subtle borders
+     --color-steel-mid      #5A5650   Mid Steel          — dividers, input borders
+     --color-steel-bright   #8C8880   Brushed Steel      — icon fills, muted text
+     --color-steel-shine    #C4BFB8   Silver Sheen       — card header accents
+
+   Navy Blue accent (secondary accent — panels, active states)
+     --color-navy:          #1B2A4A   Deep Navy          — sidebar bg, panel headers
+     --color-navy-mid:      #243660   Navy Mid           — active nav bg, card headers
+     --color-navy-bright:   #2E4A8A   Navy Bright        — borders on navy surfaces
+     --color-navy-glow:     rgba(30, 58, 138, 0.35)      — navy glow / shadow
+
+   Safety Orange (primary CTA accent)
+     --color-accent-orange:       #FF6B00   Safety Orange
+     --color-accent-orange-hover: #FF8533   Orange Glow
+     --color-accent-orange-glow:  rgba(255, 107, 0, 0.22)
+     --color-accent-yellow:       #FFD600   Neon Yellow    — badges, warnings
+     --color-accent-yellow-dim:   #B39700   Dim Yellow
+
+   Text
+     --color-text-primary   #F2EDE8   Warm White         — headings, primary text
+     --color-text-secondary #C4BFB8   Silver Sheen       — body, labels
+     --color-text-muted     #6B6560   Warm Muted         — placeholders, disabled
+     --color-text-inverse   #111110   Forge Black        — text on orange buttons
+     --color-text-on-navy   #D4DCEE   Light Blue-White   — text on navy surfaces
+
+   Status
+     --color-success        #22C55E   — success
+     --color-warning        #FFD600   — warnings
+     --color-error          #EF4444   — errors
+     --color-info           #60A5FA   — informational (softer blue)
+
+   ============================================================ */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --radius: 0;
-  --radius-sm: 0;
-  --radius-md: 0;
-  --radius-lg: 0;
-  --radius-xl: 0;
-  --radius-2xl: 0;
-  --radius-3xl: 0;
-  --radius-full: 0;
+  /* Fonts */
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
+  --font-sans: var(--font-body);
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+
+  /* ── Nailed It Brand Tokens (Requirement 1.1) ── */
+  --color-trust-navy:          #1B263B;
+  --color-precision-coral:     #FF7F7F;
+  --color-architectural-gray:  #F4F5F7;
+  --color-steel-gray:          #778DA9;
+  --color-status-gold:         #F59E0B;
+  --color-status-green:        #22C55E;
+
+  /* Radius — sharp, industrial feel */
+  --radius:     2px;
+  --radius-sm:  2px;
+  --radius-md:  3px;
+  --radius-lg:  4px;
+  --radius-xl:  6px;
+  --radius-2xl: 8px;
+  --radius-3xl: 12px;
+  --radius-full: 9999px;
+
+  /* ── Backgrounds (warm dark steel) ── */
+  --color-bg-base:     #111110;
+  --color-bg-surface:  #1A1917;
+  --color-bg-elevated: #222120;
+  --color-bg-overlay:  #2C2B29;
+
+  /* ── Steel / Metallic (warm-toned) ── */
+  --color-steel-dim:    #38352F;
+  --color-steel-mid:    #5A5650;
+  --color-steel-bright: #8C8880;
+  --color-steel-shine:  #C4BFB8;
+
+  /* ── Navy Blue accent ── */
+  --color-navy:        #1B2A4A;
+  --color-navy-mid:    #243660;
+  --color-navy-bright: #2E4A8A;
+  --color-navy-glow:   rgba(30, 58, 138, 0.35);
+
+  /* ── Safety Orange accent ── */
+  --color-accent-orange:       #FF6B00;
+  --color-accent-orange-hover: #FF8533;
+  --color-accent-orange-glow:  rgba(255, 107, 0, 0.22);
+  --color-accent-yellow:       #FFD600;
+  --color-accent-yellow-dim:   #B39700;
+
+  /* ── Text ── */
+  --color-text-primary:   #F2EDE8;
+  --color-text-secondary: #C4BFB8;
+  --color-text-muted:     #6B6560;
+  --color-text-inverse:   #111110;
+  --color-text-on-navy:   #D4DCEE;
+
+  /* ── Status ── */
+  --color-success: #22C55E;
+  --color-warning: #FFD600;
+  --color-error:   #EF4444;
+  --color-info:    #60A5FA;
+
+  /* ── Semantic aliases ── */
+  --color-background: var(--color-bg-base);
+  --color-foreground: var(--color-text-primary);
+  --color-border:     var(--color-steel-dim);
+  --color-input:      var(--color-bg-elevated);
+  --color-ring:       var(--color-accent-orange);
+  --color-primary:    var(--color-accent-orange);
+  --color-primary-foreground: var(--color-text-inverse);
+  --color-secondary:  var(--color-navy);
+  --color-secondary-foreground: var(--color-text-on-navy);
+  --color-muted:      var(--color-bg-overlay);
+  --color-muted-foreground: var(--color-text-muted);
+  --color-card:       var(--color-bg-surface);
+  --color-card-foreground: var(--color-text-primary);
+  --color-destructive: var(--color-error);
 }
 
-.dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
+  font-family: var(--font-body), "Inter", system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@keyframes gradientShift {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* ── Headings ── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading), "Montserrat", "Barlow Condensed", "Impact", sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+  line-height: 1.15;
 }
 
-.animated-gradient {
-  background: linear-gradient(135deg, #dbeafe, #eff6ff, #e0f2fe, #f0fdf4, #fef9c3);
-  background-size: 300% 300%;
-  animation: gradientShift 10s ease infinite;
+h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
+h2 { font-size: clamp(1.5rem, 3.5vw, 2.5rem); }
+h3 { font-size: clamp(1.25rem, 2.5vw, 1.875rem); }
+h4 { font-size: 1.25rem; }
+h5 { font-size: 1.125rem; }
+h6 { font-size: 1rem; }
+
+/* ── Links ── */
+a {
+  color: var(--color-accent-orange);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+a:hover { color: var(--color-accent-orange-hover); }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--color-bg-base); }
+::-webkit-scrollbar-thumb {
+  background: var(--color-steel-mid);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--color-steel-bright); }
+
+/* ── Selection ── */
+::selection {
+  background: var(--color-accent-orange-glow);
+  color: var(--color-text-primary);
 }
 
-.dark .animated-gradient {
-  background: linear-gradient(135deg, #1e3a5f, #0f172a, #1e293b, #0c2340, #162032);
-  background-size: 300% 300%;
-  animation: gradientShift 10s ease infinite;
+/* ── Focus ring ── */
+:focus-visible {
+  outline: 2px solid var(--color-accent-orange);
+  outline-offset: 2px;
 }
 
+/* ============================================================
+   COMPONENT CLASSES
+   ============================================================ */
+
+/* ── PRIMARY BUTTON ──
+   Safety orange, tactile, solid. Uppercase label for that
+   construction-site punch. Subtle inner shadow for depth.      */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.5rem;
+  background-color: var(--color-accent-orange);
+  color: var(--color-text-inverse);
+  font-family: var(--font-heading), sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.12) inset,
+    0 4px 12px var(--color-accent-orange-glow);
+  user-select: none;
+}
+.btn-primary:hover {
+  background-color: var(--color-accent-orange-hover);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.15) inset,
+    0 6px 20px var(--color-accent-orange-glow);
+  transform: translateY(-1px);
+}
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.2) inset;
+}
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── SECONDARY BUTTON ── */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.5rem;
+  background-color: transparent;
+  color: var(--color-text-primary);
+  font-family: var(--font-heading), sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid var(--color-steel-mid);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+}
+.btn-secondary:hover {
+  border-color: var(--color-steel-shine);
+  background-color: var(--color-bg-overlay);
+  color: var(--color-text-primary);
+}
+.btn-secondary:active {
+  background-color: var(--color-bg-elevated);
+}
+
+/* ── GHOST / ICON BUTTON ── */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+.btn-ghost:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-overlay);
+}
+
+/* ── DASHBOARD CARD ──
+   Dark surface, metallic top-border accent, subtle shadow.     */
+.card {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-steel-dim);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.card:hover {
+  border-color: var(--color-steel-mid);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* Card with orange accent top-bar (for stat/KPI cards) */
+.card-accent {
+  border-top: 2px solid var(--color-accent-orange);
+}
+
+/* Card with steel/chrome top-bar */
+.card-steel {
+  border-top: 2px solid var(--color-steel-bright);
+}
+
+.card-header {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--color-steel-dim);
+  background: linear-gradient(
+    180deg,
+    var(--color-navy) 0%,
+    var(--color-bg-surface) 100%
+  );
+}
+
+/* Navy card header variant — used on side panels and key sections */
+.card-header-navy {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--color-navy-bright);
+  background: var(--color-navy-mid);
+}
+
+.card-header-title {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-steel-shine);
+}
+
+.card-body {
+  padding: 1.25rem;
+}
+
+.card-footer {
+  padding: 0.875rem 1.25rem;
+  border-top: 1px solid var(--color-steel-dim);
+  background-color: var(--color-bg-elevated);
+}
+
+/* ── INPUT FIELDS ── */
+.input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  background-color: var(--color-bg-elevated);
+  color: var(--color-text-primary);
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.9rem;
+  border: 1px solid var(--color-steel-dim);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  caret-color: var(--color-accent-orange);
+}
+.input::placeholder { color: var(--color-text-muted); }
+.input:hover { border-color: var(--color-steel-mid); }
+.input:focus {
+  border-color: var(--color-accent-orange);
+  box-shadow: 0 0 0 3px var(--color-accent-orange-glow);
+}
+
+/* ── SELECT ── */
+.select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A7A96' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.875rem center;
+  padding-right: 2.5rem;
+}
+
+/* ── LABEL ── */
+.label {
+  display: block;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-steel-shine);
+  margin-bottom: 0.375rem;
+}
+
+/* ── BADGE ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+}
+.badge-orange {
+  background-color: var(--color-accent-orange-glow);
+  color: var(--color-accent-orange-hover);
+  border: 1px solid var(--color-accent-orange);
+}
+.badge-yellow {
+  background-color: rgba(255, 214, 0, 0.15);
+  color: var(--color-accent-yellow);
+  border: 1px solid var(--color-accent-yellow-dim);
+}
+.badge-success {
+  background-color: rgba(34, 197, 94, 0.12);
+  color: var(--color-success);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+.badge-error {
+  background-color: rgba(239, 68, 68, 0.12);
+  color: var(--color-error);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+.badge-steel {
+  background-color: var(--color-bg-overlay);
+  color: var(--color-steel-shine);
+  border: 1px solid var(--color-steel-mid);
+}
+
+/* ── DIVIDER ── */
+.divider {
+  border: none;
+  border-top: 1px solid var(--color-steel-dim);
+  margin: 1.5rem 0;
+}
+
+/* Metallic shimmer divider */
+.divider-chrome {
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-steel-mid) 30%,
+    var(--color-steel-shine) 50%,
+    var(--color-steel-mid) 70%,
+    transparent 100%
+  );
+  margin: 1.5rem 0;
+}
+
+/* ── TABLE ── */
+.table-industrial {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.table-industrial thead tr {
+  background-color: var(--color-bg-elevated);
+  border-bottom: 1px solid var(--color-steel-mid);
+}
+.table-industrial thead th {
+  padding: 0.75rem 1rem;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-steel-shine);
+  text-align: left;
+}
+.table-industrial tbody tr {
+  border-bottom: 1px solid var(--color-steel-dim);
+  transition: background-color 0.1s ease;
+}
+.table-industrial tbody tr:hover {
+  background-color: var(--color-bg-overlay);
+}
+.table-industrial tbody td {
+  padding: 0.875rem 1rem;
+  color: var(--color-text-secondary);
+}
+
+/* ── SIDEBAR NAV ── */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 1rem;
+  color: var(--color-text-on-navy);
+  font-family: var(--font-heading), sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  border-left: 3px solid transparent;
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+  cursor: pointer;
+}
+.nav-item:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-navy-mid);
+}
+.nav-item.active {
+  color: var(--color-accent-orange);
+  background-color: rgba(255, 107, 0, 0.12);
+  border-left-color: var(--color-accent-orange);
+}
+
+/* ── STAT / KPI CARD ── */
+.stat-value {
+  font-family: var(--font-heading), sans-serif;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+.stat-label {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-top: 0.25rem;
+}
+.stat-delta-positive {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-success);
+}
+.stat-delta-negative {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-error);
+}
+
+/* ── ALERT / TOAST ── */
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border-radius: var(--radius-sm);
+  border-left: 3px solid;
+  font-size: 0.875rem;
+}
+.alert-error {
+  background-color: rgba(239, 68, 68, 0.08);
+  border-color: var(--color-error);
+  color: #FCA5A5;
+}
+.alert-success {
+  background-color: rgba(34, 197, 94, 0.08);
+  border-color: var(--color-success);
+  color: #86EFAC;
+}
+.alert-warning {
+  background-color: rgba(255, 214, 0, 0.08);
+  border-color: var(--color-accent-yellow);
+  color: var(--color-accent-yellow);
+}
+.alert-info {
+  background-color: rgba(56, 189, 248, 0.08);
+  border-color: var(--color-info);
+  color: var(--color-info);
+}
+
+/* ============================================================
+   UTILITY CLASSES
+   ============================================================ */
+
+/* Metallic text gradient — warm steel tones */
+.text-chrome {
+  background: linear-gradient(135deg, #C4BFB8 0%, #E8E4DF 50%, #8C8880 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Orange glow text */
+.text-glow-orange {
+  color: var(--color-accent-orange);
+  text-shadow: 0 0 20px var(--color-accent-orange-glow);
+}
+
+/* Brushed steel surface */
+.surface-steel {
+  background: linear-gradient(
+    135deg,
+    var(--color-bg-elevated) 0%,
+    var(--color-bg-overlay) 50%,
+    var(--color-bg-elevated) 100%
+  );
+  border: 1px solid var(--color-steel-dim);
+}
+
+/* Navy surface — sidebar, panel headers, key UI chrome */
+.surface-navy {
+  background: var(--color-navy);
+  border: 1px solid var(--color-navy-bright);
+  color: var(--color-text-on-navy);
+}
+
+/* Navy mid surface — active states, selected rows */
+.surface-navy-mid {
+  background: var(--color-navy-mid);
+  border: 1px solid var(--color-navy-bright);
+  color: var(--color-text-on-navy);
+}
+
+/* ============================================================
+   PRINT
+   ============================================================ */
 @media print {
-  body > * {
-    display: none !important;
-  }
-  .print-section {
-    display: block !important;
-  }
-  .no-print {
-    display: none !important;
-  }
+  body > * { display: none !important; }
+  .print-section { display: block !important; }
+  .no-print { display: none !important; }
+}
+
+/* ============================================================
+   PORTAL THEME (Light Mode)
+   ============================================================
+   Applied to authenticated portal routes via .portal-theme class.
+   Overrides dark Industrial Noir theme with light backgrounds.
+   ============================================================ */
+
+.portal-theme {
+  --color-portal-bg: #F4F5F7;
+  --color-background: var(--color-portal-bg);
+  background-color: var(--color-portal-bg);
+  color: #1A1917;
+}
+
+.portal-theme .btn-primary {
+  background-color: var(--color-accent-orange);
+  color: #FFFFFF;
+}
+
+.portal-theme .btn-secondary {
+  background-color: transparent;
+  border-color: var(--color-navy);
+  color: var(--color-navy);
+}
+
+.portal-theme .btn-secondary:hover {
+  background-color: rgba(27, 42, 74, 0.05);
 }

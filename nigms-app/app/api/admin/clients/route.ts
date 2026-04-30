@@ -31,7 +31,7 @@ async function verifyAdmin(): Promise<boolean> {
     .eq('id', session.user.id)
     .single();
 
-  return profile?.role === 'admin';
+  return (profile as { role: string } | null)?.role === 'admin';
 }
 
 // GET /api/admin/clients — return all clients
@@ -45,6 +45,7 @@ export async function GET() {
   const { data, error } = await serviceClient
     .from('users')
     .select('*')
+    .eq('role', 'client')
     .order('created_at', { ascending: false });
 
   if (error) {

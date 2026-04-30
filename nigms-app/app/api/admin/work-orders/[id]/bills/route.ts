@@ -20,9 +20,18 @@ async function verifyAdmin(): Promise<boolean> {
     .select('role')
     .eq('id', session.user.id)
     .single();
-  return profile?.role === 'admin';
+  return (profile as { role: string } | null)?.role === 'admin';
 }
 
+/**
+ * POST /api/admin/work-orders/[id]/bills
+ *
+ * Creates an invoice record with materials and labor costs.
+ * Inserts into the `invoices` table (not the legacy `bills` table).
+ *
+ * Body: { materials_cost, materials_paid_by, client_materials_cost, labor_cost, total_billed }
+ * Returns: created invoice record
+ */
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -50,6 +59,23 @@ export async function POST(
     total_billed: number;
   };
 
+  // Validate required fields
+  if (typeof materials_cost !== 'number') {
+    return NextResponse.json({ error: 'materials_cost is required' }, { status: 400 });
+  }
+  if (!['company', 'client', 'both'].includes(materials_paid_by)) {
+    return NextResponse.json(
+      { error: 'materials_paid_by must be company, client, or both' },
+      { status: 400 }
+    );
+  }
+  if (typeof labor_cost !== 'number') {
+    return NextResponse.json({ error: 'labor_cost is required' }, { status: 400 });
+  }
+  if (typeof total_billed !== 'number') {
+    return NextResponse.json({ error: 'total_billed is required' }, { status: 400 });
+  }
+
   // Get the work order to find client_id
   const { data: workOrder, error: woError } = await db
     .from('work_orders')
@@ -63,26 +89,31 @@ export async function POST(
 
   const clientId: string = workOrder.client_id;
 
-  // Generate receipt number: RCT-{YYYY}-{NNNN}
+  // Generate receipt number via RPC to prevent race conditions
   const year = new Date().getFullYear();
-  const prefix = `RCT-${year}-`;
+  const { data: receiptNumberData, error: rctNumError } = await db.rpc('generate_receipt_number', {
+    year_param: year,
+  });
 
-  const { count } = await db
-    .from('bills')
-    .select('*', { count: 'exact', head: true });
+  if (rctNumError || !receiptNumberData) {
+    return NextResponse.json(
+      { error: rctNumError?.message ?? 'Failed to generate receipt number' },
+      { status: 500 }
+    );
+  }
 
-  const seq = (count ?? 0) + 1;
-  const receiptNumber = `${prefix}${String(seq).padStart(4, '0')}`;
+  const receiptNumber = receiptNumberData as string;
 
-  const { data: bill, error } = await db
-    .from('bills')
+  // Insert into invoices table (not legacy bills table)
+  const { data: invoice, error } = await db
+    .from('invoices')
     .insert({
       work_order_id: workOrderId,
       client_id: clientId,
       receipt_number: receiptNumber,
       materials_cost,
       materials_paid_by,
-      client_materials_cost,
+      client_materials_cost: client_materials_cost ?? 0,
       labor_cost,
       total_billed,
       amount_paid: 0,
@@ -90,12 +121,12 @@ export async function POST(
     .select()
     .single();
 
-  if (error || !bill) {
+  if (error || !invoice) {
     return NextResponse.json(
-      { error: error?.message ?? 'Failed to create bill' },
+      { error: error?.message ?? 'Failed to create invoice' },
       { status: 500 }
     );
   }
 
-  return NextResponse.json(bill);
+  return NextResponse.json(invoice, { status: 201 });
 }

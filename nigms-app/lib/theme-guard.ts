@@ -21,7 +21,7 @@ export async function validateThemeGuard(): Promise<ThemeGuardResult> {
       return { ok: false, reason: 'db_error' };
     }
 
-    if (data?.theme_id === expectedId) {
+    if ((data as { theme_id?: string } | null)?.theme_id === expectedId) {
       return { ok: true };
     }
 

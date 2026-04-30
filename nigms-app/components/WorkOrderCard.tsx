@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { WorkOrder } from "@/lib/types";
 import StatusBadge from "./StatusBadge";
 
@@ -14,9 +15,12 @@ export default function WorkOrderCard({ workOrder, onPayBalance }: WorkOrderCard
     <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
-          <h3 className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+          <Link
+            href={`/work-orders/${workOrder.id}`}
+            className="text-sm font-semibold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 truncate block transition-colors"
+          >
             {workOrder.title}
-          </h3>
+          </Link>
           {workOrder.description && (
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
               {workOrder.description}

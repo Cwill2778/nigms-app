@@ -28,7 +28,7 @@ export default function StatusUpdateForm({ workOrderId, currentStatus }: StatusU
 
     try {
       const res = await fetch(`/api/admin/work-orders/${workOrderId}/status`, {
-        method: 'POST',
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status }),
       });

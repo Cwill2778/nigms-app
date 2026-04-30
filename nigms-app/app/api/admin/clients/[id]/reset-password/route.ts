@@ -29,7 +29,7 @@ async function verifyAdmin(): Promise<boolean> {
     .select('role')
     .eq('id', session.user.id)
     .single();
-  return profile?.role === 'admin';
+  return (profile as { role: string } | null)?.role === 'admin';
 }
 
 export async function POST(

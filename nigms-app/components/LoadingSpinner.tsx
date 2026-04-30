@@ -13,7 +13,11 @@ export default function LoadingSpinner({ size = "md" }: LoadingSpinnerProps) {
     <div
       role="status"
       aria-label="Loading"
-      className={`animate-spin rounded-full border-gray-300 border-t-blue-600 dark:border-gray-600 dark:border-t-blue-400 ${sizeMap[size]}`}
+      className={`animate-spin rounded-full ${sizeMap[size]}`}
+      style={{
+        borderColor: "var(--color-steel-mid)",
+        borderTopColor: "var(--color-accent-orange)",
+      }}
     />
   );
 }

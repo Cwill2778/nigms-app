@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import PaymentRow from '@/components/PaymentRow';
-import type { Payment, PaymentStatus } from '@/lib/types';
+import { useState } from "react";
+import PaymentRow from "@/components/PaymentRow";
+import type { Payment, PaymentStatus } from "@/lib/types";
 
-const ALL_STATUSES: PaymentStatus[] = ['pending', 'paid', 'failed'];
+const ALL_STATUSES: PaymentStatus[] = ["pending", "paid", "failed"];
 
 interface PaymentTableProps {
   payments: Payment[];
 }
 
 export default function PaymentTable({ payments }: PaymentTableProps) {
-  const [statusFilter, setStatusFilter] = useState<PaymentStatus | 'all'>('all');
-  const [clientFilter, setClientFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState<PaymentStatus | "all">("all");
+  const [clientFilter, setClientFilter] = useState("");
 
   const filtered = payments.filter((p) => {
-    const matchesStatus = statusFilter === 'all' || p.status === statusFilter;
-    const matchesClient = clientFilter === '' || p.client_id.includes(clientFilter);
+    const matchesStatus = statusFilter === "all" || p.status === statusFilter;
+    const matchesClient = clientFilter === "" || p.client_id.includes(clientFilter);
     return matchesStatus && matchesClient;
   });
 
@@ -25,14 +25,13 @@ export default function PaymentTable({ payments }: PaymentTableProps) {
       <div className="flex flex-wrap gap-3">
         <select
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value as PaymentStatus | 'all')}
-          className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          onChange={(e) => setStatusFilter(e.target.value as PaymentStatus | "all")}
+          className="input select"
+          style={{ width: "auto" }}
         >
           <option value="all">All Statuses</option>
           {ALL_STATUSES.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
+            <option key={s} value={s}>{s}</option>
           ))}
         </select>
 
@@ -41,28 +40,24 @@ export default function PaymentTable({ payments }: PaymentTableProps) {
           placeholder="Filter by client ID…"
           value={clientFilter}
           onChange={(e) => setClientFilter(e.target.value)}
-          className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="input"
+          style={{ width: "auto", minWidth: 200 }}
         />
       </div>
 
-      <div className="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-50 dark:bg-gray-800">
+      <div className="card overflow-hidden">
+        <table className="table-industrial">
+          <thead>
             <tr>
-              {['Amount', 'Date', 'Status', 'Method'].map((h) => (
-                <th
-                  key={h}
-                  className="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
-                >
-                  {h}
-                </th>
+              {["Amount", "Date", "Status", "Method"].map((h) => (
+                <th key={h}>{h}</th>
               ))}
             </tr>
           </thead>
-          <tbody className="bg-white dark:bg-gray-900">
+          <tbody>
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={4} className="py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                <td colSpan={4} className="py-8 text-center text-sm" style={{ color: "var(--color-text-muted)" }}>
                   No payments found.
                 </td>
               </tr>

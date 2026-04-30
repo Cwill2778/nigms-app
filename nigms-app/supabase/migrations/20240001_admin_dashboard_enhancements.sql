@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS bills (
   labor_cost            numeric(10,2) NOT NULL DEFAULT 0,
   total_billed          numeric(10,2) NOT NULL DEFAULT 0,
   amount_paid           numeric(10,2) NOT NULL DEFAULT 0,
+  balance_remaining     numeric(10,2) GENERATED ALWAYS AS (total_billed - amount_paid) STORED,
   created_at            timestamptz NOT NULL DEFAULT now()
 );
 
@@ -59,6 +60,7 @@ CREATE TABLE IF NOT EXISTS time_entries (
   work_order_id uuid NOT NULL REFERENCES work_orders(id),
   started_at    timestamptz NOT NULL,
   stopped_at    timestamptz,
+  duration_minutes integer GENERATED ALWAYS AS (CASE WHEN stopped_at IS NOT NULL THEN EXTRACT(EPOCH FROM (stopped_at - started_at))::integer / 60 ELSE NULL END) STORED,
   created_at    timestamptz NOT NULL DEFAULT now()
 );
 
@@ -94,6 +96,11 @@ ALTER TABLE work_orders ADD COLUMN IF NOT EXISTS inspection_notes text;
 ALTER TABLE work_orders ADD COLUMN IF NOT EXISTS accepted_at timestamptz;
 ALTER TABLE work_orders ADD COLUMN IF NOT EXISTS completed_at timestamptz;
 ALTER TABLE work_orders ADD COLUMN IF NOT EXISTS total_billable_minutes integer NOT NULL DEFAULT 0;
+
+-- Update work_orders status constraint to include 'accepted'
+ALTER TABLE work_orders DROP CONSTRAINT IF EXISTS work_orders_status_check;
+ALTER TABLE work_orders ADD CONSTRAINT work_orders_status_check 
+  CHECK (status IN ('pending', 'in_progress', 'accepted', 'completed', 'cancelled'));
 
 -- users new columns
 ALTER TABLE users ADD COLUMN IF NOT EXISTS first_name text;

@@ -41,28 +41,28 @@ export default function DashboardSummaryCards({
       label: "Total Clients",
       value: totalClients.toString(),
       panel: "clients" as const,
-      icon: <Users size={24} className="text-orange-500" />,
+      icon: <Users size={22} style={{ color: "var(--color-accent-orange)" }} />,
       subLabel: null,
     },
     {
       label: "Open Work Orders",
       value: openWorkOrders.toString(),
       panel: "workOrders" as const,
-      icon: <ClipboardList size={24} className="text-orange-500" />,
+      icon: <ClipboardList size={22} style={{ color: "var(--color-accent-orange)" }} />,
       subLabel: null,
     },
     {
       label: "Total Revenue",
       value: formattedRevenue,
       panel: "revenue" as const,
-      icon: <DollarSign size={24} className="text-orange-500" />,
+      icon: <DollarSign size={22} style={{ color: "var(--color-accent-orange)" }} />,
       subLabel: null,
     },
     {
       label: "Messages",
       value: unreadMessages.toString(),
       panel: "messages" as const,
-      icon: <MessageSquare size={24} className="text-orange-500" />,
+      icon: <MessageSquare size={22} style={{ color: "var(--color-accent-orange)" }} />,
       subLabel: unreadMessages > 0 ? "unread" : null,
     },
   ];
@@ -76,21 +76,33 @@ export default function DashboardSummaryCards({
             <div
               key={card.panel}
               onClick={() => setActivePanel(card.panel)}
-              className={`rounded-lg border p-6 cursor-pointer transition-colors
-                ${
-                  isActive
-                    ? "border-orange-500 bg-[#162d5e]"
-                    : "border-[#4A4A4A] bg-[#0d2347] hover:border-orange-500 hover:bg-[#162d5e]"
-                }`}
+              className="card card-accent cursor-pointer transition-all duration-150"
+              style={
+                isActive
+                  ? {
+                      borderColor: "var(--color-accent-orange)",
+                      borderTopColor: "var(--color-accent-orange)",
+                      background: "var(--color-navy)",
+                      boxShadow: "0 0 0 1px var(--color-accent-orange), 0 4px 16px var(--color-accent-orange-glow)",
+                    }
+                  : undefined
+              }
             >
-              <div className="flex items-center justify-between mb-3">
-                {card.icon}
+              <div className="card-body">
+                <div className="flex items-center justify-between mb-3">
+                  {card.icon}
+                </div>
+                <div className="stat-label">{card.label}</div>
+                <div className="stat-value mt-1">{card.value}</div>
+                {card.subLabel && (
+                  <div
+                    className="text-xs mt-1"
+                    style={{ color: "var(--color-accent-orange)" }}
+                  >
+                    {card.subLabel}
+                  </div>
+                )}
               </div>
-              <p className="text-sm text-gray-400">{card.label}</p>
-              <p className="mt-1 text-2xl font-semibold text-white">{card.value}</p>
-              {card.subLabel && (
-                <p className="text-xs text-orange-400 mt-1">{card.subLabel}</p>
-              )}
             </div>
           );
         })}
@@ -105,7 +117,7 @@ export default function DashboardSummaryCards({
         {activePanel === "messages" ? (
           <MessagingPanel adminUserId={adminUserId} />
         ) : (
-          <div className="p-6 text-gray-300">
+          <div className="p-6" style={{ color: "var(--color-text-secondary)" }}>
             Loading {activePanel ? panelTitles[activePanel] : ""}...
           </div>
         )}

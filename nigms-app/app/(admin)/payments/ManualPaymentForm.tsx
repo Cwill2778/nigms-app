@@ -1,219 +1,128 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import FormError from '@/components/FormError';
-import LoadingSpinner from '@/components/LoadingSpinner';
-import ConfirmDialog from '@/components/ConfirmDialog';
-import ClientSearchInput, { type ClientSearchResult } from '@/components/ClientSearchInput';
-import PrintButton from '@/components/PrintButton';
-import type { WorkOrder, Payment } from '@/lib/types';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import FormError from "@/components/FormError";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import ConfirmDialog from "@/components/ConfirmDialog";
+import ClientSearchInput, { type ClientSearchResult } from "@/components/ClientSearchInput";
+import PrintButton from "@/components/PrintButton";
+import type { WorkOrder, Payment } from "@/lib/types";
 
-interface WorkOrderOption {
-  id: string;
-  title: string;
-  client_id: string;
-}
-
-interface BillInfo {
-  balance_remaining: number;
-}
+interface WorkOrderOption { id: string; title: string; client_id: string; }
+interface BillInfo { balance_remaining: number; }
 
 export default function ManualPaymentForm() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-
-  // Selected client
   const [selectedClient, setSelectedClient] = useState<ClientSearchResult | null>(null);
-
-  // Work orders for selected client
   const [workOrders, setWorkOrders] = useState<WorkOrderOption[]>([]);
-  const [workOrderId, setWorkOrderId] = useState('');
+  const [workOrderId, setWorkOrderId] = useState("");
   const [loadingWorkOrders, setLoadingWorkOrders] = useState(false);
-
-  // Bill info for outstanding balance
   const [billInfo, setBillInfo] = useState<BillInfo | null>(null);
-
-  // Form fields
-  const [amount, setAmount] = useState('');
-  const [paymentDate, setPaymentDate] = useState(() => new Date().toISOString().split('T')[0]);
-  const [notes, setNotes] = useState('');
-
-  // UI state
+  const [amount, setAmount] = useState("");
+  const [paymentDate, setPaymentDate] = useState(() => new Date().toISOString().split("T")[0]);
+  const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
-
-  // Receipt state (task 15.5)
   const [receipt, setReceipt] = useState<Payment | null>(null);
   const [receiptWorkOrder, setReceiptWorkOrder] = useState<WorkOrderOption | null>(null);
   const [receiptBillInfo, setReceiptBillInfo] = useState<BillInfo | null>(null);
   const [receiptClient, setReceiptClient] = useState<ClientSearchResult | null>(null);
 
-  // Fetch work orders when client is selected
   useEffect(() => {
-    if (!selectedClient) {
-      setWorkOrders([]);
-      setWorkOrderId('');
-      setBillInfo(null);
-      return;
-    }
+    if (!selectedClient) { setWorkOrders([]); setWorkOrderId(""); setBillInfo(null); return; }
     setLoadingWorkOrders(true);
     fetch(`/api/admin/work-orders?client_id=${selectedClient.id}`)
       .then((r) => r.json())
-      .then((data: WorkOrder[]) => {
-        const opts = (Array.isArray(data) ? data : []).map((wo) => ({
-          id: wo.id,
-          title: wo.title,
-          client_id: wo.client_id,
-        }));
-        setWorkOrders(opts);
-      })
+      .then((data: WorkOrder[]) => setWorkOrders((Array.isArray(data) ? data : []).map((wo) => ({ id: wo.id, title: wo.title, client_id: wo.client_id }))))
       .catch(() => setWorkOrders([]))
       .finally(() => setLoadingWorkOrders(false));
   }, [selectedClient]);
 
-  // Fetch bill info when work order changes
   useEffect(() => {
-    if (!workOrderId) {
-      setBillInfo(null);
-      return;
-    }
+    if (!workOrderId) { setBillInfo(null); return; }
     fetch(`/api/admin/work-orders/${workOrderId}/bills`)
       .then((r) => r.json())
       .then((data) => {
-        // bills endpoint may return array or single object
         const bill = Array.isArray(data) ? data[0] : data;
-        if (bill && typeof bill.balance_remaining === 'number') {
-          setBillInfo({ balance_remaining: bill.balance_remaining });
-        } else {
-          setBillInfo(null);
-        }
+        setBillInfo(bill && typeof bill.balance_remaining === "number" ? { balance_remaining: bill.balance_remaining } : null);
       })
       .catch(() => setBillInfo(null));
   }, [workOrderId]);
 
   function handleClientSelect(client: ClientSearchResult) {
-    setSelectedClient(client);
-    setWorkOrderId('');
-    setBillInfo(null);
-    setError(null);
+    setSelectedClient(client); setWorkOrderId(""); setBillInfo(null); setError(null);
   }
 
   function validateAndSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-
+    e.preventDefault(); setError(null);
     const parsedAmount = parseFloat(amount);
-    if (isNaN(parsedAmount) || parsedAmount <= 0) {
-      setError('Amount must be greater than zero');
-      return;
-    }
-
-    // If we know the outstanding balance and amount exceeds it, confirm first
-    if (billInfo !== null && parsedAmount > billInfo.balance_remaining) {
-      setShowConfirm(true);
-      return;
-    }
-
+    if (isNaN(parsedAmount) || parsedAmount <= 0) { setError("Amount must be greater than zero"); return; }
+    if (billInfo !== null && parsedAmount > billInfo.balance_remaining) { setShowConfirm(true); return; }
     submitPayment();
   }
 
   async function submitPayment() {
-    setShowConfirm(false);
-    setLoading(true);
-    setError(null);
-
+    setShowConfirm(false); setLoading(true); setError(null);
     try {
-      const res = await fetch('/api/admin/payments/manual', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          clientId: selectedClient?.id,
-          workOrderId,
-          amount: parseFloat(amount),
-          payment_date: paymentDate || undefined,
-          notes: notes || undefined,
-        }),
+      const res = await fetch("/api/admin/payments/manual", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clientId: selectedClient?.id, workOrderId, amount: parseFloat(amount), payment_date: paymentDate || undefined, notes: notes || undefined }),
       });
-
       const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error ?? 'Failed to record payment');
-      } else {
-        const wo = workOrders.find((w) => w.id === workOrderId) ?? null;
-        setReceipt(data as Payment);
-        setReceiptWorkOrder(wo);
-        setReceiptBillInfo(billInfo);
-        setReceiptClient(selectedClient);
-        // Reset form
-        setSelectedClient(null);
-        setWorkOrderId('');
-        setWorkOrders([]);
-        setAmount('');
-        setPaymentDate(new Date().toISOString().split('T')[0]);
-        setNotes('');
-        setBillInfo(null);
-        router.refresh();
-      }
-    } catch {
-      setError('Unexpected error.');
-    } finally {
-      setLoading(false);
-    }
+      if (!res.ok) { setError(data.error ?? "Failed to record payment"); return; }
+      const wo = workOrders.find((w) => w.id === workOrderId) ?? null;
+      setReceipt(data as Payment); setReceiptWorkOrder(wo); setReceiptBillInfo(billInfo); setReceiptClient(selectedClient);
+      setSelectedClient(null); setWorkOrderId(""); setWorkOrders([]); setAmount("");
+      setPaymentDate(new Date().toISOString().split("T")[0]); setNotes(""); setBillInfo(null);
+      router.refresh();
+    } catch { setError("Unexpected error."); } finally { setLoading(false); }
   }
 
   function getClientDisplayName(client: ClientSearchResult) {
-    const full = [client.first_name, client.last_name].filter(Boolean).join(' ');
-    return full || client.username;
+    return [client.first_name, client.last_name].filter(Boolean).join(" ") || client.username;
   }
 
   return (
     <div>
-      {/* Receipt section (task 15.5) */}
+      {/* Receipt */}
       {receipt && (
-        <div className="print-section bg-white text-black p-6 max-w-lg rounded-lg border border-gray-200 mb-6">
+        <div
+          className="print-section p-6 max-w-lg mb-6"
+          style={{
+            background: "#fff",
+            color: "#000",
+            borderRadius: "var(--radius-md)",
+            border: "1px solid #e5e7eb",
+          }}
+        >
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold">Payment Receipt</h2>
+            <h2 className="text-lg font-bold" style={{ color: "#000" }}>Payment Receipt</h2>
             <PrintButton />
           </div>
           <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="font-medium">Receipt #</span>
-              <span>{receipt.receipt_number ?? '—'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-medium">Amount</span>
-              <span>${Number(receipt.amount).toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-medium">Payment Date</span>
-              <span>{receipt.payment_date ?? receipt.created_at?.split('T')[0] ?? '—'}</span>
-            </div>
-            {receiptClient && (
-              <div className="flex justify-between">
-                <span className="font-medium">Client</span>
-                <span>{getClientDisplayName(receiptClient)}</span>
+            {[
+              ["Receipt #", receipt.receipt_number ?? "—"],
+              ["Amount", `$${Number(receipt.amount).toFixed(2)}`],
+              ["Payment Date", receipt.payment_date ?? receipt.created_at?.split("T")[0] ?? "—"],
+              receiptClient ? ["Client", getClientDisplayName(receiptClient)] : null,
+              receiptWorkOrder ? ["Work Order", receiptWorkOrder.title] : null,
+            ].filter((item): item is [string, string] => item !== null).map(([label, value]) => (
+              <div key={label} className="flex justify-between">
+                <span className="font-medium">{label}</span>
+                <span>{value}</span>
               </div>
-            )}
-            {receiptWorkOrder && (
-              <div className="flex justify-between">
-                <span className="font-medium">Work Order</span>
-                <span>{receiptWorkOrder.title}</span>
-              </div>
-            )}
-            <div className="border-t border-gray-200 pt-2 mt-2">
+            ))}
+            <div className="border-t border-gray-200 pt-2 mt-2 text-center">
               {receiptBillInfo !== null ? (
-                receiptBillInfo.balance_remaining <= 0 ? (
-                  <p className="text-center font-bold text-green-700 text-base">PAID IN FULL</p>
-                ) : (
-                  <p className="text-center text-gray-700">
-                    Remaining balance: <strong>${receiptBillInfo.balance_remaining.toFixed(2)}</strong>
-                  </p>
-                )
+                receiptBillInfo.balance_remaining <= 0
+                  ? <p className="font-bold text-green-700">PAID IN FULL</p>
+                  : <p>Remaining balance: <strong>${receiptBillInfo.balance_remaining.toFixed(2)}</strong></p>
               ) : (
-                <p className="text-center text-gray-500 italic">Receipt</p>
+                <p className="text-gray-500 italic">Receipt</p>
               )}
             </div>
           </div>
@@ -221,7 +130,8 @@ export default function ManualPaymentForm() {
             <button
               type="button"
               onClick={() => setReceipt(null)}
-              className="text-sm text-blue-600 hover:underline"
+              className="btn-ghost text-sm"
+              style={{ color: "var(--color-accent-orange)" }}
             >
               Record another payment
             </button>
@@ -232,31 +142,38 @@ export default function ManualPaymentForm() {
       {!receipt && (
         <>
           {!open ? (
-            <button
-              onClick={() => setOpen(true)}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 rounded-md transition-colors"
-            >
+            <button onClick={() => setOpen(true)} className="btn-primary">
               + Record Manual Payment
             </button>
           ) : (
             <form
               onSubmit={validateAndSubmit}
-              className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 flex flex-col gap-4 max-w-md"
+              className="card p-6 flex flex-col gap-4"
+              style={{ maxWidth: 440 }}
             >
-              <h2 className="text-base font-semibold text-gray-900 dark:text-white">Record Manual Payment</h2>
+              <div className="card-header" style={{ margin: "-1.5rem -1.5rem 0", padding: "1rem 1.25rem" }}>
+                <span className="card-header-title">Record Manual Payment</span>
+              </div>
 
-              {/* Client search */}
-              <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Client <span className="text-red-500">*</span>
-                </label>
+              {/* Client */}
+              <div className="flex flex-col gap-1 pt-2">
+                <label className="label">Client <span style={{ color: "var(--color-error)" }}>*</span></label>
                 {selectedClient ? (
-                  <div className="flex items-center justify-between rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm">
-                    <span className="text-gray-900 dark:text-white">{getClientDisplayName(selectedClient)}</span>
+                  <div
+                    className="flex items-center justify-between px-3 py-2 text-sm"
+                    style={{
+                      borderRadius: "var(--radius-sm)",
+                      border: "1px solid var(--color-steel-mid)",
+                      background: "var(--color-bg-overlay)",
+                      color: "var(--color-text-primary)",
+                    }}
+                  >
+                    <span>{getClientDisplayName(selectedClient)}</span>
                     <button
                       type="button"
-                      onClick={() => { setSelectedClient(null); setWorkOrderId(''); setWorkOrders([]); }}
-                      className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-xs ml-2"
+                      onClick={() => { setSelectedClient(null); setWorkOrderId(""); setWorkOrders([]); }}
+                      className="btn-ghost text-xs ml-2"
+                      style={{ padding: "0 0.25rem" }}
                     >
                       ✕
                     </button>
@@ -266,89 +183,65 @@ export default function ManualPaymentForm() {
                 )}
               </div>
 
-              {/* Work order dropdown */}
+              {/* Work order */}
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Work Order <span className="text-red-500">*</span>
-                </label>
+                <label className="label">Work Order <span style={{ color: "var(--color-error)" }}>*</span></label>
                 <select
                   required
                   value={workOrderId}
                   onChange={(e) => setWorkOrderId(e.target.value)}
                   disabled={!selectedClient || loadingWorkOrders}
-                  className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                  className="input select"
                 >
-                  <option value="">
-                    {loadingWorkOrders ? 'Loading…' : 'Select a work order…'}
-                  </option>
+                  <option value="">{loadingWorkOrders ? "Loading…" : "Select a work order…"}</option>
                   {workOrders.map((wo) => (
                     <option key={wo.id} value={wo.id}>{wo.title}</option>
                   ))}
                 </select>
                 {billInfo !== null && (
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Outstanding balance: <strong>${billInfo.balance_remaining.toFixed(2)}</strong>
+                  <p className="text-xs mt-1" style={{ color: "var(--color-text-muted)" }}>
+                    Outstanding balance:{" "}
+                    <strong style={{ color: "var(--color-accent-orange)" }}>
+                      ${billInfo.balance_remaining.toFixed(2)}
+                    </strong>
                   </p>
                 )}
               </div>
 
               {/* Amount */}
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Amount (USD) <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="number"
-                  required
-                  min="0.01"
-                  step="0.01"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                <label className="label">Amount (USD) <span style={{ color: "var(--color-error)" }}>*</span></label>
+                <input type="number" required min="0.01" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} className="input" />
               </div>
 
-              {/* Payment date */}
+              {/* Date */}
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Payment Date
-                </label>
-                <input
-                  type="date"
-                  value={paymentDate}
-                  onChange={(e) => setPaymentDate(e.target.value)}
-                  className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                <label className="label">Payment Date</label>
+                <input type="date" value={paymentDate} onChange={(e) => setPaymentDate(e.target.value)} className="input" />
               </div>
 
               {/* Notes */}
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Notes <span className="text-gray-400 font-normal">(optional)</span>
+                <label className="label">
+                  Notes{" "}
+                  <span style={{ color: "var(--color-text-muted)", fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>
+                    (optional)
+                  </span>
                 </label>
-                <textarea
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  rows={3}
-                  className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                />
+                <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} className="input resize-none" />
               </div>
 
               <FormError message={error} />
 
               <div className="flex gap-3">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 rounded-md transition-colors"
-                >
+                <button type="submit" disabled={loading} className="btn-primary flex items-center gap-2">
                   {loading && <LoadingSpinner size="sm" />}
                   Record Payment
                 </button>
                 <button
                   type="button"
                   onClick={() => { setOpen(false); setError(null); }}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md transition-colors"
+                  className="btn-secondary"
                 >
                   Cancel
                 </button>
@@ -361,7 +254,7 @@ export default function ManualPaymentForm() {
       <ConfirmDialog
         isOpen={showConfirm}
         title="Amount exceeds outstanding balance"
-        message={`The entered amount ($${parseFloat(amount || '0').toFixed(2)}) exceeds the outstanding balance${billInfo ? ` ($${billInfo.balance_remaining.toFixed(2)})` : ''}. Do you want to proceed?`}
+        message={`The entered amount ($${parseFloat(amount || "0").toFixed(2)}) exceeds the outstanding balance${billInfo ? ` ($${billInfo.balance_remaining.toFixed(2)})` : ""}. Do you want to proceed?`}
         onConfirm={submitPayment}
         onCancel={() => setShowConfirm(false)}
       />

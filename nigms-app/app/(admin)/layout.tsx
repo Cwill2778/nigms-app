@@ -28,7 +28,7 @@ export default async function AdminLayout({
     .eq('id', session.user.id)
     .single();
 
-  if (profile?.role !== 'admin') {
+  if ((profile as { role: string } | null)?.role !== 'admin') {
     return (
       <div className="flex flex-col min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-950">
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white">403</h1>

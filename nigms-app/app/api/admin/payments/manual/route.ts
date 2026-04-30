@@ -20,7 +20,7 @@ async function verifyAdmin(): Promise<boolean> {
     .select('role')
     .eq('id', session.user.id)
     .single();
-  return profile?.role === 'admin';
+  return (profile as { role: string } | null)?.role === 'admin';
 }
 
 export async function POST(request: NextRequest) {
@@ -54,15 +54,20 @@ export async function POST(request: NextRequest) {
 
   const serviceClient = getServiceRoleClient();
 
-  // Generate receipt number: RCT-{YYYY}-{NNNN}
-  const { count: existingCount } = await serviceClient
-    .from('payments')
-    .select('*', { count: 'exact', head: true })
-    .not('receipt_number', 'is', null);
-
-  const seq = (existingCount ?? 0) + 1;
+  // Generate receipt number via RPC to prevent race conditions
   const year = new Date().getFullYear();
-  const receipt_number = `RCT-${year}-${String(seq).padStart(4, '0')}`;
+  const { data: receiptNumberData, error: rctNumError } = await serviceClient.rpc('generate_receipt_number', {
+    year_param: year,
+  });
+
+  if (rctNumError || !receiptNumberData) {
+    return NextResponse.json(
+      { error: rctNumError?.message ?? 'Failed to generate receipt number' },
+      { status: 500 }
+    );
+  }
+
+  const receipt_number = receiptNumberData as string;
 
   // Insert payment record
   const { data: payment, error: insertError } = await serviceClient

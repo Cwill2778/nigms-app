@@ -9,10 +9,10 @@ interface ChangeOrderFormProps {
   changeOrders: ChangeOrder[];
 }
 
-const STATUS_STYLES: Record<string, string> = {
-  accepted: "bg-green-900/30 text-green-400",
-  rejected: "bg-gray-800 text-gray-400",
-  pending: "bg-yellow-900/30 text-yellow-400",
+const statusStyle: Record<string, { color: string; bg: string; border: string }> = {
+  accepted: { color: "var(--color-success)", bg: "rgba(34,197,94,0.10)", border: "rgba(34,197,94,0.3)" },
+  rejected: { color: "var(--color-text-muted)", bg: "var(--color-bg-overlay)", border: "var(--color-steel-dim)" },
+  pending:  { color: "var(--color-accent-yellow)", bg: "rgba(255,214,0,0.10)", border: "var(--color-accent-yellow-dim)" },
 };
 
 export default function ChangeOrderForm({ workOrderId, changeOrders: initialOrders }: ChangeOrderFormProps) {
@@ -24,85 +24,114 @@ export default function ChangeOrderForm({ workOrderId, changeOrders: initialOrde
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitting(true);
-    setError(null);
+    setSubmitting(true); setError(null);
     try {
       const res = await fetch(`/api/admin/work-orders/${workOrderId}/change-orders`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          description,
-          additional_cost: parseFloat(additionalCost) || 0,
-        }),
+        body: JSON.stringify({ description, additional_cost: parseFloat(additionalCost) || 0 }),
       });
-      if (!res.ok) {
-        const json = await res.json().catch(() => ({}));
-        throw new Error(json.error ?? `HTTP ${res.status}`);
-      }
-      const newOrder: ChangeOrder = await res.json();
+      if (!res.ok) { const j = await res.json().catch(() => ({})); throw new Error(j.error ?? `HTTP ${res.status}`); }
+      const newOrder = await res.json();
       setOrders((prev) => [...prev, newOrder]);
-      setDescription("");
-      setAdditionalCost("");
+      setDescription(""); setAdditionalCost("");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to add change order.");
-    } finally {
-      setSubmitting(false);
-    }
+    } finally { setSubmitting(false); }
   }
 
   return (
     <div className="print-section flex flex-col gap-5">
-      <div className="no-print">
-        <PrintButton />
-      </div>
+      <div className="no-print"><PrintButton /></div>
 
-      <h2 className="text-sm font-semibold uppercase tracking-widest text-gray-400">
+      <h2
+        style={{
+          fontFamily: "var(--font-heading)",
+          fontSize: "0.75rem",
+          fontWeight: 700,
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+          color: "var(--color-steel-shine)",
+        }}
+      >
         Change Orders
       </h2>
 
       {orders.length === 0 ? (
-        <p className="text-sm text-gray-500">No change orders yet.</p>
+        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>No change orders yet.</p>
       ) : (
         <ul className="flex flex-col gap-3">
-          {orders.map((co) => (
-            <li
-              key={co.id}
-              className="rounded-md border border-[#4A4A4A] bg-[#0d2550] px-4 py-3 text-sm"
-            >
-              <div className="flex items-center justify-between gap-2 mb-1">
-                <span className="text-white font-medium">{co.description}</span>
-                <span
-                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    STATUS_STYLES[co.status] ?? STATUS_STYLES.pending
-                  }`}
-                >
-                  {co.status}
-                </span>
-              </div>
-              <div className="text-gray-400 text-xs text-right">
-                +${co.additional_cost.toFixed(2)}
-              </div>
-            </li>
-          ))}
+          {orders.map((co) => {
+            const s = statusStyle[co.status] ?? statusStyle.pending;
+            return (
+              <li
+                key={co.id}
+                className="px-4 py-3 text-sm"
+                style={{
+                  borderRadius: "var(--radius-md)",
+                  border: "1px solid var(--color-steel-dim)",
+                  background: "var(--color-bg-elevated)",
+                }}
+              >
+                <div className="flex items-center justify-between gap-2 mb-1">
+                  <span style={{ color: "var(--color-text-primary)", fontWeight: 500 }}>{co.description}</span>
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      padding: "0.2rem 0.6rem",
+                      fontFamily: "var(--font-heading)",
+                      fontSize: "0.68rem",
+                      fontWeight: 700,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      borderRadius: "var(--radius-sm)",
+                      background: s.bg,
+                      color: s.color,
+                      border: `1px solid ${s.border}`,
+                    }}
+                  >
+                    {co.status}
+                  </span>
+                </div>
+                <div className="text-xs text-right" style={{ color: "var(--color-text-secondary)" }}>
+                  +${co.additional_cost.toFixed(2)}
+                </div>
+              </li>
+            );
+          })}
         </ul>
       )}
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3 border-t border-[#4A4A4A] pt-4">
-        <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-400">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-3 pt-4"
+        style={{ borderTop: "1px solid var(--color-steel-dim)" }}
+      >
+        <h3
+          style={{
+            fontFamily: "var(--font-heading)",
+            fontSize: "0.7rem",
+            fontWeight: 700,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            color: "var(--color-steel-shine)",
+          }}
+        >
           Add Change Order
         </h3>
         <div>
-          <label className="block text-xs text-gray-400 mb-1">Description</label>
+          <label className="label">Description</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
             required
-            className="w-full rounded border border-[#4A4A4A] bg-[#162d5e] px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-orange-400 resize-none"
+            className="input resize-none"
           />
         </div>
         <div>
-          <label className="block text-xs text-gray-400 mb-1">Additional Cost ($)</label>
+          <label className="label">Additional Cost ($)</label>
           <input
             type="number"
             min="0"
@@ -110,17 +139,15 @@ export default function ChangeOrderForm({ workOrderId, changeOrders: initialOrde
             value={additionalCost}
             onChange={(e) => setAdditionalCost(e.target.value)}
             required
-            className="w-full rounded border border-[#4A4A4A] bg-[#162d5e] px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-orange-400"
+            className="input"
           />
         </div>
-        {error && <p className="text-xs text-red-400">{error}</p>}
-        <button
-          type="submit"
-          disabled={submitting}
-          className="self-end px-4 py-2 text-sm font-medium bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white rounded-md transition-colors"
-        >
-          {submitting ? "Adding…" : "Add Change Order"}
-        </button>
+        {error && <p className="text-xs" style={{ color: "var(--color-error)" }}>{error}</p>}
+        <div className="flex justify-end">
+          <button type="submit" disabled={submitting} className="btn-primary">
+            {submitting ? "Adding…" : "Add Change Order"}
+          </button>
+        </div>
       </form>
     </div>
   );

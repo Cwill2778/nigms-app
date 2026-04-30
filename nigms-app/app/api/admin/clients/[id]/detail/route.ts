@@ -21,7 +21,7 @@ async function verifyAdmin(): Promise<boolean> {
     .select('role')
     .eq('id', session.user.id)
     .single();
-  return profile?.role === 'admin';
+  return (profile as { role: string } | null)?.role === 'admin';
 }
 
 export async function GET(
@@ -43,6 +43,8 @@ export async function GET(
     paymentsResult,
     messagesResult,
     picturesResult,
+    propertiesResult,
+    subscriptionsResult,
   ] = await Promise.all([
     db.from('users').select('*').eq('id', id).single(),
     db
@@ -71,6 +73,16 @@ export async function GET(
       .select('*')
       .eq('client_id', id)
       .order('uploaded_at', { ascending: false }),
+    db
+      .from('properties')
+      .select('*')
+      .eq('user_id', id)
+      .order('created_at', { ascending: true }),
+    db
+      .from('subscriptions')
+      .select('*')
+      .eq('user_id', id)
+      .order('created_at', { ascending: false }),
   ]);
 
   if (profileResult.error) {
@@ -88,5 +100,7 @@ export async function GET(
     payments: paymentsResult.data ?? [],
     messages: messagesResult.data ?? [],
     pictures: picturesResult.data ?? [],
+    properties: propertiesResult.data ?? [],
+    subscriptions: subscriptionsResult.data ?? [],
   });
 }

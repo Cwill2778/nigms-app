@@ -17,10 +17,19 @@ function createWorkOrderFromBooking(
 ): Omit<WorkOrder, 'id' | 'created_at' | 'updated_at'> {
   return {
     client_id: null as unknown as string, // nullable for public/anonymous bookings
+    property_id: null,
     title: `${booking.serviceType} — ${booking.name}`,
     description: `Booking request from ${booking.name} (${booking.email}, ${booking.phone}) for ${booking.preferredDate}`,
     status: 'pending' as WorkOrderStatus,
     quoted_amount: booking.quotedAmount,
+    wo_number: null,
+    urgency: null,
+    category: null,
+    property_address: null,
+    inspection_notes: null,
+    accepted_at: null,
+    completed_at: null,
+    total_billable_minutes: 0,
   };
 }
 

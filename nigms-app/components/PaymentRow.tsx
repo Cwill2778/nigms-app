@@ -20,17 +20,20 @@ export default function PaymentRow({ payment }: PaymentRowProps) {
   const methodLabel = payment.method === "stripe" ? "Stripe" : "Manual";
 
   return (
-    <tr className="border-b border-gray-200 dark:border-gray-700 last:border-0">
-      <td className="py-3 px-4 text-sm text-gray-900 dark:text-white font-medium">
+    <tr style={{ borderBottom: "1px solid var(--color-steel-dim)" }}>
+      <td
+        className="py-3 px-4 text-sm font-medium"
+        style={{ color: "var(--color-text-primary)" }}
+      >
         {formattedAmount}
       </td>
-      <td className="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">
+      <td className="py-3 px-4 text-sm" style={{ color: "var(--color-text-secondary)" }}>
         {formattedDate}
       </td>
       <td className="py-3 px-4">
         <StatusBadge status={payment.status} />
       </td>
-      <td className="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">
+      <td className="py-3 px-4 text-sm" style={{ color: "var(--color-text-secondary)" }}>
         {methodLabel}
       </td>
     </tr>

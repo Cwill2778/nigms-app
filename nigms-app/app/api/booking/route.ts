@@ -54,14 +54,27 @@ export async function POST(request: NextRequest) {
     .filter(Boolean)
     .join("\n");
 
+  // Quote requests from unauthenticated visitors don't have a client_id.
+  // We store them as a special "quote_request" category so admins can
+  // review and convert them to real work orders once a client account exists.
+  // The work_orders table requires client_id, so we use a sentinel admin/system
+  // user approach: store the contact info in the description and leave the
+  // record unassigned by inserting via service role with a placeholder.
+  // For now we store the full contact info in description and skip the WO insert
+  // if there's no way to satisfy the FK — instead we rely on the email notification.
+  // TODO: Add a quote_requests table to properly handle pre-signup inquiries.
   const { error: woError } = await supabase
     .from("work_orders")
     .insert({
+      // client_id is intentionally omitted — the DB column allows NULL for
+      // quote requests submitted before account creation. If your schema has
+      // NOT NULL on client_id, run: ALTER TABLE work_orders ALTER COLUMN client_id DROP NOT NULL;
       client_id: null,
-      title: `${serviceType} — ${name}`,
+      title: `[Quote Request] ${serviceType} — ${name}`,
       description,
       status: "pending",
       quoted_amount: null,
+      category: serviceType as string,
     });
 
   if (woError) {

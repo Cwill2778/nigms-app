@@ -3,17 +3,15 @@
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import FormError from "@/components/FormError";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import Logo from "@/components/Logo";
+import NLoader from "@/components/NLoader";
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const justSignedUp = searchParams.get("signup") === "success";
 
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -27,19 +25,34 @@ function LoginForm() {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email, password }),
       });
 
       if (!res.ok) {
-        setError("Invalid credentials");
+        const data = await res.json().catch(() => ({}));
+        setError(data.error || "Invalid email or password.");
         return;
       }
 
-      // Middleware will handle routing to /update-password or /dashboard
-      router.refresh();
-      router.push("/dashboard");
+      const data = await res.json() as {
+        role: string;
+        requires_password_reset: boolean;
+        onboarding_complete: boolean | null;
+      };
+
+      // Role-based redirect
+      if (data.role === "admin") {
+        router.push("/admin-dashboard");
+      } else if (data.requires_password_reset) {
+        router.push("/update-password");
+      } else if (data.onboarding_complete === false) {
+        // Client hasn't finished onboarding — send to first onboarding step
+        router.push("/property");
+      } else {
+        router.push("/dashboard");
+      }
     } catch {
-      setError("Invalid credentials");
+      setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -47,49 +60,53 @@ function LoginForm() {
 
   return (
     <>
-      <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2 text-center">
+      <div className="flex justify-center mb-6">
+        <Logo />
+      </div>
+
+      <h1 className="text-2xl font-bold text-trust-navy mb-2 text-center font-heading">
         Sign in to your account
       </h1>
-      <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-6">
+      <p className="text-sm text-steel-gray text-center mb-6">
         Don&apos;t have an account?{" "}
-        <Link href="/signup" className="text-orange-500 hover:text-orange-600 font-medium">
+        <Link href="/signup" className="text-precision-coral hover:underline font-medium">
           Create one
         </Link>
       </p>
 
       {justSignedUp && (
-        <div className="mb-4 rounded-md bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 px-4 py-3 text-sm text-green-700 dark:text-green-400 text-center">
+        <div className="mb-4 rounded-md bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700 text-center">
           Account created! Sign in below.
         </div>
       )}
 
       <form
         onSubmit={handleSubmit}
-        className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 flex flex-col gap-4"
+        className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 flex flex-col gap-4"
       >
         <div className="flex flex-col gap-1.5">
           <label
-            htmlFor="username"
-            className="text-sm font-medium text-gray-700 dark:text-gray-300"
+            htmlFor="email"
+            className="text-sm font-medium text-trust-navy"
           >
-            Username
+            Email
           </label>
           <input
-            id="username"
-            type="text"
-            autoComplete="username"
+            id="email"
+            type="email"
+            autoComplete="email"
             required
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-            placeholder="Your username"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-precision-coral"
+            placeholder="you@example.com"
           />
         </div>
 
         <div className="flex flex-col gap-1.5">
           <label
             htmlFor="password"
-            className="text-sm font-medium text-gray-700 dark:text-gray-300"
+            className="text-sm font-medium text-trust-navy"
           >
             Password
           </label>
@@ -100,19 +117,23 @@ function LoginForm() {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+            className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-precision-coral"
             placeholder="Your password"
           />
         </div>
 
-        <FormError message={error} />
+        {error && (
+          <p className="text-sm text-red-600 text-center" role="alert">
+            {error}
+          </p>
+        )}
 
         <button
           type="submit"
           disabled={loading}
-          className="flex items-center justify-center gap-2 rounded-md bg-orange-500 hover:bg-orange-600 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-medium px-4 py-2 transition-colors"
+          className="flex items-center justify-center gap-2 rounded-md bg-precision-coral hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-medium px-4 py-2.5 transition-opacity"
         >
-          {loading && <LoadingSpinner size="sm" />}
+          {loading ? <NLoader size="sm" /> : null}
           {loading ? "Signing in…" : "Sign in"}
         </button>
       </form>
@@ -122,8 +143,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-950">
-      <Navbar />
+    <div className="flex flex-col min-h-screen bg-architectural-gray">
       <main className="flex flex-1 items-center justify-center px-4 py-12">
         <div className="w-full max-w-sm">
           <Suspense>
@@ -131,7 +151,6 @@ export default function LoginPage() {
           </Suspense>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

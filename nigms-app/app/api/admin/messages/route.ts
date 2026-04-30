@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase';
 import { createClient } from '@supabase/supabase-js';
+import { notifyClient } from '@/lib/notifications';
 
 function getServiceRoleClient() {
   return createClient(
@@ -21,7 +22,7 @@ async function getAdminSession() {
     .eq('id', session.user.id)
     .single();
 
-  if (profile?.role !== 'admin') return null;
+  if ((profile as { role: string } | null)?.role !== 'admin') return null;
   return session;
 }
 
@@ -165,6 +166,11 @@ export async function POST(request: NextRequest) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  // Notify client of new message via in-app + email (Requirement 11.2)
+  await notifyClient(recipientId, 'new_message', {
+    sender_name: 'Nailed It Team',
+  }).catch((err) => console.error('[admin/messages] notifyClient failed', err));
 
   return NextResponse.json({ message: data }, { status: 201 });
 }

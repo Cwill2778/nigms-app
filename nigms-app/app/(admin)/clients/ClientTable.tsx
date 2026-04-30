@@ -1,9 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import StatusBadge from '@/components/StatusBadge';
-import type { UserProfile } from '@/lib/types';
+import { useState } from "react";
+import StatusBadge from "@/components/StatusBadge";
+import type { UserProfile } from "@/lib/types";
 
 interface ClientTableProps {
   clients: UserProfile[];
@@ -11,7 +10,7 @@ interface ClientTableProps {
 }
 
 export default function ClientTable({ clients, onViewClient }: ClientTableProps) {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
   const filtered = clients.filter((c) =>
     c.username.toLowerCase().includes(search.toLowerCase())
@@ -24,27 +23,23 @@ export default function ClientTable({ clients, onViewClient }: ClientTableProps)
         placeholder="Search by username…"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full max-w-sm rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="input"
+        style={{ maxWidth: 320 }}
       />
 
-      <div className="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-50 dark:bg-gray-800">
+      <div className="card overflow-hidden">
+        <table className="table-industrial">
+          <thead>
             <tr>
-              {['Username', 'Role', 'Active', 'Created', ''].map((h) => (
-                <th
-                  key={h}
-                  className="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
-                >
-                  {h}
-                </th>
+              {["Username", "Role", "Active", "Created", ""].map((h) => (
+                <th key={h}>{h}</th>
               ))}
             </tr>
           </thead>
-          <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+          <tbody>
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={5} className="py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                <td colSpan={5} className="py-8 text-center text-sm" style={{ color: "var(--color-text-muted)" }}>
                   No clients found.
                 </td>
               </tr>
@@ -53,31 +48,32 @@ export default function ClientTable({ clients, onViewClient }: ClientTableProps)
                 <tr
                   key={client.id}
                   onClick={() => onViewClient?.(client.id)}
-                  className={onViewClient ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50' : ''}
+                  className={onViewClient ? "cursor-pointer" : ""}
                 >
-                  <td className="py-3 px-4 text-sm font-medium text-gray-900 dark:text-white">
+                  <td style={{ color: "var(--color-text-primary)", fontWeight: 500 }}>
                     {client.username}
                   </td>
-                  <td className="py-3 px-4 text-sm text-gray-500 dark:text-gray-400 capitalize">
+                  <td
+                    className="capitalize"
+                    style={{ color: "var(--color-text-secondary)" }}
+                  >
                     {client.role}
                   </td>
-                  <td className="py-3 px-4">
-                    <StatusBadge status={client.is_active ? 'paid' : 'cancelled'} />
+                  <td>
+                    <StatusBadge status={client.is_active ? "paid" : "cancelled"} />
                   </td>
-                  <td className="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">
-                    {new Intl.DateTimeFormat('en-US', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric',
-                    }).format(new Date(client.created_at))}
+                  <td style={{ color: "var(--color-text-secondary)" }}>
+                    {new Intl.DateTimeFormat("en-US", { year: "numeric", month: "short", day: "numeric" }).format(new Date(client.created_at))}
                   </td>
-                  <td className="py-3 px-4 text-right">
-                    <Link
-                      href={`/admin/clients/${client.id}`}
-                      className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                  <td className="text-right">
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); onViewClient?.(client.id); }}
+                      className="btn-ghost text-sm"
+                      style={{ color: "var(--color-accent-orange)", padding: "0.25rem 0.5rem" }}
                     >
-                      View
-                    </Link>
+                      View →
+                    </button>
                   </td>
                 </tr>
               ))

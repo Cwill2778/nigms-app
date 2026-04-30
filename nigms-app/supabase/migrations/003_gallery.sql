@@ -16,4 +16,6 @@ CREATE POLICY gallery_public_read ON public.gallery
   FOR SELECT USING (true);
 
 CREATE POLICY gallery_admin_all ON public.gallery
-  FOR ALL USING ((auth.jwt() ->> 'role') = 'admin');
+  FOR ALL USING (
+    EXISTS (SELECT 1 FROM public.users u WHERE u.id = auth.uid() AND u.role = 'admin')
+  );

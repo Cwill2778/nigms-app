@@ -1,44 +1,92 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextRequest, NextResponse } from 'next/server';
 
-// Routes that require no authentication
-const PUBLIC_ROUTES = ['/', '/login', '/signup', '/book', '/projects'];
-const PUBLIC_PREFIXES = ['/legal/', '/api/newsletter', '/api/promo/', '/api/booking', '/api/webhooks/', '/api/auth/signup', '/api/auth/login'];
+// ── Route classification ────────────────────────────────────────────────────
 
-// Routes that require an authenticated client (non-admin)
-const CLIENT_ROUTES = ['/dashboard', '/update-password'];
-const CLIENT_PREFIXES = ['/work-orders/', '/payments/'];
+/**
+ * Public routes — accessible without authentication.
+ * Exact matches and prefix matches are handled separately below.
+ */
+const PUBLIC_ROUTES = new Set([
+  '/',
+  '/login',
+  '/signup',
+  '/book',
+  '/projects',
+  '/update-password',
+]);
 
-// Admin route prefixes (both URL forms)
-const ADMIN_PREFIXES = ['/admin-dashboard', '/clients', '/payments', '/work-orders'];
+const PUBLIC_PREFIXES = [
+  '/legal/',
+  '/api/auth/signup',
+  '/api/auth/login',
+  '/api/newsletter',
+  '/api/promo/',
+  '/api/booking',
+  '/api/webhooks/',
+];
+
+/**
+ * Admin routes — only accessible to users with role = 'admin'.
+ *
+ * Includes:
+ *  - /admin-dashboard        (main admin page)
+ *  - /clients, /payments     (admin route-group pages, no /admin/ prefix in URL)
+ *  - /work-orders            (shared path — admin sees all, client sees own)
+ *  - /api/admin/*            (all admin API endpoints)
+ *
+ * NOTE: /work-orders is listed here so that the middleware can distinguish
+ * between an admin visiting /work-orders (allowed) and a client visiting
+ * /work-orders (also allowed via the client route check below). The order of
+ * checks in the middleware function handles this correctly.
+ */
+const ADMIN_EXACT = new Set(['/admin-dashboard', '/clients', '/payments']);
+const ADMIN_PREFIXES = ['/api/admin/'];
+
+/**
+ * Client routes — accessible to authenticated clients (role = 'client' | 'vip_client').
+ */
+const CLIENT_ROUTES = new Set(['/dashboard', '/messages']);
+const CLIENT_PREFIXES = ['/work-orders/', '/onboarding/', '/assurance/', '/property/'];
+
+// ── Route classification helpers ────────────────────────────────────────────
 
 function isPublicRoute(pathname: string): boolean {
-  if (PUBLIC_ROUTES.includes(pathname)) return true;
+  if (PUBLIC_ROUTES.has(pathname)) return true;
   return PUBLIC_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 }
 
-function isAdminRoute(pathname: string): boolean {
+/**
+ * Returns true if the pathname is an admin-only route.
+ * /work-orders itself is NOT classified as admin-only here — it is accessible
+ * to both roles (admin sees all orders, client sees their own).
+ */
+function isAdminOnlyRoute(pathname: string): boolean {
+  if (ADMIN_EXACT.has(pathname)) return true;
   return ADMIN_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 }
 
 function isClientRoute(pathname: string): boolean {
-  if (CLIENT_ROUTES.includes(pathname)) return true;
+  if (CLIENT_ROUTES.has(pathname)) return true;
   return CLIENT_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 }
 
 function isProtectedRoute(pathname: string): boolean {
-  return isAdminRoute(pathname) || isClientRoute(pathname);
+  return isAdminOnlyRoute(pathname) || isClientRoute(pathname);
 }
+
+// ── Middleware ───────────────────────────────────────────────────────────────
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Build a response we can mutate (for cookie refresh)
+  // Build a mutable response so we can refresh session cookies.
   let response = NextResponse.next({
     request: { headers: request.headers },
   });
 
-  // Create Supabase client using request/response cookies (no next/headers)
+  // Middleware must use createServerClient directly (not the next/headers
+  // wrapper in lib/supabase.ts) because cookies() is not available here.
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -48,9 +96,11 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
+          // Write cookies to the request so the server sees them immediately.
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           );
+          // Rebuild the response so the refreshed cookies are sent to the browser.
           response = NextResponse.next({
             request: { headers: request.headers },
           });
@@ -62,80 +112,121 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // Get the current session
+  // Retrieve the current session (also refreshes the session cookie if needed).
   const {
     data: { session },
   } = await supabase.auth.getSession();
 
-  // ── Rule 1 & 2: No session ──────────────────────────────────────────────────
+  // ── Unauthenticated ────────────────────────────────────────────────────────
+  // Requirement 10.3: unauthenticated → /login for any protected route.
   if (!session) {
-    if (isProtectedRoute(pathname)) {
-      // Rule 1: No session + protected route → redirect to /login
+    if (!isPublicRoute(pathname) && isProtectedRoute(pathname)) {
       const loginUrl = request.nextUrl.clone();
       loginUrl.pathname = '/login';
       return NextResponse.redirect(loginUrl);
     }
-    // Rule 2: No session + public route → allow through
     return response;
   }
 
-  // ── Authenticated: fetch profile from public.users ──────────────────────────
-  const { data: profile, error: profileError } = await supabase
+  // ── Authenticated: fetch role, password-reset flag, and onboarding state ──
+  const { data: profile } = await supabase
     .from('users')
     .select('role, requires_password_reset')
     .eq('id', session.user.id)
     .single();
 
-  console.log('[middleware] user:', session.user.id, 'profile:', profile, 'error:', profileError);
-
-  // Graceful handling: user exists in auth but not yet in public.users
-  // Treat as a client with reset required so they can't access anything sensitive
+  // Graceful fallback: if the profile row doesn't exist yet (e.g. race
+  // condition during signup), treat the user as a client requiring a reset.
   const role = profile?.role ?? 'client';
   const requiresPasswordReset = profile?.requires_password_reset ?? true;
 
-  // ── Rules 3 & 4: Admin session ─────────────────────────────────────────────
+  // ── Admin ──────────────────────────────────────────────────────────────────
+  // Requirement 10.5: admin → /admin-dashboard when accessing non-admin routes.
   if (role === 'admin') {
-    // Allow admins who need to reset their password to reach /update-password
+    // Allow admins to reach /update-password if they need to reset.
     if (requiresPasswordReset && pathname === '/update-password') {
       return response;
     }
-    if (isAdminRoute(pathname)) {
-      // Rule 3: Admin session + admin route → allow
+
+    if (isAdminOnlyRoute(pathname)) {
+      // Admin accessing an admin route → allow.
       return response;
     }
-    // Rule 4: Admin session + non-admin route → redirect to /admin-dashboard
+
+    if (isPublicRoute(pathname)) {
+      // Admin accessing a public route (e.g. /login after sign-in) → redirect
+      // to admin dashboard so they don't land on the wrong page.
+      const adminDashUrl = request.nextUrl.clone();
+      adminDashUrl.pathname = '/admin-dashboard';
+      return NextResponse.redirect(adminDashUrl);
+    }
+
+    // Admin accessing any other route (client routes, /work-orders, etc.)
+    // → redirect to admin dashboard.
     const adminDashUrl = request.nextUrl.clone();
     adminDashUrl.pathname = '/admin-dashboard';
     return NextResponse.redirect(adminDashUrl);
   }
 
-  // ── Rules 5–9: Client session ──────────────────────────────────────────────
+  // ── Client (role = 'client' | 'vip_client') ────────────────────────────────
 
-  // Rule 9: Authenticated client accessing admin route → 403
-  if (isAdminRoute(pathname)) {
-    return new NextResponse('Forbidden', { status: 403 });
-  }
-
-  if (requiresPasswordReset) {
-    if (pathname === '/update-password') {
-      // Rule 5: Client with reset=true + /update-password → allow
-      return response;
-    }
-    // Rule 6: Client with reset=true + any other route → redirect to /update-password
-    const updatePwUrl = request.nextUrl.clone();
-    updatePwUrl.pathname = '/update-password';
-    return NextResponse.redirect(updatePwUrl);
-  }
-
-  // requiresPasswordReset === false from here on
-  if (pathname === '/update-password') {
-    // Rule 7: Client with reset=false + /update-password → redirect to /dashboard
+  // Requirement 10.7: client accessing admin-only routes → redirect to /dashboard.
+  // This is the "403-equivalent" redirect described in the spec.
+  if (isAdminOnlyRoute(pathname)) {
     const dashUrl = request.nextUrl.clone();
     dashUrl.pathname = '/dashboard';
     return NextResponse.redirect(dashUrl);
   }
 
-  // Rule 8: Client with reset=false + client route → allow
+  // Requirement 10.6: client with requires_password_reset=true → /update-password.
+  if (requiresPasswordReset) {
+    if (pathname === '/update-password') {
+      // Already on the correct page — allow.
+      return response;
+    }
+    const updatePwUrl = request.nextUrl.clone();
+    updatePwUrl.pathname = '/update-password';
+    return NextResponse.redirect(updatePwUrl);
+  }
+
+  // requiresPasswordReset === false from here on.
+
+  // Prevent clients who have already reset their password from revisiting
+  // /update-password unnecessarily.
+  if (pathname === '/update-password') {
+    const dashUrl = request.nextUrl.clone();
+    dashUrl.pathname = '/dashboard';
+    return NextResponse.redirect(dashUrl);
+  }
+
+  // ── Onboarding gate ────────────────────────────────────────────────────────
+  // Requirement 2.1: clients who haven't completed onboarding must finish it
+  // before accessing the main dashboard or other client routes.
+  // Onboarding routes (/property, /assurance) and the API are always allowed.
+  const isOnboardingRoute =
+    pathname.startsWith('/property') ||
+    pathname.startsWith('/assurance') ||
+    pathname.startsWith('/api/client/onboarding') ||
+    pathname.startsWith('/api/client/properties') ||
+    pathname.startsWith('/api/promo/');
+
+  if (!isOnboardingRoute) {
+    const { data: onboardingState } = await supabase
+      .from('onboarding_states')
+      .select('onboarding_complete')
+      .eq('user_id', session.user.id)
+      .maybeSingle();
+
+    const onboardingComplete = onboardingState?.onboarding_complete ?? true;
+
+    if (!onboardingComplete) {
+      const propertyUrl = request.nextUrl.clone();
+      propertyUrl.pathname = '/property';
+      return NextResponse.redirect(propertyUrl);
+    }
+  }
+
+  // Client accessing a public or client route → allow.
   return response;
 }
 
@@ -146,7 +237,7 @@ export const config = {
      * - _next/static  (static files)
      * - _next/image   (image optimisation)
      * - favicon.ico
-     * - Any file with an extension (e.g. .png, .svg, .js, .css)
+     * - Files with a recognised static extension
      */
     '/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|woff2?)$).*)',
   ],

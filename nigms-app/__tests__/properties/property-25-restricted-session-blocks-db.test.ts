@@ -82,8 +82,14 @@ function userProfileArb(requiresPasswordReset: boolean): fc.Arbitrary<UserProfil
     id: uuidArb,
     username: fc.string({ minLength: 3, maxLength: 20 }),
     role: fc.constant('client'),
+    full_name: fc.option(fc.string({ minLength: 1, maxLength: 100 }), { nil: null }),
+    company_name: fc.option(fc.string({ minLength: 1, maxLength: 100 }), { nil: null }),
     is_active: fc.boolean(),
     requires_password_reset: fc.constant(requiresPasswordReset),
+    first_name: fc.option(fc.string({ minLength: 1, maxLength: 50 }), { nil: null }),
+    last_name: fc.option(fc.string({ minLength: 1, maxLength: 50 }), { nil: null }),
+    phone: fc.option(fc.string({ minLength: 10, maxLength: 15 }), { nil: null }),
+    email: fc.option(fc.emailAddress(), { nil: null }),
     created_at: fc.constant(new Date().toISOString()),
   });
 }
@@ -92,10 +98,19 @@ function workOrderArb(clientIdArb: fc.Arbitrary<string>): fc.Arbitrary<WorkOrder
   return fc.record<WorkOrder>({
     id: uuidArb,
     client_id: clientIdArb,
+    property_id: fc.option(fc.uuid(), { nil: null }),
     title: fc.string({ minLength: 1, maxLength: 80 }),
     description: fc.option(fc.string({ maxLength: 200 }), { nil: null }),
     status: workOrderStatusArb,
     quoted_amount: fc.option(fc.float({ min: 1, max: 100_000, noNaN: true }), { nil: null }),
+    wo_number: fc.option(fc.string({ minLength: 5, maxLength: 20 }), { nil: null }),
+    urgency: fc.option(fc.constantFrom('low', 'medium', 'high', 'emergency'), { nil: null }),
+    category: fc.option(fc.string({ minLength: 1, maxLength: 50 }), { nil: null }),
+    property_address: fc.option(fc.string({ minLength: 10, maxLength: 100 }), { nil: null }),
+    inspection_notes: fc.option(fc.string({ maxLength: 500 }), { nil: null }),
+    accepted_at: fc.option(fc.constant(new Date().toISOString()), { nil: null }),
+    completed_at: fc.option(fc.constant(new Date().toISOString()), { nil: null }),
+    total_billable_minutes: fc.integer({ min: 0, max: 10000 }),
     created_at: fc.constant(new Date().toISOString()),
     updated_at: fc.constant(new Date().toISOString()),
   });
@@ -110,6 +125,9 @@ function paymentArb(clientIdArb: fc.Arbitrary<string>): fc.Arbitrary<Payment> {
     method: paymentMethodArb,
     status: paymentStatusArb,
     stripe_payment_intent_id: fc.option(fc.string({ minLength: 10, maxLength: 50 }), { nil: null }),
+    receipt_number: fc.option(fc.string({ minLength: 5, maxLength: 20 }), { nil: null }),
+    notes: fc.option(fc.string({ maxLength: 200 }), { nil: null }),
+    payment_date: fc.option(fc.constant(new Date().toISOString().split('T')[0]), { nil: null }),
     created_at: fc.constant(new Date().toISOString()),
   });
 }
@@ -180,10 +198,19 @@ describe('Property 25: Restricted session blocks work_orders and payments at DB 
           const ownRecords = Array.from({ length: 3 }, (_, i) => ({
             id: `own-${i}`,
             client_id: restrictedUser.id,
+            property_id: null,
             title: `My Work Order ${i}`,
             description: null,
             status: 'pending' as WorkOrderStatus,
             quoted_amount: null,
+            wo_number: null,
+            urgency: null,
+            category: null,
+            property_address: null,
+            inspection_notes: null,
+            accepted_at: null,
+            completed_at: null,
+            total_billable_minutes: 0,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           }));
@@ -217,6 +244,9 @@ describe('Property 25: Restricted session blocks work_orders and payments at DB 
             method: 'stripe' as PaymentMethod,
             status: 'paid' as PaymentStatus,
             stripe_payment_intent_id: null,
+            receipt_number: null,
+            notes: null,
+            payment_date: null,
             created_at: new Date().toISOString(),
           }));
 

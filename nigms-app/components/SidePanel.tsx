@@ -26,9 +26,7 @@ export default function SidePanel({
 }: SidePanelProps) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
+      if (e.key === "Escape") onClose();
     };
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
@@ -36,40 +34,62 @@ export default function SidePanel({
 
   return (
     <>
-      {/* Backdrop */}
       {open && (
         <div
-          className="fixed inset-0 bg-black/50 z-40"
+          className="fixed inset-0 z-40"
+          style={{ background: "rgba(0,0,0,0.6)" }}
           onClick={onClose}
           aria-hidden="true"
         />
       )}
 
-      {/* Panel */}
       <div
         className={`fixed inset-y-0 right-0 ${widthMap[width]} z-50 flex flex-col
-          bg-[#0a1f44] border-l-2 border-[#4A4A4A]
           transition-transform duration-300 ease-in-out
           ${open ? "translate-x-0" : "translate-x-full"}`}
+        style={{
+          background: "var(--color-bg-surface)",
+          borderLeft: "2px solid var(--color-steel-mid)",
+        }}
       >
         {/* Header */}
-        <div className="bg-[#162d5e] px-6 py-4 flex items-center justify-between shrink-0">
-          <h2 className="text-white font-semibold text-lg uppercase tracking-widest">
+        <div
+          className="px-6 py-4 flex items-center justify-between shrink-0"
+          style={{
+            background: "var(--color-navy)",
+            borderBottom: "1px solid var(--color-navy-bright)",
+          }}
+        >
+          <h2
+            style={{
+              fontFamily: "var(--font-heading)",
+              fontSize: "0.85rem",
+              fontWeight: 800,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: "var(--color-text-on-navy)",
+            }}
+          >
             {title}
           </h2>
           <button
             onClick={onClose}
             aria-label="Close panel"
-            className="text-gray-300 hover:text-orange-400 transition-colors"
+            className="transition-colors"
+            style={{ color: "var(--color-steel-bright)" }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.color = "var(--color-accent-orange)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.color = "var(--color-steel-bright)")
+            }
           >
             <X size={20} />
           </button>
         </div>
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto">
-          {children}
-        </div>
+        <div className="flex-1 overflow-y-auto">{children}</div>
       </div>
     </>
   );

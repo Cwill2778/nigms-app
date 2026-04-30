@@ -19,7 +19,7 @@ async function verifyAdmin(): Promise<boolean> {
     .select('role')
     .eq('id', session.user.id)
     .single();
-  return profile?.role === 'admin';
+  return (profile as { role: string } | null)?.role === 'admin';
 }
 
 export async function GET(request: NextRequest) {
@@ -38,13 +38,13 @@ export async function GET(request: NextRequest) {
   const serviceClient = getServiceRoleClient();
   const pattern = `%${q}%`;
 
-  // Search users table by name, phone, or id
+  // Search users table by name, phone, email, or id
   const { data: userMatches, error: userError } = await serviceClient
     .from('users')
     .select('id, first_name, last_name, username, phone, email')
     .eq('role', 'client')
     .or(
-      `first_name.ilike.${pattern},last_name.ilike.${pattern},phone.ilike.${pattern},id::text.ilike.${pattern}`
+      `first_name.ilike.${pattern},last_name.ilike.${pattern},phone.ilike.${pattern},email.ilike.${pattern},id::text.ilike.${pattern}`
     )
     .limit(10);
 

@@ -2,41 +2,26 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import FormError from "@/components/FormError";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import Logo from "@/components/Logo";
+import NLoader from "@/components/NLoader";
 import { createBrowserClient } from "@/lib/supabase-browser";
 
 export default function UpdatePasswordPage() {
   const router = useRouter();
-  const [username, setUsername] = useState<string | null>(null);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const [isAdmin, setIsAdmin] = useState(false);
-
+  // Verify the user is authenticated on mount
   useEffect(() => {
     const supabase = createBrowserClient();
-    async function fetchProfile() {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data } = await supabase
-        .from("users")
-        .select("username, role")
-        .eq("id", user.id)
-        .single();
-
-      setUsername(data?.username ?? null);
-      setIsAdmin(data?.role === "admin");
-    }
-    fetchProfile();
-  }, []);
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) {
+        router.replace("/login");
+      }
+    });
+  }, [router]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -44,6 +29,10 @@ export default function UpdatePasswordPage() {
 
     if (!newPassword) {
       setError("Password is required.");
+      return;
+    }
+    if (newPassword.length < 8) {
+      setError("Password must be at least 8 characters.");
       return;
     }
     if (newPassword !== confirmPassword) {
@@ -55,6 +44,7 @@ export default function UpdatePasswordPage() {
     try {
       const supabase = createBrowserClient();
 
+      // Update the password via Supabase Auth
       const { error: updateError } = await supabase.auth.updateUser({
         password: newPassword,
       });
@@ -64,14 +54,15 @@ export default function UpdatePasswordPage() {
         return;
       }
 
-      // Clear the reset flag via API route (uses service role)
+      // Clear the requires_password_reset flag via API route (uses service role)
       const res = await fetch("/api/auth/clear-reset-flag", { method: "POST" });
       if (!res.ok) {
         setError("Failed to complete password reset. Please try again.");
         return;
       }
 
-      router.push(isAdmin ? "/admin-dashboard" : "/dashboard");
+      // Redirect to client dashboard after successful password update
+      router.push("/dashboard");
     } catch {
       setError("An unexpected error occurred. Please try again.");
     } finally {
@@ -80,33 +71,26 @@ export default function UpdatePasswordPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-950">
-      <Navbar />
+    <div className="flex flex-col min-h-screen bg-architectural-gray">
       <main className="flex flex-1 items-center justify-center px-4 py-12">
         <div className="w-full max-w-sm">
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2 text-center">
+          <div className="flex justify-center mb-6">
+            <Logo />
+          </div>
+
+          <h1 className="text-2xl font-bold text-trust-navy mb-2 text-center font-heading">
             Set your password
           </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-6">
+          <p className="text-sm text-steel-gray text-center mb-6">
             You must set a permanent password before continuing.
           </p>
 
-          <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 flex flex-col gap-4">
-            {/* Username — read-only display */}
-            <div className="flex flex-col gap-1.5">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Username
-              </span>
-              <p className="text-sm text-gray-900 dark:text-white px-3 py-2 rounded-md bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                {username ?? "Loading…"}
-              </p>
-            </div>
-
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
                 <label
                   htmlFor="new-password"
-                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  className="text-sm font-medium text-trust-navy"
                 >
                   New Password
                 </label>
@@ -117,15 +101,15 @@ export default function UpdatePasswordPage() {
                   required
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-                  placeholder="Enter new password"
+                  className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-precision-coral"
+                  placeholder="At least 8 characters"
                 />
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label
                   htmlFor="confirm-password"
-                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  className="text-sm font-medium text-trust-navy"
                 >
                   Confirm Password
                 </label>
@@ -136,26 +120,29 @@ export default function UpdatePasswordPage() {
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-                  placeholder="Confirm new password"
+                  className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-precision-coral"
+                  placeholder="Re-enter your password"
                 />
               </div>
 
-              <FormError message={error} />
+              {error && (
+                <p className="text-sm text-red-600 text-center" role="alert">
+                  {error}
+                </p>
+              )}
 
               <button
                 type="submit"
                 disabled={loading}
-                className="flex items-center justify-center gap-2 rounded-md bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-medium px-4 py-2 transition-colors"
+                className="flex items-center justify-center gap-2 rounded-md bg-precision-coral hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-medium px-4 py-2.5 transition-opacity"
               >
-                {loading && <LoadingSpinner size="sm" />}
+                {loading ? <NLoader size="sm" /> : null}
                 {loading ? "Saving…" : "Set Password"}
               </button>
             </form>
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

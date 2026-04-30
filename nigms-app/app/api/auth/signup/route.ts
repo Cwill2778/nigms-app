@@ -9,8 +9,8 @@ function getServiceClient() {
 }
 
 export async function POST(request: NextRequest) {
-  const body = await request.json() as { name: string; email: string; password: string };
-  const { name, email, password } = body;
+  const body = await request.json() as { name: string; company_name?: string; email: string; password: string };
+  const { name, company_name, email, password } = body;
 
   if (!name?.trim() || !email?.trim() || !password?.trim()) {
     return NextResponse.json({ error: 'All fields are required.' }, { status: 400 });
@@ -40,19 +40,38 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to create account. Please try again.' }, { status: 500 });
   }
 
-  // Create the public.users profile
+  // Create the public.users profile with full_name, email, and company_name
   const { error: profileError } = await supabase
     .from('users')
     .insert({
       id: authData.user.id,
       username,
       role: 'client',
+      email: email.trim().toLowerCase(),
       is_active: true,
       requires_password_reset: false,
+      full_name: name,
+      company_name: company_name?.trim() || null,
     });
 
   if (profileError) {
     // Roll back the auth user if profile creation fails
+    await supabase.auth.admin.deleteUser(authData.user.id);
+    return NextResponse.json({ error: 'Failed to create account. Please try again.' }, { status: 500 });
+  }
+
+  // Create the onboarding_states record
+  const { error: onboardingError } = await supabase
+    .from('onboarding_states')
+    .insert({
+      user_id: authData.user.id,
+      onboarding_step: 'property_setup',
+      onboarding_complete: false,
+    });
+
+  if (onboardingError) {
+    // Roll back both the users profile and auth user if onboarding_states creation fails
+    await supabase.from('users').delete().eq('id', authData.user.id);
     await supabase.auth.admin.deleteUser(authData.user.id);
     return NextResponse.json({ error: 'Failed to create account. Please try again.' }, { status: 500 });
   }

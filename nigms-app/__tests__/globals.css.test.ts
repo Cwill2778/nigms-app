@@ -25,7 +25,7 @@ describe('globals.css border-radius reset', () => {
     cssContent = fs.readFileSync(CSS_PATH, 'utf-8');
 
     // Extract the @theme inline { ... } block
-    const themeMatch = cssContent.match(/@theme\s+inline\s*\{([^}]*)\}/s);
+    const themeMatch = cssContent.match(/@theme\s+inline\s*\{([^}]*)\}/);
     expect(themeMatch, '@theme inline block should exist in globals.css').toBeTruthy();
     themeBlock = themeMatch![1];
   });
