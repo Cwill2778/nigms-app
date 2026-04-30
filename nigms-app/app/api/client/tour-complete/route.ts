@@ -50,7 +50,7 @@ export async function POST(_request: NextRequest) {
 
     return NextResponse.json({ success: true });
     
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Unexpected error in tour-complete:", err);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
