@@ -1,0 +1,38 @@
+.footer {
+  background: var(--bg-footer);
+  padding: 40px 16px 24px;
+  margin-top: auto;
+  border-top: 1px solid var(--border);
+}
+
+.footer-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.footer-container p {
+  font-size: 0.85rem;
+  color: var(--text-sub);
+  margin-bottom: 6px;
+}
+
+.footer-container p:last-child {
+  margin-bottom: 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  margin-top: 16px;
+}
+
+.footer a {
+  color: var(--text-sub);
+  transition: color 0.2s;
+}
+
+.footer a:hover {
+  color: var(--accent);
+}
+
+@media (min-width: 768px) {
+  .footer { padding: 48px 32px 28px; }
+}
