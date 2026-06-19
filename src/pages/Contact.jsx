@@ -63,7 +63,7 @@ function Contact() {
 
           <div className="info-block">
             <h3>Emergency Email</h3>
-            <a href="mailto:cwillis2778@gmail.com">cwillis2778@gmail.com</a>
+            <a href="mailto:support.nailedit@gmail.com">support.nailedit@gmail.com</a>
           </div>
 
           <div className="info-block">

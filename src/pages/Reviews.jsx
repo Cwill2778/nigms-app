@@ -57,6 +57,11 @@ function Reviews() {
       text: 'The drywall finish in our kitchen looks really great. You can\'t even tell where the old damage was. Great attention to detail and the built-in shelf was a nice bonus.',
       date: 'April 2026',
     },
+    {
+      name: 'Charlie F.',
+      stars: 5,
+      text: 'Charles is proactive and very detailed oriented. He has helped cure my landlord woes.'
+    },
   ];
 
   const renderStars = (count) => '★'.repeat(count) + '☆'.repeat(5 - count);

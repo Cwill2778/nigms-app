@@ -46,12 +46,11 @@ function Home() {
         </p>
         <ul className="value-props">
           <li>
-            <strong>No Bullshit Pricing:</strong> No hidden fees, no
-            &ldquo;surprise&rdquo; service charges.
+            <strong>Predictable Pricing</strong> No hidden fees & no
+            surprise service charges.
           </li>
           <li>
-            <strong>Neighborly Service:</strong> Local expertise with a serious
-            eye for detail.
+            <strong>Neighborly Service:</strong> Local expertise with professional experience in the field.
           </li>
           <li>
             <strong>Preventative First:</strong> We catch the $100 problem before
@@ -97,6 +96,9 @@ function Home() {
             </tbody>
           </table>
         </div>
+        <Link to="/subscriptions" className="cta-button cta-button--secondary" style={{ marginTop: '32px' }}>
+          See Full Plan Details
+        </Link>
       </section>
 
       <section className="home-perks reveal">
