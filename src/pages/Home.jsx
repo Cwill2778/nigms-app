@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import useScrollReveal from '../hooks/useScrollReveal';
-import protectedHome from '../assets/nailedItProtectedHome.png';
+import protectedHome from '../assets/nailedItProtectedHome.jpg';
 import './Home.css';
 
 function Home() {
