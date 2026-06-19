@@ -43,7 +43,7 @@ function Home() {
           Whether you&rsquo;re a busy homeowner protecting your investment or a
           landlord tired of midnight emergency calls, we&rsquo;ve got your upkeep
           nailed.
-        </p>
+        </p> 
         <ul className="value-props">
           <li>
             <strong>Predictable Pricing</strong> No hidden fees & no
