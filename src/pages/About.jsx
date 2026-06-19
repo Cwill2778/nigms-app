@@ -37,6 +37,8 @@ function About() {
             src={portrait}
             alt="Charles Willis, owner of Nailed It Property Solutions"
             className="about-portrait"
+            width="320"
+            height="400"
           />
           <div className="about-message">
             <h2>A Personal Message to Our Clients</h2>
@@ -109,7 +111,7 @@ function About() {
             onClick={() => setLightbox({ src: working1, alt: 'Charles Willis working on a property' })}
             aria-label="View full image: Charles Willis working on a property"
           >
-            <img src={working1} alt="Charles Willis working on a property" />
+            <img src={working1} alt="Charles Willis working on a property" width="600" height="280" />
           </button>
         </div>
         <h3 className="experience-heading">Past Experience</h3>
@@ -123,7 +125,7 @@ function About() {
                 onClick={() => setLightbox({ src: windowBefore, alt: 'Triple windows before replacement' })}
                 aria-label="View full image: Triple windows before replacement"
               >
-                <img src={windowBefore} alt="Triple windows before replacement" />
+                <img src={windowBefore} alt="Triple windows before replacement" width="400" height="260" />
               </button>
               <figcaption>Before</figcaption>
             </figure>
@@ -133,7 +135,7 @@ function About() {
                 onClick={() => setLightbox({ src: windowAfter, alt: 'Triple windows after replacement' })}
                 aria-label="View full image: Triple windows after replacement"
               >
-                <img src={windowAfter} alt="Triple windows after replacement" />
+                <img src={windowAfter} alt="Triple windows after replacement" width="400" height="260" />
               </button>
               <figcaption>After</figcaption>
             </figure>
@@ -149,7 +151,7 @@ function About() {
                 onClick={() => setLightbox({ src: outdoorBefore, alt: 'Outdoor sitting area before' })}
                 aria-label="View full image: Outdoor sitting area before"
               >
-                <img src={outdoorBefore} alt="Outdoor sitting area before" />
+                <img src={outdoorBefore} alt="Outdoor sitting area before" width="400" height="260" />
               </button>
               <figcaption>Before</figcaption>
             </figure>
@@ -159,7 +161,7 @@ function About() {
                 onClick={() => setLightbox({ src: outdoorAfter, alt: 'Outdoor sitting area after' })}
                 aria-label="View full image: Outdoor sitting area after"
               >
-                <img src={outdoorAfter} alt="Outdoor sitting area after" />
+                <img src={outdoorAfter} alt="Outdoor sitting area after" width="400" height="260" />
               </button>
               <figcaption>After</figcaption>
             </figure>

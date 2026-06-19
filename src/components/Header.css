@@ -17,42 +17,135 @@
 }
 
 .header-logo img {
-  height: 40px;
+  height: 36px;
   width: auto;
+}
+
+/* Hamburger button */
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 110;
+}
+
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 1px;
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+.hamburger--open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.hamburger--open span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger--open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Mobile nav */
+.header-nav {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  padding: 16px 0;
+}
+
+.header-nav--open {
+  display: block;
 }
 
 .header-nav ul {
   display: flex;
-  gap: 20px;
+  flex-direction: column;
+  gap: 0;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
+.header-nav li {
+  border-bottom: 1px solid var(--border);
+}
+
+.header-nav li:last-child {
+  border-bottom: none;
+}
+
 .header-nav a {
+  display: block;
+  padding: 14px 24px;
   color: var(--text);
   text-decoration: none;
   font-family: var(--heading);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 500;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  transition: color 0.2s, text-shadow 0.2s;
+  transition: color 0.2s, background 0.2s;
 }
 
 .header-nav a:hover {
   color: var(--accent);
-  text-shadow: 0 0 8px var(--accent-glow);
+  background: rgba(255, 138, 0, 0.05);
 }
 
+/* Desktop */
 @media (min-width: 768px) {
   .header { padding: 16px 32px; }
+
   .header-logo img { height: 48px; }
-  .header-nav ul { gap: 28px; }
-  .header-nav a { font-size: 0.9rem; }
+
+  .hamburger { display: none; }
+
+  .header-nav {
+    display: block;
+    position: static;
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .header-nav ul {
+    flex-direction: row;
+    gap: 28px;
+  }
+
+  .header-nav li {
+    border-bottom: none;
+  }
+
+  .header-nav a {
+    display: inline;
+    padding: 0;
+    font-size: 0.85rem;
+  }
+
+  .header-nav a:hover {
+    background: none;
+    text-shadow: 0 0 8px var(--accent-glow);
+  }
 }
 
 @media (min-width: 1024px) {
   .header-logo img { height: 56px; }
   .header-nav ul { gap: 36px; }
+  .header-nav a { font-size: 0.9rem; }
 }

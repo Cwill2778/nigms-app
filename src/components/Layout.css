@@ -29,3 +29,23 @@
 @media (min-width: 1024px) {
   .layout main { padding: 0 48px; }
 }
+
+/* Image watermark */
+.watermark-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.watermark-wrap::after,
+.photo-button::after {
+  content: '\00A9 Nailed It Property Solutions';
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  font-size: 0.6rem;
+  font-family: var(--sans);
+  color: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}

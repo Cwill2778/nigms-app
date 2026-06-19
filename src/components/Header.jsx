@@ -1,21 +1,39 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import './Header.css';
 
 function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const toggleMenu = () => setMenuOpen(!menuOpen);
+  const closeMenu = () => setMenuOpen(false);
+
   return (
     <header className="header">
       <div className="header-container">
-        <Link to="/" className="header-logo">
-          <img src={logo} alt="Nailed It Property Solutions" />
+        <Link to="/" className="header-logo" onClick={closeMenu}>
+          <img src={logo} alt="Nailed It Property Solutions" width="160" height="48" />
         </Link>
-        <nav className="header-nav" aria-label="Main navigation">
+        <button
+          className={`hamburger${menuOpen ? ' hamburger--open' : ''}`}
+          onClick={toggleMenu}
+          aria-label="Toggle navigation menu"
+          aria-expanded={menuOpen}
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <nav className={`header-nav${menuOpen ? ' header-nav--open' : ''}`} aria-label="Main navigation">
           <ul>
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/about">About</Link></li>
-            <li><Link to="/services">Services</Link></li>
-            <li><Link to="/reviews">Reviews</Link></li>
-            <li><Link to="/contact">Contact</Link></li>
+            <li><Link to="/" onClick={closeMenu}>Home</Link></li>
+            <li><Link to="/about" onClick={closeMenu}>About</Link></li>
+            <li><Link to="/services" onClick={closeMenu}>Services</Link></li>
+            <li><Link to="/subscriptions" onClick={closeMenu}>Plans</Link></li>
+            <li><Link to="/turnovers" onClick={closeMenu}>Turnovers</Link></li>
+            <li><Link to="/reviews" onClick={closeMenu}>Reviews</Link></li>
+            <li><Link to="/contact" onClick={closeMenu}>Contact</Link></li>
           </ul>
         </nav>
       </div>

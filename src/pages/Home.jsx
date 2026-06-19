@@ -16,11 +16,15 @@ function Home() {
       </Link>
 
       <section className="home-protected">
-        <img
-          src={protectedHome}
-          alt="Home protected by a Nailed It Property Solutions subscription"
-          className="protected-image"
-        />
+        <div className="watermark-wrap">
+          <img
+            src={protectedHome}
+            alt="Home protected by a Nailed It Property Solutions subscription"
+            className="protected-image"
+            width="700"
+            height="467"
+          />
+        </div>
         <p className="protected-headline">Equip your home today with a Nailed It subscription.</p>
       </section>
 

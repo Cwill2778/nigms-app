@@ -99,7 +99,7 @@ function Services() {
                 onClick={() => setLightbox({ src: kitchenBefore, alt: 'Kitchen wall before — exposed framing' })}
                 aria-label="View full image: Kitchen wall before"
               >
-                <img src={kitchenBefore} alt="Kitchen wall before — exposed framing" />
+                <img src={kitchenBefore} alt="Kitchen wall before — exposed framing" width="400" height="280" />
               </button>
               <figcaption>Before</figcaption>
             </figure>
@@ -109,7 +109,7 @@ function Services() {
                 onClick={() => setLightbox({ src: kitchenAfter, alt: 'Kitchen wall after — smooth sheetrock finish with built-in shelf' })}
                 aria-label="View full image: Kitchen wall after"
               >
-                <img src={kitchenAfter} alt="Kitchen wall after — smooth sheetrock finish with built-in shelf" />
+                <img src={kitchenAfter} alt="Kitchen wall after — smooth sheetrock finish with built-in shelf" width="400" height="280" />
               </button>
               <figcaption>After</figcaption>
             </figure>
