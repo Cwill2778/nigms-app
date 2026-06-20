@@ -6,6 +6,96 @@ import kitchenBefore from '../assets/HarveyKitchenWallBefore.jpg';
 import kitchenAfter from '../assets/HarveyKitchenWallAfter.jpg';
 import './Services.css';
 
+const serviceCategories = [
+  {
+    title: 'Property Maintenance Subscriptions',
+    services: [
+      'Preventative HVAC maintenance (filter swaps, health checks)',
+      'Smoke & CO detector testing / battery replacement',
+      'Gutter cleaning',
+      'Visual property inspections (interior & exterior)',
+      'Property management reports',
+      'Priority tenant work order response',
+      'Included monthly handyman labor hours',
+      'Emergency dispatch',
+      'Trade coordination (licensed specialist oversight)',
+    ],
+  },
+  {
+    title: 'Unit Turnover Services',
+    services: [
+      'Turnover assessment & scope building',
+      'Paint touch-ups (walls, trim, baseboards)',
+      'Floor cleaning (sweep & deep mop)',
+      'Lock re-keying / replacement',
+      'Odor neutralization & air freshener install',
+      'Appliance & window functional audit',
+      'Property securing & key hand-off',
+      'Trash-out / junk removal',
+    ],
+  },
+  {
+    title: 'Drywall & Finishing',
+    services: [
+      'Sheetrock hanging & installation',
+      'Mudding, taping & smooth finish',
+      'Drywall patching (nail holes to large damage)',
+      'Texture matching',
+      'Custom built-in shelving & features',
+    ],
+  },
+  {
+    title: 'Interior Painting',
+    services: [
+      'Full room painting',
+      'Trim & baseboard touch-ups',
+      'Proper prep (sanding, priming, taping)',
+      'Color matching',
+    ],
+  },
+  {
+    title: 'Plumbing Repairs',
+    services: [
+      'Leaking faucet repair / replacement',
+      'Running toilet repair',
+      'Water heater maintenance',
+      'Fixture replacement',
+      'General plumbing troubleshooting',
+    ],
+  },
+  {
+    title: 'Exterior & Decks',
+    services: [
+      'Deck repair & restoration',
+      'Pressure washing',
+      'Siding repair',
+      'Stair replacement & repair',
+      'Outdoor living space construction',
+    ],
+  },
+  {
+    title: 'Windows & Doors',
+    services: [
+      'Window replacement (single & multi-pane)',
+      'Door replacement',
+      'Frame repair',
+      'Weathersealing & insulation',
+      'Hardware adjustment & replacement',
+    ],
+  },
+  {
+    title: 'General Property Repairs',
+    services: [
+      'Cabinet hinge tightening & adjustment',
+      'Light fixture replacement',
+      'Blind replacement',
+      'Minor carpentry (shelving, trim)',
+      'Lightbulb replacement',
+      'Anything else that\'s broken or wearing out',
+    ],
+  },
+];
+
 function Services() {
   useScrollReveal();
 
@@ -22,7 +112,7 @@ function Services() {
       )}
 
       <section className="services-intro reveal">
-        <h1>What We Do</h1>
+        <h1>Our Services</h1>
         <p>
           Straightforward property maintenance and repair services at fair,
           flat-rate prices. No hidden fees, no inflated quotes — just quality
@@ -30,52 +120,20 @@ function Services() {
         </p>
       </section>
 
-      <section className="services-list reveal">
-        <h2>Our Services</h2>
+      <section className="services-categories reveal">
+        <h2>What We Offer</h2>
         <div className="accent-bar" aria-hidden="true"></div>
-        <div className="services-grid">
-          <div className="service-card">
-            <h3>Drywall &amp; Finishing</h3>
-            <p>
-              Sheetrock hanging, mudding, taping, and smooth finishes. Texture
-              matching, patching, and custom built-in features.
-            </p>
-          </div>
-          <div className="service-card">
-            <h3>Interior Painting</h3>
-            <p>
-              Proper prep, clean lines, and finishes that hold up. We take our
-              time so you don&rsquo;t have to repaint next year.
-            </p>
-          </div>
-          <div className="service-card">
-            <h3>Plumbing Repairs</h3>
-            <p>
-              Leaks, fixtures, water heaters, and general plumbing maintenance.
-              We fix the problem, not just the symptom.
-            </p>
-          </div>
-          <div className="service-card">
-            <h3>Exterior &amp; Decks</h3>
-            <p>
-              Deck repair, pressure washing, siding, stairs, and outdoor spaces
-              built to handle Georgia weather year after year.
-            </p>
-          </div>
-          <div className="service-card">
-            <h3>Window &amp; Door Replacement</h3>
-            <p>
-              Energy-efficient upgrades, proper frame repairs, and sealing done
-              right. Better comfort, lower energy bills.
-            </p>
-          </div>
-          <div className="service-card">
-            <h3>General Property Repairs</h3>
-            <p>
-              Everything else that needs fixing. If it&rsquo;s broken or wearing
-              out, we&rsquo;ll take care of it — fairly and honestly.
-            </p>
-          </div>
+        <div className="categories-grid">
+          {serviceCategories.map((category, index) => (
+            <div className="category-card" key={index}>
+              <h3>{category.title}</h3>
+              <ul>
+                {category.services.map((service, sIndex) => (
+                  <li key={sIndex}>{service}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       </section>
 

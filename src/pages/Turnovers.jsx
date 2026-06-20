@@ -140,36 +140,53 @@ function Turnovers() {
         </div>
       </section>
 
-      <section className="turns-trashout reveal">
-        <h2>Trash-Out Service</h2>
+      <section className="turns-heavy-rescue reveal">
+        <h2>The &ldquo;Heavy Rescue&rdquo; Add-Ons</h2>
         <div className="accent-bar" aria-hidden="true"></div>
         <p>
-          Tenants leave things behind. Old furniture, garbage, mattresses — we
-          handle it so you don&rsquo;t have to. Trash-outs are priced separately
-          from turnover work because every situation is different.
+          Unfortunately, not every tenant respects your investment. When a
+          property is left full of abandoned garbage or significant damage, our
+          Heavy Rescue services step in to stop the bleeding and get your asset
+          back on the market.
         </p>
-        <p className="trashout-price">$300 – $600 flat + dump fees</p>
-        <p>
-          Covers loading, hauling, and disposal. Priced by volume during the
-          initial walkthrough.
-        </p>
-      </section>
 
-      <section className="turns-upsell reveal">
-        <h2>Keep It This Way</h2>
-        <div className="accent-bar" aria-hidden="true"></div>
-        <p>
-          We just got your property back to baseline. To keep it in this condition
-          and catch issues before the next tenant moves out, consider placing this
-          property on one of our maintenance subscription plans.
+        <div className="rescue-items">
+          <div className="rescue-item">
+            <h3>Complete Property Trash-Outs</h3>
+            <p>
+              Don&rsquo;t waste a weekend hauling away a bad tenant&rsquo;s mess. We
+              remove and dispose of abandoned furniture, excessive garbage, and
+              heavy debris. We handle the heavy lifting, the truck wear-and-tear,
+              and the dump fees, leaving you with a completely cleared unit ready
+              for repairs.
+            </p>
+          </div>
+
+          <div className="rescue-item">
+            <h3>Major Drywall &amp; Damage Repair</h3>
+            <p>
+              From doorknob holes to severe wall damage, kicked-in doors, and
+              chewed-up baseboards, we patch, sand, and repair significant cosmetic
+              damage to completely erase the previous tenant&rsquo;s footprint.
+            </p>
+          </div>
+
+          <div className="rescue-item">
+            <h3>Asset Recovery &amp; Hardware Replacement</h3>
+            <p>
+              We quickly swap out smashed blinds, broken light fixtures, ripped
+              window screens, and destroyed cabinet hardware, bringing the unit
+              back up to your high standards without needing to call in multiple
+              expensive sub-contractors.
+            </p>
+          </div>
+        </div>
+
+        <p className="rescue-note">
+          Heavy Rescue services and Trash-Outs are quoted on a custom, flat-rate
+          project basis after our initial walkthrough. We assess the damage, give
+          you a straightforward price, and get straight to work.
         </p>
-        <p>
-          Proactive maintenance means smaller turnovers, fewer surprises, and
-          longer-lasting tenants.
-        </p>
-        <Link to="/subscriptions" className="cta-button cta-button--secondary" style={{ marginTop: '16px' }}>
-          View Subscription Plans
-        </Link>
       </section>
 
       <section className="turns-cta reveal">
