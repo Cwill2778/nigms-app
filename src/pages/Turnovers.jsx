@@ -86,13 +86,12 @@ function Turnovers() {
         <div className="accent-bar" aria-hidden="true"></div>
         <p>
           Flat-rate pricing based on scope — no hourly surprises. Materials
-          billed separately at cost.
+          billed separately at cost. Starting at $249.99.
         </p>
 
         <div className="packages-grid">
           <div className="package-card">
             <p className="package-name">Light Touch-Up</p>
-            <p className="package-price">$250 – $450 <span>flat + materials</span></p>
             <p className="package-description">
               Minor work to get a well-maintained unit ready for the next tenant.
             </p>
@@ -108,7 +107,6 @@ function Turnovers() {
 
           <div className="package-card">
             <p className="package-name">Standard Turn</p>
-            <p className="package-price">$600 – $1,200 <span>flat + materials</span></p>
             <p className="package-description">
               More involved work for units with moderate wear from the previous tenant.
             </p>
@@ -123,7 +121,6 @@ function Turnovers() {
 
           <div className="package-card">
             <p className="package-name">Heavy Turn</p>
-            <p className="package-price">$1,500+ <span>flat + materials</span></p>
             <p className="package-description">
               Significant restoration for units that took a beating.
             </p>
