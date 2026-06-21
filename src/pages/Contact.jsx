@@ -88,12 +88,13 @@ function Contact() {
                   <td>9:30 AM – 5:30 PM</td>
                 </tr>
                 <tr>
-                  <td>Saturday</td>
-                  <td>11:00 AM – 2:30 PM</td>
+                  <td>Saturday – Sunday</td>
+                  <td>Open 24 Hours</td>
                 </tr>
                 <tr>
-                  <td>Sunday</td>
-                  <td>Emergencies Only</td>
+                  <td colSpan="2" style={{ fontSize: '0.75rem', color: 'var(--text-sub)', fontStyle: 'italic', paddingTop: '8px' }}>
+                    We know your weekends are your only real time to get things handled. We&rsquo;re available when it works for you.
+                  </td>
                 </tr>
               </tbody>
             </table>
