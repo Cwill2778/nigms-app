@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import useScrollReveal from '../hooks/useScrollReveal';
+import usePageMeta from '../hooks/usePageMeta';
 import Lightbox from '../components/Lightbox';
 import portrait from '../assets/CharlesPortrait.png';
 import working1 from '../assets/CharlesWorking1.jpg';
@@ -11,6 +12,10 @@ import './About.css';
 
 function About() {
   useScrollReveal();
+  usePageMeta(
+    'About Nailed It Property Solutions | Rome, GA Maintenance',
+    "Learn about Nailed It Property Solutions, Rome, GA's trusted local partner for reliable residential repairs, preventative maintenance, and rental property upkeep."
+  );
 
   const [lightbox, setLightbox] = useState(null);
 

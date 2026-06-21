@@ -1,9 +1,14 @@
 import { Link } from 'react-router-dom';
 import useScrollReveal from '../hooks/useScrollReveal';
+import usePageMeta from '../hooks/usePageMeta';
 import './Subscriptions.css';
 
 function Subscriptions() {
   useScrollReveal();
+  usePageMeta(
+    'Property Maintenance Subscriptions Rome, GA | Nailed It',
+    'Protect your Rome, GA property with tiered preventative maintenance plans. Perfect for homeowners and landlords wanting hands-off, predictable property care.'
+  );
 
   return (
     <div className="subscriptions">

@@ -1,0 +1,241 @@
+/* Careers intro */
+.careers-intro {
+  padding: 56px 16px;
+  text-align: center;
+}
+
+.careers-intro h1 { margin-bottom: 14px; }
+
+.careers-intro p {
+  font-size: 1rem;
+  max-width: 600px;
+  margin: 0 auto 14px;
+  line-height: 1.7;
+}
+
+.careers-values {
+  padding: 40px 16px;
+  border-top: 1px solid var(--border);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.careers-values h2 { margin-bottom: 8px; text-align: center; }
+.careers-values .accent-bar { margin: 0 auto 28px; }
+
+.values-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.value-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 2px;
+  padding: 20px;
+}
+
+.value-item h3 { margin-bottom: 6px; }
+.value-item p { font-size: 0.9rem; line-height: 1.6; }
+
+/* Application section */
+.careers-apply {
+  padding: 56px 16px;
+  border-top: 1px solid var(--border);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.careers-apply h2 { text-align: center; margin-bottom: 8px; }
+.careers-apply .accent-bar { margin: 0 auto 28px; }
+
+/* Progress bar */
+.form-progress {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.progress-step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--heading);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-sub);
+}
+
+.progress-step.active {
+  color: var(--accent);
+}
+
+.progress-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--border);
+  border: 2px solid var(--border);
+}
+
+.progress-step.active .progress-dot {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+
+.progress-step.completed .progress-dot {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Form styles */
+.career-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.career-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.career-form label {
+  font-family: var(--heading);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-sub);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.career-form input,
+.career-form select,
+.career-form textarea {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  font-size: 0.95rem;
+  font-family: var(--sans);
+  background: var(--bg-secondary);
+  color: var(--text);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.career-form input:focus,
+.career-form select:focus,
+.career-form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.career-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Radio/checkbox groups */
+.radio-group,
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.radio-group label,
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.radio-group input,
+.checkbox-group input {
+  width: auto;
+  padding: 0;
+  accent-color: var(--accent);
+}
+
+/* Navigation buttons */
+.form-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.form-nav .cta-button { flex: 1; text-align: center; }
+
+.btn-back {
+  background: transparent;
+  border: 2px solid var(--text-sub);
+  color: var(--text);
+  box-shadow: none;
+}
+
+.btn-back:hover {
+  background: var(--text-sub);
+  color: var(--bg-primary);
+  box-shadow: none;
+}
+
+/* Acknowledgment */
+.acknowledgment {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-sub);
+  padding: 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+}
+
+.acknowledgment label {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.8rem;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text);
+}
+
+.secure-note {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-sub);
+  font-style: italic;
+  margin-top: 12px;
+}
+
+@media (min-width: 768px) {
+  .careers-intro { padding: 72px 32px; }
+  .careers-values { padding: 56px 32px; }
+  .values-grid { grid-template-columns: repeat(2, 1fr); }
+  .careers-apply { padding: 72px 32px; }
+}
+
+@media (min-width: 1024px) {
+  .careers-intro { padding: 88px 48px; }
+  .careers-values { padding: 72px 48px; }
+  .careers-apply { padding: 88px 48px; }
+}

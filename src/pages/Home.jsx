@@ -1,10 +1,15 @@
 import { Link } from 'react-router-dom';
 import useScrollReveal from '../hooks/useScrollReveal';
+import usePageMeta from '../hooks/usePageMeta';
 import protectedHome from '../assets/nailedItProtectedHome.jpg';
 import './Home.css';
 
 function Home() {
   useScrollReveal();
+  usePageMeta(
+    'Property Maintenance Rome, GA | Nailed It Property Solutions',
+    'Nailed It Property Solutions offers expert property maintenance, unit turnovers, and home repair services for homeowners and landlords in Rome, GA. Call today!'
+  );
 
   return (
     <div className="home">

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useScrollReveal from '../hooks/useScrollReveal';
+import usePageMeta from '../hooks/usePageMeta';
 import Lightbox from '../components/Lightbox';
 import kitchenBefore from '../assets/HarveyKitchenWallBefore.jpg';
 import kitchenAfter from '../assets/HarveyKitchenWallAfter.jpg';
@@ -98,6 +99,10 @@ const serviceCategories = [
 
 function Services() {
   useScrollReveal();
+  usePageMeta(
+    'Handyman & Property Maintenance Services Rome, GA | Nailed It',
+    'Explore our full range of property solutions in Rome, GA, including drywall repair, plumbing checks, general maintenance, and preventative care.'
+  );
 
   const [lightbox, setLightbox] = useState(null);
 

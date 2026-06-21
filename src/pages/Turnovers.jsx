@@ -1,9 +1,14 @@
 import { Link } from 'react-router-dom';
 import useScrollReveal from '../hooks/useScrollReveal';
+import usePageMeta from '../hooks/usePageMeta';
 import './Turnovers.css';
 
 function Turnovers() {
   useScrollReveal();
+  usePageMeta(
+    'Rental Unit Turnovers & Make-Readies Rome, GA | Nailed It',
+    'Fast, reliable rental unit turnovers in Rome, GA. We help landlords minimize vacancy time with professional painting, repairs, and make-ready services.'
+  );
 
   return (
     <div className="turnovers">
@@ -40,14 +45,14 @@ function Turnovers() {
             <span className="process-step-number">01</span>
             <div className="process-step-content">
               <h3>Precision Paint Touch-Ups</h3>
-              <p>We meticulously touch up walls, trim, and baseboards to erase the wear-and-tear of the previous tenant, restoring a clean, flawless aesthetic that shows beautifully.</p>
+              <p>We touch up walls, trim, and baseboards to erase the wear-and-tear of the previous tenant, restoring a clean, flawless aesthetic that shows beautifully.</p>
             </div>
           </div>
           <div className="process-step">
             <span className="process-step-number">02</span>
             <div className="process-step-content">
               <h3>Move-In Ready Floors</h3>
-              <p>We perform a thorough sweep and deep-mop of all hard surfaces, ensuring the property looks immaculate the second a prospective renter walks through the door.</p>
+              <p>We perform a thorough cleaning ensuring the property looks move-in ready the second a prospective renter walks through the door.</p>
             </div>
           </div>
           <div className="process-step">

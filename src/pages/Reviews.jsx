@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import useScrollReveal from '../hooks/useScrollReveal';
+import usePageMeta from '../hooks/usePageMeta';
 import './Reviews.css';
 
 // TODO: Replace with your actual Google Business review link
@@ -7,6 +8,10 @@ const GOOGLE_REVIEW_URL = 'https://g.page/r/CWiM9mqvEGVkEBM/review';
 
 function Reviews() {
   useScrollReveal();
+  usePageMeta(
+    'Client Reviews | Rome GA Property Maintenance | Nailed It',
+    'Read what Rome homeowners and landlords have to say about our reliable property maintenance, unit turnovers, and repair services at Nailed It Property Solutions.'
+  );
 
   const [formData, setFormData] = useState({
     name: '',

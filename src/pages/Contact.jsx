@@ -1,9 +1,14 @@
 import { useState } from 'react';
 import useScrollReveal from '../hooks/useScrollReveal';
+import usePageMeta from '../hooks/usePageMeta';
 import './Contact.css';
 
 function Contact() {
   useScrollReveal();
+  usePageMeta(
+    'Contact Nailed It Property Solutions | Rome, GA Repairs',
+    'Need reliable property maintenance or emergency repairs in Rome, GA? Contact Nailed It Property Solutions today to get a quote or schedule a service.'
+  );
 
   const [formData, setFormData] = useState({
     name: '',

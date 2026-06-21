@@ -39,6 +39,7 @@ function Header() {
               <ul className="dropdown-menu">
                 <li><Link to="/about" onClick={closeMenu}>About Us</Link></li>
                 <li><Link to="/reviews" onClick={closeMenu}>Reviews</Link></li>
+                <li><Link to="/careers" onClick={closeMenu}>Careers</Link></li>
                 <li><Link to="/contact" onClick={closeMenu}>Contact Us</Link></li>
               </ul>
             </li>
