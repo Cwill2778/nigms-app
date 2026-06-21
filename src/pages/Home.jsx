@@ -15,8 +15,8 @@ function Home() {
     <div className="home">
       <Link to="/subscriptions" className="scrolling-banner" aria-label="View subscription plans">
         <div className="banner-track">
-          <span>🔨 Rome&rsquo;s #1 Choice for Property Maintenance — See Why the Peace of Mind Plan is Our Most Popular &rarr;</span>
-          <span>🔨 Rome&rsquo;s #1 Choice for Property Maintenance — See Why the Peace of Mind Plan is Our Most Popular &rarr;</span>
+          <span>🔨 Rome&rsquo;s #1 Choice for Property Maintenance — Open 24 Hours Saturday &amp; Sunday — See Why the Peace of Mind Plan is Our Most Popular &rarr;</span>
+          <span>🔨 Rome&rsquo;s #1 Choice for Property Maintenance — Open 24 Hours Saturday &amp; Sunday — See Why the Peace of Mind Plan is Our Most Popular &rarr;</span>
         </div>
       </Link>
 

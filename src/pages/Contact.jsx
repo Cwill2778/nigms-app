@@ -63,7 +63,7 @@ function Contact() {
 
           <div className="info-block">
             <h3>Direct Line (Charles)</h3>
-            <a href="tel:+17068448193">(706) 844-8193</a>
+            <a href="tel:+17068448059">(706) 844-8059</a>
           </div>
 
           <div className="info-block">
