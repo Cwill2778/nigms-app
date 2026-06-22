@@ -188,10 +188,10 @@ function Home() {
           <div className="testimonial-card">
             <p className="testimonial-stars">★★★★★</p>
             <p className="testimonial-text">
-              &ldquo;Charles replaced our water heater the same day we called.
-              Fair price, clean work, and he even cleaned up after himself.&rdquo;
+              &ldquo;They are very thorough and know their business. I would
+              recommend them to anyone needing home repairs.&rdquo;
             </p>
-            <p className="testimonial-author">— Marcus T.</p>
+            <p className="testimonial-author">— Shane Cronan</p>
           </div>
           <div className="testimonial-card">
             <p className="testimonial-stars">★★★★★</p>
@@ -199,7 +199,7 @@ function Home() {
               &ldquo;We had three different contractors ghost us before finding
               Nailed It. Charles showed up on time and did the work right.&rdquo;
             </p>
-            <p className="testimonial-author">— Sandra &amp; Bill H.</p>
+            <p className="testimonial-author">— Sandra &amp; Bill Henderson</p>
           </div>
         </div>
         <Link to="/reviews" className="cta-button cta-button--secondary" style={{ marginTop: '28px' }}>

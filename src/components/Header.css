@@ -156,6 +156,36 @@
   font-size: 0.8rem;
 }
 
+/* Social bar below nav */
+.social-bar {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  padding: 8px 16px 0;
+  border-top: 1px solid var(--border);
+  margin-top: 12px;
+}
+
+.social-bar a {
+  font-family: var(--heading);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-sub);
+  text-decoration: none;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.social-bar a:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(255, 138, 0, 0.05);
+}
+
 /* Desktop */
 @media (min-width: 768px) {
   .header { padding: 16px 32px; }

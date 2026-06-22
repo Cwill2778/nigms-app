@@ -39,6 +39,7 @@ function Header() {
               <ul className="dropdown-menu">
                 <li><Link to="/about" onClick={closeMenu}>About Us</Link></li>
                 <li><Link to="/reviews" onClick={closeMenu}>Reviews</Link></li>
+                <li><Link to="/faq" onClick={closeMenu}>FAQ</Link></li>
                 <li><Link to="/careers" onClick={closeMenu}>Careers</Link></li>
                 <li><Link to="/contact" onClick={closeMenu}>Contact Us</Link></li>
               </ul>
@@ -55,6 +56,11 @@ function Header() {
             </li>
           </ul>
         </nav>
+      </div>
+      <div className="social-bar">
+        <a href="https://maps.app.goo.gl/J6uxtzZ1p4EFmLnJ8" target="_blank" rel="noopener noreferrer">Google</a>
+        <a href="https://nextdoor.com/page/nailed-it-property-solutions-rome-ga/" target="_blank" rel="noopener noreferrer">Nextdoor</a>
+        <a href="https://www.yelp.com/biz/nailed-it-property-solutions-rome" target="_blank" rel="noopener noreferrer">Yelp</a>
       </div>
     </header>
   );

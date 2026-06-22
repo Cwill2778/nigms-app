@@ -15,7 +15,7 @@ function Turnovers() {
       <section className="turns-intro reveal">
         <h1>Unit Turnovers</h1>
         <p>
-          Done right so it rents right. We get your vacant unit move-in ready
+          We get your vacant unit move-in ready in 48 hrs. or less
           with thorough, professional turnover services — no corners cut, no
           details missed.
         </p>

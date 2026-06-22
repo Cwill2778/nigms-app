@@ -29,6 +29,32 @@
   color: var(--accent);
 }
 
+.footer-contact-label {
+  font-family: var(--heading);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--accent);
+  margin-bottom: 4px !important;
+  margin-top: 12px !important;
+}
+
+.footer-btn {
+  display: inline-block;
+  padding: 4px 12px;
+  margin-right: 8px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  font-size: 0.8rem;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.footer-btn:hover {
+  background: rgba(255, 138, 0, 0.1);
+  border-color: var(--accent);
+}
+
 /* Column links */
 .footer-links {
   display: grid;

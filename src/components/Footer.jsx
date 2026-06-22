@@ -7,10 +7,6 @@ function Footer() {
   return (
     <footer className="footer">
       <div className="footer-container">
-        <div className="footer-contact">
-          <p><a href="tel:+17068448193">(706) 844-8193</a> &nbsp;|&nbsp; PO Box 53, Rome, GA 30162</p>
-        </div>
-
         <div className="footer-links">
           <div className="footer-col">
             <h4>Company</h4>
@@ -20,6 +16,7 @@ function Footer() {
               <li><Link to="/subscriptions">Plans</Link></li>
               <li><Link to="/turnovers">Turnovers</Link></li>
               <li><Link to="/reviews">Reviews</Link></li>
+              <li><Link to="/faq">FAQ</Link></li>
               <li><Link to="/careers">Careers</Link></li>
               <li><Link to="/contact">Contact</Link></li>
             </ul>
@@ -27,8 +24,9 @@ function Footer() {
           <div className="footer-col">
             <h4>Find Us On</h4>
             <ul>
-              <li><a href="https://nextdoor.com/pages/nailed-it-property-solutions-rome-ga" target="_blank" rel="noopener noreferrer">Nextdoor</a></li>
-              <li><a href="https://share.google/hOg4Vl8iqFu7EWr4c" target="_blank" rel="noopener noreferrer">Google Business</a></li>
+              <li><a href="https://nextdoor.com/page/nailed-it-property-solutions-rome-ga/" target="_blank" rel="noopener noreferrer">Nextdoor</a></li>
+              <li><a href="https://maps.app.goo.gl/J6uxtzZ1p4EFmLnJ8" target="_blank" rel="noopener noreferrer">Google Business</a></li>
+              <li><a href="https://www.yelp.com/biz/nailed-it-property-solutions-rome" target="_blank" rel="noopener noreferrer">Yelp</a></li>
               <li><a href="https://g.page/r/CWiM9mqvEGVkEBM/review" target="_blank" rel="noopener noreferrer">Leave a Google Review</a></li>
             </ul>
           </div>

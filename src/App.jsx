@@ -8,6 +8,7 @@ import Turnovers from './pages/Turnovers';
 import Reviews from './pages/Reviews';
 import Contact from './pages/Contact';
 import Careers from './pages/Careers';
+import FAQ from './pages/FAQ';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="reviews" element={<Reviews />} />
           <Route path="contact" element={<Contact />} />
           <Route path="careers" element={<Careers />} />
+          <Route path="faq" element={<FAQ />} />
         </Route>
       </Routes>
     </BrowserRouter>
