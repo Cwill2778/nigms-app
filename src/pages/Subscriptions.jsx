@@ -13,6 +13,11 @@ function Subscriptions() {
   return (
     <div className="subscriptions">
       <section className="subs-intro reveal">
+        <div className="subs-promo">
+          <p className="promo-badge">Limited Time Offer — Ends Friday</p>
+          <p className="promo-headline">25% Off Any Tier + Risk-Free Guarantee</p>
+          <p className="promo-sub">Not satisfied? We&rsquo;ll refund your money. No questions asked.</p>
+        </div>
         <h1>Maintenance Plans</h1>
         <p>
           Predictable monthly pricing. No surprise invoices. Choose the level of

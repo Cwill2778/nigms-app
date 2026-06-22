@@ -1,8 +1,60 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import useScrollReveal from '../hooks/useScrollReveal';
 import usePageMeta from '../hooks/usePageMeta';
 import protectedHome from '../assets/nailedItProtectedHome.jpg';
 import './Home.css';
+
+const testimonials = [
+  { stars: 5, text: 'Charles is proactive and very detail oriented. He has helped cure my landlord woes.', author: 'Charlie Ford' },
+  { stars: 5, text: 'They are very thorough and know their business. I would recommend them to anyone needing home repairs. They have the knowledge and can build anything, even a house from the ground up.', author: 'Shane Cronan' },
+  { stars: 5, text: 'Charles replaced our water heater the same day we called. Fair price for such a rapid response. Will be signing up for the subscription plan.', author: 'Marcus Thompson' },
+  { stars: 5, text: 'We had three different contractors ghost us before finding Nailed It. Charles showed up, gave us an honest quote, and did the work right. No surprises on the bill.', author: 'Sandra & Bill Henderson' },
+  { stars: 5, text: "The drywall finish in our kitchen looks really great. You can't even tell where the old damage was. Great attention to detail.", author: 'David Reynolds' },
+];
+
+function TestimonialCarousel() {
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % testimonials.length);
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <section className="home-testimonials reveal">
+      <h2>What Clients Are Saying</h2>
+      <div className="accent-bar" aria-hidden="true"></div>
+      <div className="testimonial-carousel">
+        {testimonials.map((t, i) => (
+          <div
+            className={`testimonial-slide${i === current ? ' testimonial-slide--active' : ''}`}
+            key={i}
+          >
+            <p className="testimonial-stars">{'★'.repeat(t.stars)}</p>
+            <p className="testimonial-text">&ldquo;{t.text}&rdquo;</p>
+            <p className="testimonial-author">— {t.author}</p>
+          </div>
+        ))}
+      </div>
+      <div className="testimonial-dots">
+        {testimonials.map((_, i) => (
+          <button
+            key={i}
+            className={`testimonial-dot${i === current ? ' testimonial-dot--active' : ''}`}
+            onClick={() => setCurrent(i)}
+            aria-label={`View review ${i + 1}`}
+          />
+        ))}
+      </div>
+      <Link to="/reviews" className="cta-button cta-button--secondary" style={{ marginTop: '24px' }}>
+        Read All Reviews
+      </Link>
+    </section>
+  );
+}
 
 function Home() {
   useScrollReveal();
@@ -15,8 +67,8 @@ function Home() {
     <div className="home">
       <Link to="/subscriptions" className="scrolling-banner" aria-label="View subscription plans">
         <div className="banner-track">
-          <span>🔨 Rome&rsquo;s #1 Choice for Property Maintenance — Open 24 Hours Saturday &amp; Sunday — See Why the Peace of Mind Plan is Our Most Popular &rarr;</span>
-          <span>🔨 Rome&rsquo;s #1 Choice for Property Maintenance — Open 24 Hours Saturday &amp; Sunday — See Why the Peace of Mind Plan is Our Most Popular &rarr;</span>
+          <span>🔨 LIMITED TIME: 25% Off Any Subscription Tier — Risk-Free, Money-Back Guarantee — Offer Ends Friday &rarr;</span>
+          <span>🔨 LIMITED TIME: 25% Off Any Subscription Tier — Risk-Free, Money-Back Guarantee — Offer Ends Friday &rarr;</span>
         </div>
       </Link>
 
@@ -170,6 +222,19 @@ function Home() {
       </section>
 
       <section className="home-straight-talk reveal">
+        <h2>No Membership Required.</h2>
+        <div className="accent-bar" aria-hidden="true"></div>
+        <p>
+          You don&rsquo;t need a subscription to get top-quality work from us.
+          Every client gets the same level of craftsmanship, attention to detail,
+          and honest pricing — whether it&rsquo;s a one-time repair or a full
+          renovation. Our preventative maintenance plans are there if you want
+          extra peace of mind and priority scheduling, but they&rsquo;re never a
+          requirement. Need something fixed? Just call.
+        </p>
+      </section>
+
+      <section className="home-repairs reveal">
         <h2>One-Off Repairs. Best Price in Town.</h2>
         <div className="accent-bar" aria-hidden="true"></div>
         <p>
@@ -181,31 +246,7 @@ function Home() {
         </p>
       </section>
 
-      <section className="home-testimonials reveal">
-        <h2>What Clients Are Saying</h2>
-        <div className="accent-bar" aria-hidden="true"></div>
-        <div className="testimonials-grid">
-          <div className="testimonial-card">
-            <p className="testimonial-stars">★★★★★</p>
-            <p className="testimonial-text">
-              &ldquo;They are very thorough and know their business. I would
-              recommend them to anyone needing home repairs.&rdquo;
-            </p>
-            <p className="testimonial-author">— Shane Cronan</p>
-          </div>
-          <div className="testimonial-card">
-            <p className="testimonial-stars">★★★★★</p>
-            <p className="testimonial-text">
-              &ldquo;We had three different contractors ghost us before finding
-              Nailed It. Charles showed up on time and did the work right.&rdquo;
-            </p>
-            <p className="testimonial-author">— Sandra &amp; Bill Henderson</p>
-          </div>
-        </div>
-        <Link to="/reviews" className="cta-button cta-button--secondary" style={{ marginTop: '28px' }}>
-          Read All Reviews
-        </Link>
-      </section>
+      <TestimonialCarousel />
 
       <section className="home-cta reveal">
         <h2>Take the Hammer Out of Your Hands.</h2>

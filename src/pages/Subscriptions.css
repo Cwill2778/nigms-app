@@ -1,3 +1,35 @@
+/* Promo banner */
+.subs-promo {
+  background: rgba(255, 138, 0, 0.08);
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+  padding: 20px 24px;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.promo-badge {
+  font-family: var(--heading);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--accent) !important;
+  margin-bottom: 8px !important;
+}
+
+.promo-headline {
+  font-size: 1.3rem !important;
+  font-weight: 800 !important;
+  color: var(--text) !important;
+  margin-bottom: 6px !important;
+}
+
+.promo-sub {
+  font-size: 0.9rem !important;
+  color: var(--text-sub) !important;
+}
+
 /* Subscriptions intro */
 .subs-intro {
   padding: 56px 16px;
