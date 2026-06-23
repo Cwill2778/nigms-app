@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useScrollReveal from '../hooks/useScrollReveal';
 import usePageMeta from '../hooks/usePageMeta';
+import { supabase } from '../lib/supabase';
 import './Reviews.css';
 
-// TODO: Replace with your actual Google Business review link
 const GOOGLE_REVIEW_URL = 'https://g.page/r/CWiM9mqvEGVkEBM/review';
 
 function Reviews() {
@@ -13,11 +13,21 @@ function Reviews() {
     'Read what Rome homeowners and landlords have to say about our reliable property maintenance, unit turnovers, and repair services at Nailed It Property Solutions.'
   );
 
+  const [reviews, setReviews] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
     rating: '',
     review: '',
   });
+
+  useEffect(() => {
+    supabase
+      .from('reviews')
+      .select('*')
+      .eq('published', true)
+      .order('created_at', { ascending: false })
+      .then(({ data }) => setReviews(data || []));
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -41,40 +51,6 @@ function Reviews() {
       })
       .catch(() => alert('Something went wrong. Please try again.'));
   };
-
-  // Placeholder reviews — replace with real ones as they come in
-  const reviews = [
-    {
-      name: 'Charlie Ford',
-      stars: 5,
-      text: 'Charles is proactive and very detail oriented. He has helped cure my landlord woes.',
-      date: 'March 2026',
-    },
-    {
-      name: 'Shane Cronan',
-      stars: 5,
-      text: 'They are very thorough and know their business. I would recommend them to anyone needing home repairs. They have the knowledge and can build anything, even a house from the ground up.',
-      date: 'June 2026',
-    },
-    {
-      name: 'Marcus Thompson',
-      stars: 5,
-      text: 'Charles replaced our water heater the same day we called. Fair price for such a rapid response. Will be signing up for the subscription plan.',
-      date: 'June 2026',
-    },
-    {
-      name: 'Sandra & Bill Henderson',
-      stars: 5,
-      text: 'We had three different contractors ghost us before finding Nailed It. Charles showed up, gave us an honest quote, and did the work right. No surprises on the bill, no headaches, and nothing left unfinished. Great work!',
-      date: 'May 2026',
-    },
-    {
-      name: 'David Reynolds',
-      stars: 5,
-      text: 'The drywall finish in our kitchen looks really great. You can\'t even tell where the old damage was. Great attention to detail and the built-in shelf was a nice bonus.',
-      date: 'April 2026',
-    },
-  ];
 
   const renderStars = (count) => '★'.repeat(count) + '☆'.repeat(5 - count);
 

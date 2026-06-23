@@ -2,26 +2,39 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import useScrollReveal from '../hooks/useScrollReveal';
 import usePageMeta from '../hooks/usePageMeta';
+import { supabase } from '../lib/supabase';
 import protectedHome from '../assets/nailedItProtectedHome.jpg';
 import './Home.css';
 
-const testimonials = [
-  { stars: 5, text: 'Charles is proactive and very detail oriented. He has helped cure my landlord woes.', author: 'Charlie Ford' },
-  { stars: 5, text: 'They are very thorough and know their business. I would recommend them to anyone needing home repairs. They have the knowledge and can build anything, even a house from the ground up.', author: 'Shane Cronan' },
-  { stars: 5, text: 'Charles replaced our water heater the same day we called. Fair price for such a rapid response. Will be signing up for the subscription plan.', author: 'Marcus Thompson' },
-  { stars: 5, text: 'We had three different contractors ghost us before finding Nailed It. Charles showed up, gave us an honest quote, and did the work right. No surprises on the bill.', author: 'Sandra & Bill Henderson' },
-  { stars: 5, text: "The drywall finish in our kitchen looks really great. You can't even tell where the old damage was. Great attention to detail.", author: 'David Reynolds' },
+const fallbackTestimonials = [
+  { stars: 5, text: 'Charles is proactive and very detail oriented. He has helped cure my landlord woes.', name: 'Charlie Ford' },
+  { stars: 5, text: 'They are very thorough and know their business. I would recommend them to anyone needing home repairs. They have the knowledge and can build anything, even a house from the ground up.', name: 'Shane Cronan' },
+  { stars: 5, text: 'Charles replaced our water heater the same day we called. Fair price for such a rapid response. Will be signing up for the subscription plan.', name: 'Marcus Thompson' },
+  { stars: 5, text: 'We had three different contractors ghost us before finding Nailed It. Charles showed up, gave us an honest quote, and did the work right. No surprises on the bill.', name: 'Sandra & Bill Henderson' },
+  { stars: 5, text: "The drywall finish in our kitchen looks really great. You can't even tell where the old damage was. Great attention to detail.", name: 'David Reynolds' },
 ];
 
 function TestimonialCarousel() {
   const [current, setCurrent] = useState(0);
+  const [testimonials, setTestimonials] = useState(fallbackTestimonials);
+
+  useEffect(() => {
+    supabase
+      .from('reviews')
+      .select('*')
+      .eq('published', true)
+      .order('created_at', { ascending: false })
+      .then(({ data }) => {
+        if (data && data.length > 0) setTestimonials(data);
+      });
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % testimonials.length);
     }, 10000);
     return () => clearInterval(interval);
-  }, []);
+  }, [testimonials]);
 
   return (
     <section className="home-testimonials reveal">
@@ -35,7 +48,7 @@ function TestimonialCarousel() {
           >
             <p className="testimonial-stars">{'★'.repeat(t.stars)}</p>
             <p className="testimonial-text">&ldquo;{t.text}&rdquo;</p>
-            <p className="testimonial-author">— {t.author}</p>
+            <p className="testimonial-author">— {t.name}</p>
           </div>
         ))}
       </div>

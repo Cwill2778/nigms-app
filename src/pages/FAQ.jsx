@@ -1,30 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useScrollReveal from '../hooks/useScrollReveal';
 import usePageMeta from '../hooks/usePageMeta';
+import { supabase } from '../lib/supabase';
 import './FAQ.css';
-
-const faqs = [
-  {
-    question: 'What services does Nailed It Property Solutions specialize in?',
-    answer: 'We specialize in residential maintenance, reliable home repairs, and structured preventative care. From quick fixes and general installations to comprehensive upkeep, we ensure every patch, repair, and update stands the test of time. We also offer tiered preventative care plans designed to keep your home\'s vital systems running smoothly year-round.',
-  },
-  {
-    question: 'What sets your business apart from other local home service providers?',
-    answer: 'We don\'t believe in "dirt cheap and fast" band-aid fixes that just delay a bigger problem. To us, "nailed it" isn\'t a casual catchphrase — it is a rigid standard of quality. We build our reputation on absolute respect for your home, clear communication from the moment we arrive, and the endurance to do things the right way the first time. We treat every property exactly like it\'s our own.',
-  },
-  {
-    question: 'What is your primary service area?',
-    answer: 'We proudly serve homeowners and property managers right here across the Rome community and the surrounding local areas.',
-  },
-  {
-    question: 'Why do you emphasize preventative care and maintenance subscriptions?',
-    answer: 'A home is usually a person\'s most expensive asset, and neglecting it always costs more down the road. Our mission is to provide affordable, proactive care today so you never have to face a stressful, costly 2:00 AM emergency — like a hot water heater failing — tomorrow. Meticulous attention to small details yields long-term peace of mind.',
-  },
-  {
-    question: 'How do you handle communication and customer service?',
-    answer: 'Inviting someone into your personal space takes trust. We honor that by providing clear updates, showing up on time, and showing absolute respect for your property. You will always know what to expect regarding the scope of work, timeline, and pricing.',
-  },
-];
 
 function FAQ() {
   useScrollReveal();
@@ -33,8 +11,18 @@ function FAQ() {
     'Find answers to common questions about our property maintenance services, subscription plans, and service area in Rome, GA.'
   );
 
+  const [faqs, setFaqs] = useState([]);
   const [search, setSearch] = useState('');
   const [openIndex, setOpenIndex] = useState(null);
+
+  useEffect(() => {
+    supabase
+      .from('faqs')
+      .select('*')
+      .eq('published', true)
+      .order('sort_order')
+      .then(({ data }) => setFaqs(data || []));
+  }, []);
 
   const filteredFaqs = faqs.filter(
     (faq) =>
