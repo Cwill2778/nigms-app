@@ -19,9 +19,6 @@ function Header() {
         <Link to="/" className="header-logo" onClick={closeMenu}>
           <img src={logo} alt="Nailed It Property Solutions" width="160" height="48" />
         </Link>
-        <a href="tel:+17068448193" className="header-call-btn">
-          📞 (706) 844-8193
-        </a>
         <button
           className={`hamburger${menuOpen ? ' hamburger--open' : ''}`}
           onClick={toggleMenu}

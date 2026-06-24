@@ -78,12 +78,12 @@ function Home() {
 
   return (
     <div className="home">
-      <Link to="/subscriptions" className="scrolling-banner" aria-label="View subscription plans">
+      <a href="tel:+17068448193" className="scrolling-banner" aria-label="Call us now">
         <div className="banner-track">
-          <span>🔨 LIMITED TIME: 25% Off Any Subscription Tier — Risk-Free, Money-Back Guarantee — Offer Ends Friday &rarr;</span>
-          <span>🔨 LIMITED TIME: 25% Off Any Subscription Tier — Risk-Free, Money-Back Guarantee — Offer Ends Friday &rarr;</span>
+          <span>� Call Us Now at (706) 844-8193 — Open 24 Hours Saturday &amp; Sunday</span>
+          <span>� Call Us Now at (706) 844-8193 — Open 24 Hours Saturday &amp; Sunday</span>
         </div>
-      </Link>
+      </a>
 
       <section className="home-protected">
         <div className="watermark-wrap">
