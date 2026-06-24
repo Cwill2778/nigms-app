@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, CartesianGrid, Legend } from 'recharts';
 import './Admin.css';
 
 function Admin() {
@@ -90,6 +91,12 @@ function Admin() {
 // Analytics Panel
 function AnalyticsPanel() {
   const [stats, setStats] = useState({ total: 0, today: 0, pages: [] });
+  const [scrollStats, setScrollStats] = useState([]);
+  const [clickStats, setClickStats] = useState({ topElements: [], byPage: [] });
+  const [exitStats, setExitStats] = useState({ byPage: [], byType: [] });
+  const [formAbandons, setFormAbandons] = useState([]);
+  const [dwellStats, setDwellStats] = useState([]);
+  const [attributionStats, setAttributionStats] = useState({ byChannel: [], bySource: [], byCampaign: [], byLanding: [] });
 
   useEffect(() => {
     async function fetchStats() {
@@ -108,8 +115,205 @@ function AnalyticsPanel() {
 
       setStats({ total: (all || []).length, today: todayVisits.length, pages });
     }
+
+    async function fetchScrollDepth() {
+      const { data } = await supabase.from('scroll_depth').select('*');
+      if (!data || data.length === 0) { setScrollStats([]); return; }
+
+      // Aggregate by page
+      const pageMap = {};
+      data.forEach((row) => {
+        if (!pageMap[row.page]) {
+          pageMap[row.page] = { depths: [], milestones: { 25: 0, 50: 0, 75: 0, 100: 0 }, count: 0 };
+        }
+        pageMap[row.page].depths.push(row.max_depth);
+        pageMap[row.page].count += 1;
+        (row.milestones_hit || []).forEach((m) => {
+          if (pageMap[row.page].milestones[m] !== undefined) {
+            pageMap[row.page].milestones[m] += 1;
+          }
+        });
+      });
+
+      const aggregated = Object.entries(pageMap)
+        .map(([page, info]) => ({
+          page,
+          avgDepth: Math.round(info.depths.reduce((a, b) => a + b, 0) / info.depths.length),
+          sessions: info.count,
+          milestones: info.milestones,
+        }))
+        .sort((a, b) => b.sessions - a.sessions);
+
+      setScrollStats(aggregated);
+    }
+
     fetchStats();
+    fetchScrollDepth();
+
+    async function fetchClickStats() {
+      const { data } = await supabase.from('click_events').select('*');
+      if (!data || data.length === 0) { setClickStats({ topElements: [], byPage: [] }); return; }
+
+      // Top clicked elements (group by text + href)
+      const elementMap = {};
+      const pageClickMap = {};
+      data.forEach((row) => {
+        const key = `${row.element_text || ''}|${row.element_href || ''}|${row.element_tag}`;
+        if (!elementMap[key]) {
+          elementMap[key] = { text: row.element_text, href: row.element_href, tag: row.element_tag, count: 0 };
+        }
+        elementMap[key].count += 1;
+
+        pageClickMap[row.page] = (pageClickMap[row.page] || 0) + 1;
+      });
+
+      const topElements = Object.values(elementMap)
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 20);
+
+      const byPage = Object.entries(pageClickMap)
+        .sort((a, b) => b[1] - a[1])
+        .map(([page, count]) => ({ page, count }));
+
+      setClickStats({ topElements, byPage });
+    }
+
+    fetchClickStats();
+
+    async function fetchExitStats() {
+      const { data } = await supabase.from('exit_events').select('*');
+      if (!data || data.length === 0) { setExitStats({ byPage: [], byType: [] }); return; }
+
+      // Aggregate by page
+      const pageMap = {};
+      const typeMap = {};
+      data.forEach((row) => {
+        if (!pageMap[row.page]) {
+          pageMap[row.page] = { times: [], count: 0, leaveSite: 0 };
+        }
+        pageMap[row.page].times.push(row.time_on_page);
+        pageMap[row.page].count += 1;
+        if (row.exit_type === 'leave_site' || row.exit_type === 'tab_hidden') {
+          pageMap[row.page].leaveSite += 1;
+        }
+
+        typeMap[row.exit_type] = (typeMap[row.exit_type] || 0) + 1;
+      });
+
+      const byPage = Object.entries(pageMap)
+        .map(([page, info]) => ({
+          page,
+          avgTime: Math.round(info.times.reduce((a, b) => a + b, 0) / info.times.length),
+          exits: info.count,
+          bounceRate: Math.round((info.leaveSite / info.count) * 100),
+        }))
+        .sort((a, b) => b.exits - a.exits);
+
+      const byType = Object.entries(typeMap)
+        .map(([type, count]) => ({ type, count }))
+        .sort((a, b) => b.count - a.count);
+
+      setExitStats({ byPage, byType });
+    }
+
+    fetchExitStats();
+
+    async function fetchFormAbandons() {
+      const { data } = await supabase.from('form_abandonment').select('*').order('created_at', { ascending: false });
+      if (!data || data.length === 0) { setFormAbandons([]); return; }
+
+      // Aggregate by page + last_field
+      const fieldMap = {};
+      data.forEach((row) => {
+        const key = `${row.page}|${row.last_field || 'unknown'}`;
+        if (!fieldMap[key]) {
+          fieldMap[key] = { page: row.page, lastField: row.last_field || 'unknown', count: 0, avgFilled: [] };
+        }
+        fieldMap[key].count += 1;
+        if (row.total_fields > 0) {
+          fieldMap[key].avgFilled.push(Math.round((row.fields_filled / row.total_fields) * 100));
+        }
+      });
+
+      const aggregated = Object.values(fieldMap)
+        .map((info) => ({
+          ...info,
+          avgProgress: info.avgFilled.length > 0
+            ? Math.round(info.avgFilled.reduce((a, b) => a + b, 0) / info.avgFilled.length)
+            : 0,
+        }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 20);
+
+      setFormAbandons(aggregated);
+    }
+
+    fetchFormAbandons();
+
+    async function fetchDwellTime() {
+      const { data } = await supabase.from('dwell_time').select('*');
+      if (!data || data.length === 0) { setDwellStats([]); return; }
+
+      const pageMap = {};
+      data.forEach((row) => {
+        if (!pageMap[row.page]) {
+          pageMap[row.page] = { times: [], count: 0 };
+        }
+        pageMap[row.page].times.push(row.active_seconds);
+        pageMap[row.page].count += 1;
+      });
+
+      const aggregated = Object.entries(pageMap)
+        .map(([page, info]) => {
+          const sorted = [...info.times].sort((a, b) => a - b);
+          const median = sorted[Math.floor(sorted.length / 2)];
+          const avg = Math.round(info.times.reduce((a, b) => a + b, 0) / info.times.length);
+          const max = Math.max(...info.times);
+          return { page, avg, median, max, sessions: info.count };
+        })
+        .sort((a, b) => b.sessions - a.sessions);
+
+      setDwellStats(aggregated);
+    }
+
+    fetchDwellTime();
+
+    async function fetchAttribution() {
+      const { data } = await supabase.from('lead_attribution').select('*');
+      if (!data || data.length === 0) {
+        setAttributionStats({ byChannel: [], bySource: [], byCampaign: [], byLanding: [] });
+        return;
+      }
+
+      const channelMap = {};
+      const sourceMap = {};
+      const campaignMap = {};
+      const landingMap = {};
+
+      data.forEach((row) => {
+        channelMap[row.channel] = (channelMap[row.channel] || 0) + 1;
+        if (row.utm_source) sourceMap[row.utm_source] = (sourceMap[row.utm_source] || 0) + 1;
+        if (row.utm_campaign) campaignMap[row.utm_campaign] = (campaignMap[row.utm_campaign] || 0) + 1;
+        landingMap[row.landing_page] = (landingMap[row.landing_page] || 0) + 1;
+      });
+
+      const toSorted = (map) => Object.entries(map).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count);
+
+      setAttributionStats({
+        byChannel: toSorted(channelMap),
+        bySource: toSorted(sourceMap),
+        byCampaign: toSorted(campaignMap),
+        byLanding: toSorted(landingMap),
+      });
+    }
+
+    fetchAttribution();
   }, []);
+
+  const COLORS = ['#ff8a00', '#ff6b00', '#e65100', '#ff9e40', '#ffb74d', '#ffe0b2', '#4caf50', '#2196f3'];
+  const chartMargin = { top: 10, right: 20, left: 0, bottom: 5 };
+  const tooltipStyle = { background: 'var(--bg-secondary)', border: '1px solid var(--border)', fontSize: '0.8rem' };
+  const tickStyle = { fontSize: 11, fill: 'var(--text-sub)' };
 
   return (
     <>
@@ -123,7 +327,20 @@ function AnalyticsPanel() {
           <p className="stat-label">Today</p>
         </div>
       </div>
+
       <h2>Pages by Views</h2>
+      {stats.pages.length > 0 && (
+        <div style={{ width: '100%', height: 250, marginBottom: '1rem' }}>
+          <ResponsiveContainer>
+            <BarChart data={stats.pages} margin={chartMargin}>
+              <XAxis dataKey="page" tick={tickStyle} />
+              <YAxis tick={tickStyle} />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Bar dataKey="count" fill="#ff8a00" radius={[3, 3, 0, 0]} name="Views" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      )}
       <table className="admin-table">
         <thead><tr><th>Page</th><th>Views</th></tr></thead>
         <tbody>
@@ -132,8 +349,259 @@ function AnalyticsPanel() {
           ))}
         </tbody>
       </table>
+
+      <h2 style={{ marginTop: '2rem' }}>Scroll Depth by Page</h2>
+      {scrollStats.length === 0 ? (
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-sub)' }}>No scroll depth data yet.</p>
+      ) : (
+        <>
+          <div style={{ width: '100%', height: 250, marginBottom: '1rem' }}>
+            <ResponsiveContainer>
+              <BarChart data={scrollStats} margin={chartMargin}>
+                <XAxis dataKey="page" tick={tickStyle} />
+                <YAxis domain={[0, 100]} tick={tickStyle} unit="%" />
+                <Tooltip contentStyle={tooltipStyle} />
+                <Bar dataKey="avgDepth" fill="#4caf50" radius={[3, 3, 0, 0]} name="Avg Depth %" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <table className="admin-table">
+            <thead>
+              <tr><th>Page</th><th>Avg Depth</th><th>Sessions</th><th>25%</th><th>50%</th><th>75%</th><th>100%</th></tr>
+            </thead>
+            <tbody>
+              {scrollStats.map((s) => (
+                <tr key={s.page}>
+                  <td>{s.page}</td>
+                  <td>{s.avgDepth}%</td>
+                  <td>{s.sessions}</td>
+                  <td>{s.milestones[25]}</td>
+                  <td>{s.milestones[50]}</td>
+                  <td>{s.milestones[75]}</td>
+                  <td>{s.milestones[100]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
+
+      <h2 style={{ marginTop: '2rem' }}>Click Tracking</h2>
+      {clickStats.topElements.length === 0 ? (
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-sub)' }}>No click data yet.</p>
+      ) : (
+        <>
+          <div style={{ width: '100%', height: 220, marginBottom: '1rem' }}>
+            <ResponsiveContainer>
+              <BarChart data={clickStats.byPage} margin={chartMargin}>
+                <XAxis dataKey="page" tick={tickStyle} />
+                <YAxis tick={tickStyle} />
+                <Tooltip contentStyle={tooltipStyle} />
+                <Bar dataKey="count" fill="#2196f3" radius={[3, 3, 0, 0]} name="Clicks" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <h3 style={{ fontSize: '0.95rem', marginBottom: '0.5rem' }}>Most Clicked Elements</h3>
+          <table className="admin-table">
+            <thead><tr><th>Element</th><th>Text</th><th>Link</th><th>Clicks</th></tr></thead>
+            <tbody>
+              {clickStats.topElements.map((el, i) => (
+                <tr key={i}>
+                  <td><code style={{ fontSize: '0.75rem', background: 'var(--bg-secondary)', padding: '2px 6px', borderRadius: '2px' }}>{el.tag}</code></td>
+                  <td>{el.text ? el.text.substring(0, 40) : '—'}</td>
+                  <td style={{ fontSize: '0.75rem', maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{el.href || '—'}</td>
+                  <td>{el.count}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
+
+      <h2 style={{ marginTop: '2rem' }}>Exit Tracking</h2>
+      {exitStats.byPage.length === 0 ? (
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-sub)' }}>No exit data yet.</p>
+      ) : (
+        <>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1rem' }}>
+            <div style={{ height: 220 }}>
+              <h3 style={{ fontSize: '0.95rem', marginBottom: '0.5rem', textAlign: 'center' }}>Exit Types</h3>
+              <ResponsiveContainer>
+                <PieChart>
+                  <Pie data={exitStats.byType.map((t) => ({ name: t.type === 'leave_site' ? 'Left Site' : t.type === 'tab_hidden' ? 'Tab Hidden' : 'Navigated', value: t.count }))} cx="50%" cy="50%" outerRadius={70} dataKey="value" label={{ fontSize: 11 }}>
+                    {exitStats.byType.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                  </Pie>
+                  <Tooltip contentStyle={tooltipStyle} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div style={{ height: 220 }}>
+              <h3 style={{ fontSize: '0.95rem', marginBottom: '0.5rem', textAlign: 'center' }}>Bounce Rate by Page</h3>
+              <ResponsiveContainer>
+                <BarChart data={exitStats.byPage} margin={chartMargin}>
+                  <XAxis dataKey="page" tick={{ fontSize: 10, fill: 'var(--text-sub)' }} />
+                  <YAxis domain={[0, 100]} unit="%" tick={tickStyle} />
+                  <Tooltip contentStyle={tooltipStyle} />
+                  <Bar dataKey="bounceRate" fill="#f44336" radius={[3, 3, 0, 0]} name="Bounce %" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          <table className="admin-table">
+            <thead><tr><th>Page</th><th>Avg Time (s)</th><th>Total Exits</th><th>Bounce Rate</th></tr></thead>
+            <tbody>
+              {exitStats.byPage.map((p) => (
+                <tr key={p.page}>
+                  <td>{p.page}</td>
+                  <td>{p.avgTime}s</td>
+                  <td>{p.exits}</td>
+                  <td>{p.bounceRate}%</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
+
+      <h2 style={{ marginTop: '2rem' }}>Form Abandonment</h2>
+      {formAbandons.length === 0 ? (
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-sub)' }}>No form abandonment data yet.</p>
+      ) : (
+        <>
+          <div style={{ width: '100%', height: 220, marginBottom: '1rem' }}>
+            <ResponsiveContainer>
+              <BarChart data={formAbandons.slice(0, 10)} margin={chartMargin}>
+                <XAxis dataKey="lastField" tick={{ fontSize: 10, fill: 'var(--text-sub)' }} />
+                <YAxis tick={tickStyle} />
+                <Tooltip contentStyle={tooltipStyle} />
+                <Bar dataKey="count" fill="#e65100" radius={[3, 3, 0, 0]} name="Abandonments" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <table className="admin-table">
+            <thead><tr><th>Page</th><th>Last Field</th><th>Abandonments</th><th>Avg Progress</th></tr></thead>
+            <tbody>
+              {formAbandons.map((f, i) => (
+                <tr key={i}>
+                  <td>{f.page}</td>
+                  <td><code style={{ fontSize: '0.75rem', background: 'var(--bg-secondary)', padding: '2px 6px', borderRadius: '2px' }}>{f.lastField}</code></td>
+                  <td>{f.count}</td>
+                  <td>{f.avgProgress}%</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
+
+      <h2 style={{ marginTop: '2rem' }}>Dwell Time (Active Engagement)</h2>
+      {dwellStats.length === 0 ? (
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-sub)' }}>No dwell time data yet.</p>
+      ) : (
+        <>
+          <div style={{ width: '100%', height: 250, marginBottom: '1rem' }}>
+            <ResponsiveContainer>
+              <BarChart data={dwellStats} margin={chartMargin}>
+                <XAxis dataKey="page" tick={tickStyle} />
+                <YAxis tick={tickStyle} unit="s" />
+                <Tooltip contentStyle={tooltipStyle} formatter={(val) => formatTime(val)} />
+                <Legend wrapperStyle={{ fontSize: '0.8rem' }} />
+                <Bar dataKey="avg" fill="#ff8a00" radius={[3, 3, 0, 0]} name="Average" />
+                <Bar dataKey="median" fill="#4caf50" radius={[3, 3, 0, 0]} name="Median" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <table className="admin-table">
+            <thead><tr><th>Page</th><th>Avg</th><th>Median</th><th>Max</th><th>Sessions</th></tr></thead>
+            <tbody>
+              {dwellStats.map((d) => (
+                <tr key={d.page}>
+                  <td>{d.page}</td>
+                  <td>{formatTime(d.avg)}</td>
+                  <td>{formatTime(d.median)}</td>
+                  <td>{formatTime(d.max)}</td>
+                  <td>{d.sessions}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
+
+      <h2 style={{ marginTop: '2rem' }}>Lead Attribution</h2>
+      {attributionStats.byChannel.length === 0 ? (
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-sub)' }}>No attribution data yet.</p>
+      ) : (
+        <>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+            <div style={{ height: 250 }}>
+              <h3 style={{ fontSize: '0.95rem', marginBottom: '0.5rem', textAlign: 'center' }}>Traffic Channels</h3>
+              <ResponsiveContainer>
+                <PieChart>
+                  <Pie data={attributionStats.byChannel.map((c) => ({ name: c.name, value: c.count }))} cx="50%" cy="50%" outerRadius={80} dataKey="value" label={{ fontSize: 11 }}>
+                    {attributionStats.byChannel.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                  </Pie>
+                  <Tooltip contentStyle={tooltipStyle} />
+                  <Legend wrapperStyle={{ fontSize: '0.75rem' }} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div style={{ height: 250 }}>
+              <h3 style={{ fontSize: '0.95rem', marginBottom: '0.5rem', textAlign: 'center' }}>Landing Pages</h3>
+              <ResponsiveContainer>
+                <BarChart data={attributionStats.byLanding} margin={chartMargin}>
+                  <XAxis dataKey="name" tick={{ fontSize: 10, fill: 'var(--text-sub)' }} />
+                  <YAxis tick={tickStyle} />
+                  <Tooltip contentStyle={tooltipStyle} />
+                  <Bar dataKey="count" fill="#ff9e40" radius={[3, 3, 0, 0]} name="Sessions" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
+            <div>
+              <h3 style={{ fontSize: '0.95rem', marginBottom: '0.5rem' }}>By Source</h3>
+              {attributionStats.bySource.length === 0 ? (
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-sub)' }}>No UTM sources tracked yet.</p>
+              ) : (
+                <table className="admin-table">
+                  <thead><tr><th>Source</th><th>Sessions</th></tr></thead>
+                  <tbody>
+                    {attributionStats.bySource.map((s) => (
+                      <tr key={s.name}><td>{s.name}</td><td>{s.count}</td></tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+            <div>
+              <h3 style={{ fontSize: '0.95rem', marginBottom: '0.5rem' }}>By Campaign</h3>
+              {attributionStats.byCampaign.length === 0 ? (
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-sub)' }}>No campaigns tracked yet.</p>
+              ) : (
+                <table className="admin-table">
+                  <thead><tr><th>Campaign</th><th>Sessions</th></tr></thead>
+                  <tbody>
+                    {attributionStats.byCampaign.map((c) => (
+                      <tr key={c.name}><td>{c.name}</td><td>{c.count}</td></tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
+}
+
+function formatTime(seconds) {
+  if (seconds < 60) return `${seconds}s`;
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}m ${s}s`;
 }
 
 // Reviews Panel
