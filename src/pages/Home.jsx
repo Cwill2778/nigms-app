@@ -80,8 +80,7 @@ function Home() {
     <div className="home">
       <a href="tel:+17068448193" className="scrolling-banner" aria-label="Call us now">
         <div className="banner-track">
-          <span>� Click this Banner to Call Us Now or Call Us Later at (706) 844-8193 — Open 24 Hours Saturday &amp; Sunday. Price Match Guarantee.</span>
-          <span>� Click this Banner to Call Us Now or Call Us Later at (706) 844-8193 — Open 24 Hours Saturday &amp; Sunday. Price Match Guarantee.</span>
+          <span>CLICK HERE TO CALL US NOW</span>
         </div>
       </a>
 
