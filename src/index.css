@@ -17,7 +17,8 @@
   --sans: 'Inter', system-ui, -apple-system, sans-serif;
   --heading: 'Oswald', 'Bebas Neue', system-ui, sans-serif;
 
-  font: 17px/1.7 var(--sans);
+  /* Mobile-first base: 16px */
+  font: 16px/1.7 var(--sans);
   color: var(--text);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -25,18 +26,27 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
   background: var(--bg-primary);
   color: var(--text);
+  overflow-x: hidden;
 }
 
 #root {
   min-height: 100svh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
 }
 
 h1, h2, h3, h4 {
@@ -47,11 +57,13 @@ h1, h2, h3, h4 {
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 1px;
+  word-wrap: break-word;
 }
 
-h1 { font-size: 2.5rem; }
-h2 { font-size: 1.75rem; }
-h3 { font-size: 1.2rem; font-weight: 600; }
+/* Mobile-first type sizes */
+h1 { font-size: 1.8rem; }
+h2 { font-size: 1.4rem; }
+h3 { font-size: 1.1rem; font-weight: 600; }
 
 p { margin: 0; color: var(--text-sub); }
 
@@ -96,16 +108,17 @@ strong { color: var(--text); }
   .reveal { opacity: 1; transform: none; transition: none; }
 }
 
-/* Responsive type */
+/* Tablet */
 @media (min-width: 768px) {
   :root { font-size: 18px; }
-  h1 { font-size: 3.2rem; }
-  h2 { font-size: 2.2rem; }
-  h3 { font-size: 1.4rem; }
+  h1 { font-size: 2.8rem; }
+  h2 { font-size: 2rem; }
+  h3 { font-size: 1.3rem; }
 }
 
+/* Desktop */
 @media (min-width: 1024px) {
   :root { font-size: 19px; }
-  h1 { font-size: 3.8rem; }
-  h2 { font-size: 2.5rem; }
+  h1 { font-size: 3.5rem; }
+  h2 { font-size: 2.4rem; }
 }

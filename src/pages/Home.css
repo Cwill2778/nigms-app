@@ -5,7 +5,7 @@
   background: var(--accent);
   color: var(--bg-primary);
   text-decoration: none;
-  padding: 10px 0;
+  padding: 8px 0;
   white-space: nowrap;
 }
 
@@ -20,11 +20,11 @@
 }
 
 .banner-track span {
-  padding: 0 48px;
+  padding: 0 32px;
   font-family: var(--heading);
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 1.5px;
+  letter-spacing: 1px;
   text-transform: uppercase;
 }
 
@@ -39,18 +39,18 @@
 
 /* Protected home image */
 .home-protected {
-  padding: 32px 16px 48px;
+  padding: 20px 12px 32px;
   text-align: center;
 }
 
 .protected-headline {
   font-family: var(--heading);
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 500;
   letter-spacing: 1px;
   text-transform: uppercase;
   color: var(--text-sub);
-  margin: 20px 0 0;
+  margin: 16px 0 0;
 }
 
 .protected-image {
@@ -63,7 +63,7 @@
 
 /* Intro section */
 .home-intro {
-  padding: 56px 16px;
+  padding: 32px 12px;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -71,20 +71,20 @@
   border-top: 1px solid var(--border);
 }
 
-.home-intro h1 { margin-bottom: 14px; }
+.home-intro h1 { margin-bottom: 10px; }
 
 .hero-accent { color: var(--accent); }
 
 .home-subtitle {
   font-family: var(--sans);
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--text);
   font-weight: 600;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .home-tagline {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-style: italic;
   color: var(--text-sub);
 }
@@ -92,21 +92,22 @@
 .hero-actions {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
-  margin-top: 32px;
+  margin-top: 24px;
+  width: 100%;
 }
 
 /* CTA Buttons */
 .cta-button {
   display: inline-block;
-  padding: 14px 28px;
+  padding: 12px 24px;
   background: var(--accent);
   color: var(--bg-primary);
   text-decoration: none;
   border-radius: 2px;
   font-family: var(--heading);
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 600;
   letter-spacing: 1.2px;
   text-transform: uppercase;
@@ -114,6 +115,9 @@
   border: none;
   cursor: pointer;
   box-shadow: 0 4px 16px var(--accent-glow);
+  text-align: center;
+  width: 100%;
+  max-width: 280px;
 }
 
 .cta-button:hover {
@@ -151,7 +155,7 @@
 
 /* Why section */
 .home-why {
-  padding: 56px 16px;
+  padding: 32px 12px;
   max-width: 780px;
   margin: 0 auto;
   border-top: 1px solid var(--border);
@@ -184,7 +188,7 @@
 
 /* Subscriptions section */
 .home-subscriptions {
-  padding: 56px 16px;
+  padding: 32px 12px;
   border-top: 1px solid var(--border);
   background: var(--bg-secondary);
 }
@@ -216,12 +220,12 @@
 .plans-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .plans-table th,
 .plans-table td {
-  padding: 16px 18px;
+  padding: 10px 12px;
   text-align: left;
   border-bottom: 1px solid var(--border);
 }
@@ -243,7 +247,7 @@
 
 /* Perks section */
 .home-perks {
-  padding: 56px 16px;
+  padding: 32px 12px;
   border-top: 1px solid var(--border);
   max-width: 780px;
   margin: 0 auto;
@@ -279,7 +283,7 @@
 
 /* Tenants section */
 .home-tenants {
-  padding: 56px 16px;
+  padding: 32px 12px;
   border-top: 1px solid var(--border);
 }
 
@@ -302,7 +306,7 @@
 
 /* Referral section */
 .home-referral {
-  padding: 56px 16px;
+  padding: 32px 12px;
   text-align: center;
   border-top: 1px solid var(--border);
   background: var(--bg-secondary);
@@ -331,7 +335,7 @@
 
 /* Straight Talk section */
 .home-straight-talk {
-  padding: 56px 16px;
+  padding: 32px 12px;
   border-top: 1px solid var(--border);
   max-width: 780px;
   margin: 0 auto;
@@ -347,7 +351,7 @@
 
 /* One-off repairs section */
 .home-repairs {
-  padding: 56px 16px;
+  padding: 32px 12px;
   border-top: 1px solid var(--border);
   max-width: 780px;
   margin: 0 auto;
@@ -363,7 +367,7 @@
 
 /* Testimonials carousel */
 .home-testimonials {
-  padding: 56px 16px;
+  padding: 32px 12px;
   border-top: 1px solid var(--border);
   text-align: center;
   display: flex;
@@ -452,7 +456,7 @@
 
 /* Bottom CTA */
 .home-cta {
-  padding: 72px 16px;
+  padding: 40px 12px;
   text-align: center;
   border-top: 1px solid var(--border);
   display: flex;
@@ -471,20 +475,21 @@
 /* Tablet+ */
 @media (min-width: 768px) {
   .home-protected { padding: 40px 32px 56px; }
-  .home-intro { padding: 72px 32px; }
-  .home-subtitle { font-size: 1.2rem; }
-  .home-why { padding: 72px 32px; }
-  .home-subscriptions { padding: 72px 32px; }
-  .home-perks { padding: 72px 32px; }
-  .home-tenants { padding: 72px 32px; }
-  .home-referral { padding: 72px 32px; }
-  .home-straight-talk { padding: 72px 32px; }
-  .home-repairs { padding: 72px 32px; }
-  .home-testimonials { padding: 72px 32px; }
-  .home-cta { padding: 88px 32px; }
+  .home-intro { padding: 56px 32px; }
+  .home-subtitle { font-size: 1.15rem; }
+  .home-why { padding: 56px 32px; }
+  .home-subscriptions { padding: 56px 32px; }
+  .home-perks { padding: 56px 32px; }
+  .home-tenants { padding: 56px 32px; }
+  .home-referral { padding: 56px 32px; }
+  .home-straight-talk { padding: 56px 32px; }
+  .home-repairs { padding: 56px 32px; }
+  .home-testimonials { padding: 56px 32px; }
+  .home-cta { padding: 64px 32px; }
   .hero-actions { flex-direction: row; gap: 16px; }
-  .cta-button { padding: 16px 32px; font-size: 0.95rem; }
-  .protected-headline { font-size: 1.2rem; }
+  .cta-button { padding: 14px 28px; font-size: 0.85rem; width: auto; max-width: none; }
+  .protected-headline { font-size: 1.1rem; }
+  .banner-track span { font-size: 0.8rem; padding: 0 48px; }
 }
 
 @media (min-width: 1024px) {
