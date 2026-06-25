@@ -164,6 +164,35 @@
 .home-why h2 { margin-bottom: 8px; }
 .home-why .accent-bar { margin-bottom: 24px; }
 
+.home-why-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.home-community-img {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  border-radius: 4px;
+  object-fit: cover;
+  margin: 0 auto;
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .home-why-content {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 32px;
+  }
+  .home-community-img {
+    flex-shrink: 0;
+    width: 280px;
+    margin: 0;
+  }
+}
+
 .home-why > p {
   font-size: 1rem;
   line-height: 1.7;
@@ -343,6 +372,25 @@
 
 .home-straight-talk h2 { margin-bottom: 8px; }
 .home-straight-talk .accent-bar { margin-bottom: 24px; }
+
+.home-straight-talk-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .home-straight-talk-content {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 32px;
+  }
+  .home-straight-talk-content .home-community-img {
+    flex-shrink: 0;
+    width: 280px;
+    margin: 0;
+  }
+}
 
 .home-straight-talk p {
   font-size: 1rem;

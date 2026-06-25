@@ -5,6 +5,8 @@ import usePageMeta from '../hooks/usePageMeta';
 import Lightbox from '../components/Lightbox';
 import kitchenBefore from '../assets/HarveyKitchenWallBefore.jpg';
 import kitchenAfter from '../assets/HarveyKitchenWallAfter.jpg';
+import charlesWorking from '../assets/charlesAtWorkIII (1).jpg';
+import miniBar from '../assets/miniBar.jpg';
 import './Services.css';
 
 const serviceCategories = [
@@ -145,6 +147,27 @@ function Services() {
       <section className="services-showcase reveal">
         <h2>Recent Work</h2>
         <div className="accent-bar" aria-hidden="true"></div>
+
+        <div className="showcase-item">
+          <div className="showcase-header">
+            <h3>Custom Mini Bar Build</h3>
+            <span className="gallery-category">Custom Carpentry</span>
+          </div>
+          <p className="showcase-description">
+            A custom-built mini bar designed and installed to client specifications.
+            Quality craftsmanship that turns a vision into reality.
+          </p>
+          <div className="showcase-single-image">
+            <button
+              className="photo-button"
+              onClick={() => setLightbox({ src: miniBar, alt: 'Custom mini bar build' })}
+              aria-label="View full image: Custom mini bar"
+            >
+              <img src={miniBar} alt="Custom mini bar build" width="500" height="350" />
+            </button>
+          </div>
+        </div>
+
         <div className="showcase-item">
           <div className="showcase-header">
             <h3>Kitchen Wall — Sheetrock &amp; Smooth Finish</h3>
@@ -176,6 +199,22 @@ function Services() {
               </button>
               <figcaption>After</figcaption>
             </figure>
+          </div>
+        </div>
+
+        <div className="showcase-item">
+          <div className="showcase-header">
+            <h3>On-Site Work</h3>
+            <span className="gallery-category">General Property Repairs</span>
+          </div>
+          <div className="showcase-single-image">
+            <button
+              className="photo-button"
+              onClick={() => setLightbox({ src: charlesWorking, alt: 'Charles at work on a property repair' })}
+              aria-label="View full image: Charles at work"
+            >
+              <img src={charlesWorking} alt="Charles at work on a property repair" width="500" height="350" />
+            </button>
           </div>
         </div>
       </section>

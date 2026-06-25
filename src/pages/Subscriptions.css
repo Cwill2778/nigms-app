@@ -222,6 +222,15 @@
 
 .subs-cta h2 { margin-bottom: 14px; }
 
+.subs-community-img {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  border-radius: 4px;
+  object-fit: cover;
+  margin-bottom: 20px;
+}
+
 .subs-cta p {
   font-size: 1rem;
   max-width: 520px;

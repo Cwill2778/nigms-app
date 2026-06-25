@@ -2,8 +2,9 @@ import { useState } from 'react';
 import useScrollReveal from '../hooks/useScrollReveal';
 import usePageMeta from '../hooks/usePageMeta';
 import Lightbox from '../components/Lightbox';
-import portrait from '../assets/CharlesPortrait.png';
+import portrait from '../assets/charlesImg.jpg';
 import working1 from '../assets/CharlesWorking1.jpg';
+import working2 from '../assets/CharlesWorking2.jpg';
 import windowBefore from '../assets/TripleWindowsBefore.jpg';
 import windowAfter from '../assets/TripleWindowsAfter.jpg';
 import outdoorBefore from '../assets/OutdoorSittingAreaBefore.jpg';
@@ -117,6 +118,13 @@ function About() {
             aria-label="View full image: Charles Willis working on a property"
           >
             <img src={working1} alt="Charles Willis working on a property" width="600" height="280" />
+          </button>
+          <button
+            className="photo-button"
+            onClick={() => setLightbox({ src: working2, alt: 'Charles Willis on another job site' })}
+            aria-label="View full image: Charles Willis on another job site"
+          >
+            <img src={working2} alt="Charles Willis on another job site" width="600" height="280" />
           </button>
         </div>
         <h3 className="experience-heading">Past Experience</h3>

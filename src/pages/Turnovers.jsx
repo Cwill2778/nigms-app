@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import useScrollReveal from '../hooks/useScrollReveal';
 import usePageMeta from '../hooks/usePageMeta';
+import bathroomImg from '../assets/bathroomNorthRome (1).jpg';
 import './Turnovers.css';
 
 function Turnovers() {
@@ -26,15 +27,26 @@ function Turnovers() {
       <section className="turns-assessment reveal">
         <h2>It Starts with a Walkthrough</h2>
         <div className="accent-bar" aria-hidden="true"></div>
-        <p>
-          Every property is different. We start with an on-site assessment to
-          evaluate the unit&rsquo;s condition and build a detailed turnover scope
-          tailored to what your property actually needs.
-        </p>
-        <p className="assessment-price">$75 – $100 Assessment Fee</p>
-        <p className="assessment-note">
-          Credited toward your final invoice if you approve the turnover proposal.
-        </p>
+        <div className="turns-assessment-content">
+          <img
+            src={bathroomImg}
+            alt="Bathroom renovation in a North Rome rental property"
+            className="turns-showcase-img"
+            width="400"
+            height="300"
+          />
+          <div>
+            <p>
+              Every property is different. We start with an on-site assessment to
+              evaluate the unit&rsquo;s condition and build a detailed turnover scope
+              tailored to what your property actually needs.
+            </p>
+            <p className="assessment-price">$75 – $100 Assessment Fee</p>
+            <p className="assessment-note">
+              Credited toward your final invoice if you approve the turnover proposal.
+            </p>
+          </div>
+        </div>
       </section>
 
       <section className="turns-process reveal">

@@ -1,6 +1,9 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import useScrollReveal from '../hooks/useScrollReveal';
 import usePageMeta from '../hooks/usePageMeta';
+import { supabase } from '../lib/supabase';
+import clocktower from '../assets/clocktowerRomansDigital.jpg';
 import './Subscriptions.css';
 
 function Subscriptions() {
@@ -10,14 +13,28 @@ function Subscriptions() {
     'Protect your Rome, GA property with tiered preventative maintenance plans. Perfect for homeowners and landlords wanting hands-off, predictable property care.'
   );
 
+  const [promo, setPromo] = useState(null);
+
+  useEffect(() => {
+    supabase
+      .from('site_settings')
+      .select('value')
+      .eq('key', 'promo_banner')
+      .single()
+      .then(({ data }) => {
+        if (data?.value?.enabled) setPromo(data.value);
+      });
+  }, []);
+
   return (
     <div className="subscriptions">
       <section className="subs-intro reveal">
-        <div className="subs-promo">
-          <p className="promo-badge">Limited Time Offer — Ends Friday</p>
-          <p className="promo-headline">25% Off Any Tier + Risk-Free Guarantee</p>
-          <p className="promo-sub">Not satisfied? We&rsquo;ll refund your money. No questions asked.</p>
-        </div>
+        {promo && (
+          <div className="subs-promo">
+            <p className="promo-badge">Limited Time Offer</p>
+            <p className="promo-headline">{promo.text}</p>
+          </div>
+        )}
         <h1>Maintenance Plans</h1>
         <p>
           Predictable monthly pricing. No surprise invoices. Choose the level of
@@ -116,6 +133,13 @@ function Subscriptions() {
 
       <section className="subs-cta reveal">
         <h2>Ready to Get Your Property on Autopilot?</h2>
+        <img
+          src={clocktower}
+          alt="Rome, Georgia clocktower — serving the local community"
+          className="subs-community-img"
+          width="600"
+          height="300"
+        />
         <p>
           No long-term contracts required. Cancel anytime. Let&rsquo;s talk about
           which plan fits your situation.

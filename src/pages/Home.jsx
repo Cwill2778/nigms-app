@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import useScrollReveal from '../hooks/useScrollReveal';
 import usePageMeta from '../hooks/usePageMeta';
 import { supabase } from '../lib/supabase';
-import protectedHome from '../assets/nailedItProtectedHome.jpg';
+import romeBroadSt from '../assets/romeBroadStSign.jpeg';
+import bridgeRome from '../assets/bridgeRome.jpg';
+import riverRome from '../assets/riverDowntownRome (1).jpg';
 import './Home.css';
 
 const fallbackTestimonials = [
@@ -72,8 +74,8 @@ function TestimonialCarousel() {
 function Home() {
   useScrollReveal();
   usePageMeta(
-    'Property Maintenance Rome, GA | Nailed It Property Solutions',
-    'Nailed It Property Solutions offers expert property maintenance, unit turnovers, and home repair services for homeowners and landlords in Rome, GA. Call today!'
+    'Property Maintenance and Emergency Repairs Rome, GA | Nailed It Property Solutions',
+    'Nailed It Property Solutions offers expert property maintenance, repairs, emergency calls, unit turnovers, and home repair services for homeowners in Rome, GA. Call today!'
   );
 
   return (
@@ -87,8 +89,8 @@ function Home() {
       <section className="home-protected">
         <div className="watermark-wrap">
           <img
-            src={protectedHome}
-            alt="Home protected by a Nailed It Property Solutions subscription"
+            src={romeBroadSt}
+            alt="Broad Street sign in Rome, Georgia — home of Nailed It Property Solutions"
             className="protected-image"
             width="700"
             height="467"
@@ -110,26 +112,37 @@ function Home() {
       <section className="home-why reveal">
         <h2>Stop Waiting for Things to Break.</h2>
         <div className="accent-bar" aria-hidden="true"></div>
-        <p>
-          Why wait for a catastrophic failure when you can prevent it? At Nailed
-          It Property Solutions, we put your home maintenance on autopilot.
-          Whether you&rsquo;re a busy homeowner protecting your investment or a
-          landlord tired of midnight emergency calls, we&rsquo;ve got your upkeep
-          nailed.
-        </p> 
-        <ul className="value-props">
-          <li>
-            <strong>Predictable Pricing</strong> No hidden fees & no
-            surprise service charges.
-          </li>
-          <li>
-            <strong>Neighborly Service:</strong> Local expertise with professional experience in the field.
-          </li>
-          <li>
-            <strong>Preventative First:</strong> We catch the $100 problem before
-            it becomes a $10,000 disaster.
-          </li>
-        </ul>
+        <div className="home-why-content">
+          <img
+            src={bridgeRome}
+            alt="Historic bridge in downtown Rome, Georgia"
+            className="home-community-img"
+            width="400"
+            height="267"
+          />
+          <div>
+            <p>
+              Why wait for a catastrophic failure when you can prevent it? At Nailed
+              It Property Solutions, we put your home maintenance on autopilot.
+              Whether you&rsquo;re a busy homeowner protecting your investment or a
+              landlord tired of midnight emergency calls, we&rsquo;ve got your upkeep
+              nailed.
+            </p> 
+            <ul className="value-props">
+              <li>
+                <strong>Predictable Pricing</strong> No hidden fees & no
+                surprise service charges.
+              </li>
+              <li>
+                <strong>Neighborly Service:</strong> Local expertise with professional experience in the field.
+              </li>
+              <li>
+                <strong>Preventative First:</strong> We catch the $100 problem before
+                it becomes a $10,000 disaster.
+              </li>
+            </ul>
+          </div>
+        </div>
       </section>
 
       <section className="home-subscriptions reveal">
@@ -236,14 +249,23 @@ function Home() {
       <section className="home-straight-talk reveal">
         <h2>No Membership Required.</h2>
         <div className="accent-bar" aria-hidden="true"></div>
-        <p>
-          You don&rsquo;t need a subscription to get top-quality work from us.
-          Every client gets the same level of craftsmanship, attention to detail,
-          and honest pricing — whether it&rsquo;s a one-time repair or a full
-          renovation. Our preventative maintenance plans are there if you want
-          extra peace of mind and priority scheduling, but they&rsquo;re never a
-          requirement. Need something fixed? Just call.
-        </p>
+        <div className="home-straight-talk-content">
+          <img
+            src={riverRome}
+            alt="Downtown Rome, Georgia river view"
+            className="home-community-img"
+            width="400"
+            height="267"
+          />
+          <p>
+            You don&rsquo;t need a subscription to get top-quality work from us.
+            Every client gets the same level of craftsmanship, attention to detail,
+            and honest pricing — whether it&rsquo;s a one-time repair or a full
+            renovation. Our preventative maintenance plans are there if you want
+            extra peace of mind and priority scheduling, but they&rsquo;re never a
+            requirement. Need something fixed? Just call.
+          </p>
+        </div>
       </section>
 
       <section className="home-repairs reveal">

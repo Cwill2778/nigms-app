@@ -179,6 +179,35 @@
 .turns-assessment h2 { margin-bottom: 8px; }
 .turns-assessment .accent-bar { margin: 0 auto 24px; }
 
+.turns-assessment-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.turns-showcase-img {
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+@media (min-width: 768px) {
+  .turns-assessment-content {
+    flex-direction: row;
+    text-align: left;
+    gap: 32px;
+  }
+  .turns-showcase-img {
+    flex-shrink: 0;
+    width: 280px;
+  }
+}
+
 .turns-assessment p {
   font-size: 0.95rem;
   line-height: 1.7;
