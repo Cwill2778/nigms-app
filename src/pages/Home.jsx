@@ -8,6 +8,8 @@ import bridgeRome from '../assets/bridgeRome.jpg';
 import riverRome from '../assets/riverDowntownRome (1).jpg';
 import './Home.css';
 
+const heroImages = [romeBroadSt, riverRome];
+
 const fallbackTestimonials = [
   { stars: 5, text: 'Charles is proactive and very detail oriented. He has helped cure my landlord woes.', name: 'Charlie Ford' },
   { stars: 5, text: 'They are very thorough and know their business. I would recommend them to anyone needing home repairs. They have the knowledge and can build anything, even a house from the ground up.', name: 'Shane Cronan' },
@@ -87,14 +89,16 @@ function Home() {
       </a>
 
       <section className="home-protected">
-        <div className="watermark-wrap">
-          <img
-            src={romeBroadSt}
-            alt="Broad Street sign in Rome, Georgia — home of Nailed It Property Solutions"
-            className="protected-image"
-            width="700"
-            height="467"
-          />
+        <div className="hero-slideshow">
+          {heroImages.map((src, i) => (
+            <img
+              key={i}
+              src={src}
+              alt={i === 0 ? 'Broad Street sign in Rome, Georgia' : 'Downtown Rome, Georgia river view'}
+              className="hero-slide"
+              style={{ animationDelay: `${i * 6}s` }}
+            />
+          ))}
         </div>
         <p className="protected-headline">Equip your home today with a Nailed It subscription.</p>
       </section>
@@ -249,23 +253,14 @@ function Home() {
       <section className="home-straight-talk reveal">
         <h2>No Membership Required.</h2>
         <div className="accent-bar" aria-hidden="true"></div>
-        <div className="home-straight-talk-content">
-          <img
-            src={riverRome}
-            alt="Downtown Rome, Georgia river view"
-            className="home-community-img"
-            width="400"
-            height="267"
-          />
-          <p>
-            You don&rsquo;t need a subscription to get top-quality work from us.
-            Every client gets the same level of craftsmanship, attention to detail,
-            and honest pricing — whether it&rsquo;s a one-time repair or a full
-            renovation. Our preventative maintenance plans are there if you want
-            extra peace of mind and priority scheduling, but they&rsquo;re never a
-            requirement. Need something fixed? Just call.
-          </p>
-        </div>
+        <p>
+          You don&rsquo;t need a subscription to get top-quality work from us.
+          Every client gets the same level of craftsmanship, attention to detail,
+          and honest pricing — whether it&rsquo;s a one-time repair or a full
+          renovation. Our preventative maintenance plans are there if you want
+          extra peace of mind and priority scheduling, but they&rsquo;re never a
+          requirement. Need something fixed? Just call.
+        </p>
       </section>
 
       <section className="home-repairs reveal">
