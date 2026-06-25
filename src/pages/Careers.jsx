@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import useScrollReveal from '../hooks/useScrollReveal';
 import usePageMeta from '../hooks/usePageMeta';
+import { supabase } from '../lib/supabase';
 import './Careers.css';
 
 const STEPS = ['Contact', 'Skills', 'Logistics', 'Review'];
@@ -73,6 +74,13 @@ function Careers() {
       submission.append(key, Array.isArray(val) ? val.join(', ') : val);
     });
 
+    // Save to Supabase for admin dashboard
+    supabase.from('career_applications').insert({
+      data: formData,
+      status: 'new',
+    }).then();
+
+    // Also send via Formspree for email notification
     fetch('https://formspree.io/f/xrewzpvl', {
       method: 'POST',
       body: submission,

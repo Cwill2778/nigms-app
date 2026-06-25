@@ -36,6 +36,17 @@ function Reviews() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.target;
+
+    // Save to Supabase for admin dashboard (unpublished until approved)
+    supabase.from('reviews').insert({
+      name: formData.name,
+      stars: parseInt(formData.rating),
+      text: formData.review,
+      date: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+      published: false,
+    }).then();
+
+    // Also send via Formspree for email notification
     fetch('https://formspree.io/f/mwvjjrqp', {
       method: 'POST',
       body: new FormData(form),

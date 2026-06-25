@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import useScrollReveal from '../hooks/useScrollReveal';
 import usePageMeta from '../hooks/usePageMeta';
+import { supabase } from '../lib/supabase';
 import './Contact.css';
 
 function Contact() {
@@ -25,6 +26,17 @@ function Contact() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.target;
+
+    // Save to Supabase for admin dashboard
+    supabase.from('contact_submissions').insert({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      interest: formData.interest,
+      message: formData.message,
+    }).then();
+
+    // Also send via Formspree for email notifications
     fetch('https://formspree.io/f/xqeooyyl', {
       method: 'POST',
       body: new FormData(form),

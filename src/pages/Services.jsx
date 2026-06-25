@@ -5,7 +5,7 @@ import usePageMeta from '../hooks/usePageMeta';
 import Lightbox from '../components/Lightbox';
 import kitchenBefore from '../assets/HarveyKitchenWallBefore.jpg';
 import kitchenAfter from '../assets/HarveyKitchenWallAfter.jpg';
-import charlesWorking from '../assets/charlesAtWorkIII (1).jpg';
+import charlesWorking from '../assets/charlesAtWorkIII.jpg';
 import miniBar from '../assets/miniBar.jpg';
 import './Services.css';
 

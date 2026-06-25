@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import useScrollReveal from '../hooks/useScrollReveal';
 import usePageMeta from '../hooks/usePageMeta';
-import bathroomImg from '../assets/bathroomNorthRome (1).jpg';
+import bathroomImg from '../assets/bathroomNorthRome.jpg';
 import './Turnovers.css';
 
 function Turnovers() {

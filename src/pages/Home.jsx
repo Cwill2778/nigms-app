@@ -5,7 +5,7 @@ import usePageMeta from '../hooks/usePageMeta';
 import { supabase } from '../lib/supabase';
 import romeBroadSt from '../assets/romeBroadStSign.jpeg';
 import bridgeRome from '../assets/bridgeRome.jpg';
-import riverRome from '../assets/riverDowntownRome (1).jpg';
+import riverRome from '../assets/riverDowntownRome.jpg';
 import './Home.css';
 
 const heroImages = [romeBroadSt, riverRome];
