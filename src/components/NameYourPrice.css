@@ -1,4 +1,4 @@
-/* Name Your Price Section */
+/* Name Your Price — Compact Wizard */
 .nyp-section {
   padding: 48px 16px;
   border-top: 2px solid var(--accent);
@@ -6,45 +6,78 @@
 }
 
 .nyp-container {
-  max-width: 640px;
+  max-width: 480px;
   margin: 0 auto;
 }
 
 .nyp-header {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 20px;
 }
 
 .nyp-header h2 {
-  font-size: 1.8rem;
-  margin-bottom: 8px;
+  font-size: 1.5rem;
+  margin-bottom: 6px;
 }
 
 .nyp-subtitle {
-  font-size: 1rem;
+  font-size: 0.88rem;
   color: var(--text-sub);
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
-/* Form */
-.nyp-form {
+/* Progress dots */
+.nyp-progress {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
 }
 
-.nyp-field label {
+.nyp-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.3s, transform 0.3s;
+}
+
+.nyp-dot--active {
+  background: var(--accent);
+  transform: scale(1.3);
+}
+
+.nyp-dot--done {
+  background: var(--accent);
+  opacity: 0.5;
+}
+
+/* Steps */
+.nyp-steps-wrapper {
+  min-height: 180px;
+}
+
+.nyp-step {
+  animation: stepFadeIn 0.3s ease;
+}
+
+@keyframes stepFadeIn {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.nyp-step-label {
   display: block;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  margin-bottom: 6px;
+  margin-bottom: 12px;
   color: var(--text);
 }
 
-.nyp-field input[type="text"],
-.nyp-field input[type="tel"],
-.nyp-field input[type="email"],
-.nyp-field textarea {
+.nyp-step textarea,
+.nyp-step input[type="text"],
+.nyp-step input[type="tel"],
+.nyp-step input[type="email"] {
   width: 100%;
   padding: 12px 14px;
   border: 1px solid var(--border);
@@ -56,31 +89,24 @@
   transition: border-color 0.2s;
 }
 
-.nyp-field input:focus,
-.nyp-field textarea:focus {
+.nyp-step textarea:focus,
+.nyp-step input:focus {
   outline: none;
   border-color: var(--accent);
 }
 
-.nyp-field textarea {
+.nyp-step textarea {
   resize: vertical;
-  min-height: 100px;
+  min-height: 80px;
 }
 
-.nyp-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+.nyp-contact-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-/* Price field */
-.nyp-price-field {
-  background: var(--bg-primary);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 20px;
-}
-
+/* Price */
 .nyp-price-display {
   display: flex;
   align-items: center;
@@ -90,17 +116,17 @@
 }
 
 .nyp-dollar {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: var(--accent);
 }
 
 .nyp-price-input {
-  width: 120px !important;
-  font-size: 2rem !important;
+  width: 100px !important;
+  font-size: 1.8rem !important;
   font-weight: 700;
   text-align: center;
-  padding: 8px !important;
+  padding: 6px !important;
   border: none !important;
   border-bottom: 2px solid var(--accent) !important;
   border-radius: 0 !important;
@@ -108,11 +134,6 @@
   color: var(--text) !important;
 }
 
-.nyp-price-input:focus {
-  border-bottom-color: var(--accent) !important;
-}
-
-/* Slider */
 .nyp-slider {
   width: 100%;
   height: 8px;
@@ -125,8 +146,8 @@
 
 .nyp-slider::-webkit-slider-thumb {
   appearance: none;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: var(--accent);
   cursor: pointer;
@@ -134,8 +155,8 @@
 }
 
 .nyp-slider::-moz-range-thumb {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: var(--accent);
   cursor: pointer;
@@ -147,15 +168,15 @@
   display: flex;
   justify-content: space-between;
   margin-top: 8px;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--text-sub);
 }
 
-/* Upload area */
+/* Upload */
 .nyp-upload-area {
   border: 2px dashed var(--border);
   border-radius: 4px;
-  padding: 24px;
+  padding: 20px;
   text-align: center;
   cursor: pointer;
   transition: border-color 0.2s;
@@ -167,38 +188,38 @@
 
 .nyp-upload-area p {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--text-sub);
 }
 
 .nyp-upload-hint {
-  font-size: 0.75rem !important;
+  font-size: 0.7rem !important;
   margin-top: 4px !important;
 }
 
 .nyp-file-list {
-  margin-top: 12px;
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .nyp-file-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 12px;
+  padding: 6px 10px;
   background: var(--bg-primary);
   border: 1px solid var(--border);
   border-radius: 4px;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 
 .nyp-file-item button {
   background: none;
   border: none;
   color: var(--text-sub);
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   cursor: pointer;
   padding: 0 4px;
 }
@@ -207,23 +228,21 @@
   color: #f44336;
 }
 
-/* Terms */
-.nyp-terms {
-  margin-top: 8px;
+/* Terms inline */
+.nyp-terms-inline {
+  margin-top: 16px;
 }
 
 .nyp-checkbox-label {
-  display: flex !important;
-  align-items: flex-start;
-  gap: 10px;
-  font-weight: 400 !important;
-  font-size: 0.82rem !important;
-  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-sub);
   cursor: pointer;
 }
 
 .nyp-checkbox-label input[type="checkbox"] {
-  margin-top: 3px;
   flex-shrink: 0;
 }
 
@@ -235,16 +254,41 @@
 /* Error */
 .nyp-error {
   color: #f44336;
-  font-size: 0.85rem;
-  margin: 0;
+  font-size: 0.82rem;
+  margin: 12px 0 0;
+  text-align: center;
 }
 
-/* Submit button */
+/* Navigation */
+.nyp-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  gap: 12px;
+}
+
+.nyp-back-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-sub);
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.nyp-back-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.nyp-next-btn,
 .nyp-submit {
-  width: 100%;
-  padding: 16px;
-  font-size: 1rem;
-  margin-top: 8px;
+  flex: 1;
+  padding: 12px 20px;
+  font-size: 0.9rem;
 }
 
 .nyp-submit:disabled {
@@ -252,36 +296,30 @@
   cursor: not-allowed;
 }
 
-/* Success state */
+/* Success */
 .nyp-success {
   text-align: center;
-  padding: 48px 20px;
+  padding: 32px 16px;
 }
 
 .nyp-success h2 {
   color: var(--accent);
-  margin-bottom: 12px;
+  margin-bottom: 10px;
+  font-size: 1.3rem;
 }
 
 .nyp-success p {
-  font-size: 1rem;
-  line-height: 1.7;
-  margin-bottom: 24px;
+  font-size: 0.9rem;
   color: var(--text-sub);
+  margin-bottom: 20px;
 }
 
 /* Responsive */
-@media (max-width: 480px) {
-  .nyp-row {
-    grid-template-columns: 1fr;
-  }
-}
-
 @media (min-width: 768px) {
   .nyp-section {
-    padding: 72px 32px;
+    padding: 48px 32px;
   }
   .nyp-header h2 {
-    font-size: 2.2rem;
+    font-size: 1.7rem;
   }
 }

@@ -6,8 +6,10 @@ import './NameYourPrice.css';
 const MIN_PRICE = 55;
 const MAX_PRICE = 2499;
 const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25MB
+const TOTAL_STEPS = 4;
 
 function NameYourPrice() {
+  const [step, setStep] = useState(0);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -20,6 +22,24 @@ function NameYourPrice() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
   const fileInputRef = useRef(null);
+
+  function next() {
+    setError('');
+    if (step === 0 && !description.trim()) {
+      setError('Please describe what you need done.');
+      return;
+    }
+    if (step === 2 && !name.trim()) {
+      setError('Please enter your name.');
+      return;
+    }
+    setStep((s) => Math.min(s + 1, TOTAL_STEPS - 1));
+  }
+
+  function back() {
+    setError('');
+    setStep((s) => Math.max(s - 1, 0));
+  }
 
   function handleSliderChange(e) {
     const val = parseInt(e.target.value);
@@ -46,30 +66,22 @@ function NameYourPrice() {
     if (valid.length !== selected.length) {
       setError('Some files exceed 25MB and were excluded.');
     }
-    setFiles((prev) => [...prev, ...valid].slice(0, 5)); // max 5 files
+    setFiles((prev) => [...prev, ...valid].slice(0, 5));
   }
 
   function removeFile(index) {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   }
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  async function handleSubmit() {
     setError('');
-
-    if (!name.trim() || !description.trim()) {
-      setError('Please fill in your name and describe what you need.');
-      return;
-    }
     if (!termsAccepted) {
-      setError('Please accept the terms of use to continue.');
+      setError('Please accept the terms to continue.');
       return;
     }
 
     setSubmitting(true);
-
     try {
-      // Upload files to storage
       const attachmentPaths = [];
       for (const file of files) {
         const ext = file.name.split('.').pop();
@@ -77,24 +89,20 @@ function NameYourPrice() {
         const { error: uploadError } = await supabase.storage
           .from('nyp-attachments')
           .upload(path, file);
-        if (!uploadError) {
-          attachmentPaths.push(path);
-        }
+        if (!uploadError) attachmentPaths.push(path);
       }
 
-      // Insert submission
       const { error: insertError } = await supabase.from('name_your_price').insert({
         customer_name: name.trim(),
         customer_phone: phone.trim() || null,
         customer_email: email.trim() || null,
         description: description.trim(),
-        offered_price: price * 100, // convert to cents
+        offered_price: price * 100,
         attachments: attachmentPaths,
         terms_accepted: true,
       });
 
       if (insertError) throw insertError;
-
       setSubmitted(true);
     } catch (err) {
       setError('Something went wrong. Please try again or call us directly.');
@@ -109,9 +117,9 @@ function NameYourPrice() {
       <section className="nyp-section" id="name-your-price">
         <div className="nyp-success">
           <h2>Submission Received!</h2>
-          <p>We&rsquo;ll review your request and get back to you shortly. If your price works for the scope, we&rsquo;ll get you on the schedule.</p>
-          <button className="cta-button" onClick={() => { setSubmitted(false); setName(''); setPhone(''); setEmail(''); setDescription(''); setPrice(250); setPriceInput('250'); setFiles([]); setTermsAccepted(false); }}>
-            Submit Another Request
+          <p>We&rsquo;ll review your request and get back to you shortly.</p>
+          <button className="cta-button" onClick={() => { setSubmitted(false); setStep(0); setName(''); setPhone(''); setEmail(''); setDescription(''); setPrice(250); setPriceInput('250'); setFiles([]); setTermsAccepted(false); }}>
+            Submit Another
           </button>
         </div>
       </section>
@@ -123,33 +131,31 @@ function NameYourPrice() {
       <div className="nyp-container">
         <div className="nyp-header">
           <h2>Name Your Price</h2>
-          <p className="nyp-subtitle">Tell us what you need done and what you&rsquo;re willing to pay. If it works, we&rsquo;ll get it scheduled.</p>
+          <p className="nyp-subtitle">Tell us what you need. Set your budget. We&rsquo;ll make it happen.</p>
         </div>
 
-        <form className="nyp-form" onSubmit={handleSubmit}>
-          <div className="nyp-field">
-            <label htmlFor="nyp-name">Your Name *</label>
-            <input id="nyp-name" type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" required />
+        {/* Progress dots */}
+        <div className="nyp-progress">
+          {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
+            <span key={i} className={`nyp-dot${i === step ? ' nyp-dot--active' : ''}${i < step ? ' nyp-dot--done' : ''}`} />
+          ))}
+        </div>
+
+        {/* Step slides */}
+        <div className="nyp-steps-wrapper">
+          <div className="nyp-step" style={{ display: step === 0 ? 'block' : 'none' }}>
+            <label className="nyp-step-label" htmlFor="nyp-desc">What do you need done?</label>
+            <textarea
+              id="nyp-desc"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Describe the work — be as specific as possible."
+              rows={3}
+            />
           </div>
 
-          <div className="nyp-row">
-            <div className="nyp-field">
-              <label htmlFor="nyp-phone">Phone</label>
-              <input id="nyp-phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(706) 555-0123" />
-            </div>
-            <div className="nyp-field">
-              <label htmlFor="nyp-email">Email</label>
-              <input id="nyp-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
-            </div>
-          </div>
-
-          <div className="nyp-field">
-            <label htmlFor="nyp-description">What Do You Need Done? *</label>
-            <textarea id="nyp-description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Describe the work you need — be as specific as possible for a faster response." rows={4} required />
-          </div>
-
-          <div className="nyp-field nyp-price-field">
-            <label>Your Offer</label>
+          <div className="nyp-step" style={{ display: step === 1 ? 'block' : 'none' }}>
+            <label className="nyp-step-label">What&rsquo;s your budget?</label>
             <div className="nyp-price-display">
               <span className="nyp-dollar">$</span>
               <input
@@ -170,7 +176,6 @@ function NameYourPrice() {
               step={5}
               value={price}
               onChange={handleSliderChange}
-              aria-label="Price slider"
             />
             <div className="nyp-price-range">
               <span>${MIN_PRICE}</span>
@@ -178,11 +183,20 @@ function NameYourPrice() {
             </div>
           </div>
 
-          <div className="nyp-field">
-            <label>Photos or Video (optional, max 25MB each)</label>
+          <div className="nyp-step" style={{ display: step === 2 ? 'block' : 'none' }}>
+            <label className="nyp-step-label">How can we reach you?</label>
+            <div className="nyp-contact-fields">
+              <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name *" required />
+              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone (optional)" />
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email (optional)" />
+            </div>
+          </div>
+
+          <div className="nyp-step" style={{ display: step === 3 ? 'block' : 'none' }}>
+            <label className="nyp-step-label">Add photos or video (optional)</label>
             <div className="nyp-upload-area" onClick={() => fileInputRef.current?.click()}>
-              <p>Click to upload or drag files here</p>
-              <p className="nyp-upload-hint">Up to 5 files. JPEG, PNG, MP4, MOV accepted.</p>
+              <p>Tap to upload</p>
+              <p className="nyp-upload-hint">Up to 5 files, 25MB each</p>
             </div>
             <input
               ref={fileInputRef}
@@ -196,27 +210,37 @@ function NameYourPrice() {
               <div className="nyp-file-list">
                 {files.map((f, i) => (
                   <div key={i} className="nyp-file-item">
-                    <span>{f.name} ({(f.size / 1024 / 1024).toFixed(1)}MB)</span>
-                    <button type="button" onClick={() => removeFile(i)} aria-label="Remove file">&times;</button>
+                    <span>{f.name.length > 25 ? f.name.substring(0, 22) + '...' : f.name}</span>
+                    <button type="button" onClick={() => removeFile(i)}>&times;</button>
                   </div>
                 ))}
               </div>
             )}
+
+            <div className="nyp-terms-inline">
+              <label className="nyp-checkbox-label">
+                <input type="checkbox" checked={termsAccepted} onChange={(e) => setTermsAccepted(e.target.checked)} />
+                <span>I accept the <Link to="/terms#name-your-price-terms">Terms of Use</Link></span>
+              </label>
+            </div>
           </div>
+        </div>
 
-          <div className="nyp-field nyp-terms">
-            <label className="nyp-checkbox-label">
-              <input type="checkbox" checked={termsAccepted} onChange={(e) => setTermsAccepted(e.target.checked)} />
-              <span>By checking this box, I accept and agree to the <Link to="/terms#name-your-price-terms">Terms of Use</Link>.</span>
-            </label>
-          </div>
+        {error && <p className="nyp-error">{error}</p>}
 
-          {error && <p className="nyp-error">{error}</p>}
-
-          <button type="submit" className="cta-button nyp-submit" disabled={submitting}>
-            {submitting ? 'Submitting...' : 'Submit Your Offer'}
-          </button>
-        </form>
+        {/* Navigation */}
+        <div className="nyp-nav">
+          {step > 0 && (
+            <button type="button" className="nyp-back-btn" onClick={back}>Back</button>
+          )}
+          {step < TOTAL_STEPS - 1 ? (
+            <button type="button" className="cta-button nyp-next-btn" onClick={next}>Next</button>
+          ) : (
+            <button type="button" className="cta-button nyp-submit" onClick={handleSubmit} disabled={submitting}>
+              {submitting ? 'Sending...' : 'Submit Offer'}
+            </button>
+          )}
+        </div>
       </div>
     </section>
   );
