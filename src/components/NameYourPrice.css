@@ -106,6 +106,12 @@
   gap: 10px;
 }
 
+.nyp-contact-hint {
+  font-size: 0.8rem;
+  color: var(--text-sub);
+  margin-bottom: 12px;
+}
+
 /* Price */
 .nyp-price-display {
   display: flex;

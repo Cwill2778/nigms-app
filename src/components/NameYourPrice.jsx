@@ -33,6 +33,10 @@ function NameYourPrice() {
       setError('Please enter your name.');
       return;
     }
+    if (step === 2 && !phone.trim() && !email.trim()) {
+      setError('Please provide a phone number or email so we can respond to your offer.');
+      return;
+    }
     setStep((s) => Math.min(s + 1, TOTAL_STEPS - 1));
   }
 
@@ -82,6 +86,11 @@ function NameYourPrice() {
     }
     if (!name.trim()) {
       setError('Please enter your name.');
+      setStep(2);
+      return;
+    }
+    if (!phone.trim() && !email.trim()) {
+      setError('Please provide a phone number or email so we can respond to your offer.');
       setStep(2);
       return;
     }
@@ -202,10 +211,11 @@ function NameYourPrice() {
 
           <div className="nyp-step" style={{ display: step === 2 ? 'block' : 'none' }}>
             <label className="nyp-step-label">How can we reach you?</label>
+            <p className="nyp-contact-hint">Provide at least one so we can respond to your offer.</p>
             <div className="nyp-contact-fields">
               <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name *" required />
-              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone (optional)" />
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email (optional)" />
+              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone number" />
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email address" />
             </div>
           </div>
 
