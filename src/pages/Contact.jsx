@@ -36,6 +36,9 @@ function Contact() {
       message: formData.message,
     }).then();
 
+    // Roku Pixel: Contact event
+    if (window.rkp) window.rkp('event', 'CONTACT');
+
     // Also send via Formspree for email notifications
     fetch('https://formspree.io/f/xqeooyyl', {
       method: 'POST',

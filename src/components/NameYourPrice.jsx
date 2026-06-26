@@ -131,6 +131,8 @@ function NameYourPrice() {
         console.error('Insert error:', insertError);
         throw insertError;
       }
+      // Roku Pixel: Contact event
+      if (window.rkp) window.rkp('event', 'CONTACT');
       setSubmitted(true);
     } catch (err) {
       setError(err?.message || 'Something went wrong. Please try again or call us directly.');

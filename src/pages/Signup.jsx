@@ -47,6 +47,8 @@ function Signup() {
       setError(error.message);
       setLoading(false);
     } else {
+      // Roku Pixel: Complete Registration event
+      if (window.rkp) window.rkp('event', 'COMPLETE_REGISTRATION');
       setSuccess(true);
     }
   }
