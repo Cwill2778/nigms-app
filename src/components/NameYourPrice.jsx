@@ -75,6 +75,16 @@ function NameYourPrice() {
 
   async function handleSubmit() {
     setError('');
+    if (!description.trim()) {
+      setError('Please describe what you need done.');
+      setStep(0);
+      return;
+    }
+    if (!name.trim()) {
+      setError('Please enter your name.');
+      setStep(2);
+      return;
+    }
     if (!termsAccepted) {
       setError('Please accept the terms to continue.');
       return;
@@ -89,7 +99,11 @@ function NameYourPrice() {
         const { error: uploadError } = await supabase.storage
           .from('nyp-attachments')
           .upload(path, file);
-        if (!uploadError) attachmentPaths.push(path);
+        if (!uploadError) {
+          attachmentPaths.push(path);
+        } else {
+          console.warn('File upload failed:', uploadError.message);
+        }
       }
 
       const { error: insertError } = await supabase.from('name_your_price').insert({
@@ -98,15 +112,18 @@ function NameYourPrice() {
         customer_email: email.trim() || null,
         description: description.trim(),
         offered_price: price * 100,
-        attachments: attachmentPaths,
+        attachments: attachmentPaths.length > 0 ? attachmentPaths : [],
         terms_accepted: true,
       });
 
-      if (insertError) throw insertError;
+      if (insertError) {
+        console.error('Insert error:', insertError);
+        throw insertError;
+      }
       setSubmitted(true);
     } catch (err) {
-      setError('Something went wrong. Please try again or call us directly.');
-      console.error(err);
+      setError(err?.message || 'Something went wrong. Please try again or call us directly.');
+      console.error('NYP submission error:', err);
     } finally {
       setSubmitting(false);
     }
