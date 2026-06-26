@@ -14,6 +14,7 @@ function NameYourPrice() {
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [description, setDescription] = useState('');
+  const [materialsSupplied, setMaterialsSupplied] = useState('customer');
   const [price, setPrice] = useState(250);
   const [priceInput, setPriceInput] = useState('250');
   const [files, setFiles] = useState([]);
@@ -121,6 +122,7 @@ function NameYourPrice() {
         customer_email: email.trim() || null,
         description: description.trim(),
         offered_price: price * 100,
+        materials_supplied_by: materialsSupplied,
         attachments: attachmentPaths.length > 0 ? attachmentPaths : [],
         terms_accepted: true,
       });
@@ -144,7 +146,7 @@ function NameYourPrice() {
         <div className="nyp-success">
           <h2>Submission Received!</h2>
           <p>We&rsquo;ll review your request and get back to you shortly.</p>
-          <button className="cta-button" onClick={() => { setSubmitted(false); setStep(0); setName(''); setPhone(''); setEmail(''); setDescription(''); setPrice(250); setPriceInput('250'); setFiles([]); setTermsAccepted(false); }}>
+          <button className="cta-button" onClick={() => { setSubmitted(false); setStep(0); setName(''); setPhone(''); setEmail(''); setDescription(''); setMaterialsSupplied('customer'); setPrice(250); setPriceInput('250'); setFiles([]); setTermsAccepted(false); }}>
             Submit Another
           </button>
         </div>
@@ -178,6 +180,23 @@ function NameYourPrice() {
               placeholder="Describe the work — be as specific as possible."
               rows={3}
             />
+            <div className="nyp-materials">
+              <label className="nyp-step-label">Who is supplying materials/fixtures?</label>
+              <div className="nyp-materials-options">
+                <label className={`nyp-material-option${materialsSupplied === 'customer' ? ' nyp-material-option--active' : ''}`}>
+                  <input type="radio" name="materials" value="customer" checked={materialsSupplied === 'customer'} onChange={() => setMaterialsSupplied('customer')} />
+                  <span>I&rsquo;ll supply them</span>
+                </label>
+                <label className={`nyp-material-option${materialsSupplied === 'nailedit' ? ' nyp-material-option--active' : ''}`}>
+                  <input type="radio" name="materials" value="nailedit" checked={materialsSupplied === 'nailedit'} onChange={() => setMaterialsSupplied('nailedit')} />
+                  <span>Nailed It supplies</span>
+                </label>
+                <label className={`nyp-material-option${materialsSupplied === 'unsure' ? ' nyp-material-option--active' : ''}`}>
+                  <input type="radio" name="materials" value="unsure" checked={materialsSupplied === 'unsure'} onChange={() => setMaterialsSupplied('unsure')} />
+                  <span>Not sure yet</span>
+                </label>
+              </div>
+            </div>
           </div>
 
           <div className="nyp-step" style={{ display: step === 1 ? 'block' : 'none' }}>

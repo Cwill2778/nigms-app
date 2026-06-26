@@ -112,6 +112,38 @@
   margin-bottom: 12px;
 }
 
+/* Materials toggle */
+.nyp-materials {
+  margin-top: 16px;
+}
+
+.nyp-materials-options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.nyp-material-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.nyp-material-option input[type="radio"] {
+  display: none;
+}
+
+.nyp-material-option--active {
+  border-color: var(--accent);
+  background: rgba(255, 138, 0, 0.1);
+}
+
 /* Price */
 .nyp-price-display {
   display: flex;

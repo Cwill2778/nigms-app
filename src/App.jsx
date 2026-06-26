@@ -11,6 +11,7 @@ import Careers from './pages/Careers';
 import FAQ from './pages/FAQ';
 import Admin from './pages/Admin';
 import Terms from './pages/Terms';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="careers" element={<Careers />} />
           <Route path="faq" element={<FAQ />} />
           <Route path="terms" element={<Terms />} />
+          <Route path="dashboard" element={<Dashboard />} />
           <Route path="admin" element={<Admin />} />
         </Route>
       </Routes>
