@@ -12,6 +12,8 @@ import FAQ from './pages/FAQ';
 import Admin from './pages/Admin';
 import Terms from './pages/Terms';
 import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
           <Route path="faq" element={<FAQ />} />
           <Route path="terms" element={<Terms />} />
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="login" element={<Login />} />
+          <Route path="signup" element={<Signup />} />
           <Route path="admin" element={<Admin />} />
         </Route>
       </Routes>

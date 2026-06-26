@@ -54,6 +54,7 @@ function Header() {
                 <li><Link to="/turnovers" onClick={closeMenu}>Unit Turnovers</Link></li>
               </ul>
             </li>
+            <li><Link to="/dashboard" onClick={closeMenu}>My Account</Link></li>
           </ul>
         </nav>
       </div>
