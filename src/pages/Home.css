@@ -18,17 +18,20 @@
 }
 
 .banner-track span {
-  font-family: var(--heading);
+  font-family: Arial, sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
+  color: #000;
 }
 
 .banner-phone {
   font-size: 1.1rem;
   font-weight: 800;
   letter-spacing: 0.5px;
+  text-decoration: underline;
+  color: #000;
 }
 
 /* Hero section */
