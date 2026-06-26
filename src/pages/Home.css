@@ -25,6 +25,12 @@
   text-transform: uppercase;
 }
 
+.banner-phone {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
 /* Hero section */
 .home-hero {
   position: relative;
