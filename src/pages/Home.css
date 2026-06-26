@@ -1,12 +1,11 @@
-/* Scrolling banner */
+/* Banner */
 .scrolling-banner {
   display: block;
-  overflow: hidden;
   background: var(--accent);
   color: var(--bg-primary);
   text-decoration: none;
-  padding: 8px 0;
-  white-space: nowrap;
+  padding: 10px 16px;
+  text-align: center;
 }
 
 .scrolling-banner:hover {
@@ -15,26 +14,15 @@
 }
 
 .banner-track {
-  display: inline-flex;
-  animation: scroll-banner 20s linear infinite;
+  display: block;
 }
 
 .banner-track span {
-  padding: 0 32px;
   font-family: var(--heading);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
-}
-
-@keyframes scroll-banner {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .banner-track { animation: none; }
 }
 
 /* Hero section */

@@ -83,7 +83,7 @@ function Home() {
     <div className="home">
       <a href="tel:+17068448193" className="scrolling-banner" aria-label="Call us now">
         <div className="banner-track">
-          <span>CLICK HERE TO CALL US NOW</span>
+          <span>CLICK HERE TO CALL US NOW — (706) 844-8193</span>
         </div>
       </a>
 
