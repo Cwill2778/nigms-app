@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { subscribeToPush, unsubscribeFromPush, isPushSubscribed, registerServiceWorker } from '../lib/pushNotifications';
+import { subscribeToPush, registerServiceWorker } from '../lib/pushNotifications';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, CartesianGrid, Legend } from 'recharts';
 import './Admin.css';
 
@@ -31,11 +31,19 @@ function Admin() {
   useEffect(() => {
     if (!session) return;
 
-    // Check push subscription status
-    isPushSubscribed().then(setPushEnabled);
+    // Auto-enable push notifications
+    async function autoEnablePush() {
+      await registerServiceWorker();
+      if (!('Notification' in window) || !('PushManager' in window)) return;
+      if (!import.meta.env.VITE_VAPID_PUBLIC_KEY) return;
 
-    // Register service worker
-    registerServiceWorker();
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        await subscribeToPush();
+        setPushEnabled(true);
+      }
+    }
+    autoEnablePush();
 
     // Listen for new name_your_price submissions in realtime
     const channel = supabase
@@ -60,33 +68,6 @@ function Admin() {
 
     return () => { supabase.removeChannel(channel); };
   }, [session]);
-
-  async function togglePush() {
-    if (pushEnabled) {
-      await unsubscribeFromPush();
-      setPushEnabled(false);
-    } else {
-      if (!('Notification' in window)) {
-        alert('Push notifications are not supported in this browser.');
-        return;
-      }
-      if (!import.meta.env.VITE_VAPID_PUBLIC_KEY) {
-        alert('Push notifications are not configured yet (missing VAPID key).');
-        return;
-      }
-      const permission = await Notification.requestPermission();
-      if (permission === 'granted') {
-        const result = await subscribeToPush();
-        if (result) {
-          setPushEnabled(true);
-        } else {
-          alert('Failed to subscribe. Check browser console for details.');
-        }
-      } else if (permission === 'denied') {
-        alert('Notifications were blocked. Enable them in your browser settings for this site.');
-      }
-    }
-  }
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -124,9 +105,6 @@ function Admin() {
           <p className="admin-user-id">ID: {session.user.id.substring(0, 8)}...</p>
         </div>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <button className="btn-sm" onClick={togglePush} title={pushEnabled ? 'Disable notifications' : 'Enable notifications'}>
-            {pushEnabled ? '🔔' : '🔕'} {pushEnabled ? 'Notifications On' : 'Enable Alerts'}
-          </button>
           <button className="btn-sm" onClick={handleLogout}>Logout</button>
         </div>
       </div>
