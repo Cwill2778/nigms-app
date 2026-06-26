@@ -66,10 +66,24 @@ function Admin() {
       await unsubscribeFromPush();
       setPushEnabled(false);
     } else {
+      if (!('Notification' in window)) {
+        alert('Push notifications are not supported in this browser.');
+        return;
+      }
+      if (!import.meta.env.VITE_VAPID_PUBLIC_KEY) {
+        alert('Push notifications are not configured yet (missing VAPID key).');
+        return;
+      }
       const permission = await Notification.requestPermission();
       if (permission === 'granted') {
-        await subscribeToPush();
-        setPushEnabled(true);
+        const result = await subscribeToPush();
+        if (result) {
+          setPushEnabled(true);
+        } else {
+          alert('Failed to subscribe. Check browser console for details.');
+        }
+      } else if (permission === 'denied') {
+        alert('Notifications were blocked. Enable them in your browser settings for this site.');
       }
     }
   }
