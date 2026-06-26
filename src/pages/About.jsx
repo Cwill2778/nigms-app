@@ -192,6 +192,25 @@ function About() {
           own ever-so-muddy yard at home.
         </p>
       </section>
+
+      <section className="about-section about-local reveal">
+        <h2>Born &amp; Raised in Rome</h2>
+        <div className="accent-bar" aria-hidden="true"></div>
+        <p>
+          This isn&rsquo;t just where we work — it&rsquo;s home. Charles knows the
+          quirks of Rome&rsquo;s housing stock: the older brick bungalows in West Rome
+          that need seasonal gutter attention, the mid-century rentals along North Broad
+          with their aging plumbing, the humidity challenges in South Rome properties
+          near the river, and the historic character homes around Clocktower Hill that
+          deserve restoration, not shortcuts.
+        </p>
+        <p>
+          When you call Nailed It, you&rsquo;re not explaining where you live to
+          someone checking a GPS. You&rsquo;re talking to a neighbor who already
+          knows the neighborhood, the building codes, and what the local hardware
+          store actually has in stock.
+        </p>
+      </section>
     </div>
   );
 }

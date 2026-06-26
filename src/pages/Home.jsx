@@ -275,6 +275,45 @@ function Home() {
         </p>
       </section>
 
+      <section className="home-service-areas reveal">
+        <h2>Proudly Serving Every Corner of Rome</h2>
+        <div className="accent-bar" aria-hidden="true"></div>
+        <p className="service-areas-intro">
+          We&rsquo;re not a faceless franchise dispatching from Atlanta. We live here,
+          work here, and know the unique character of every neighborhood in Rome, GA.
+        </p>
+        <div className="service-areas-grid">
+          <div className="area-card">
+            <h3>West Rome</h3>
+            <p>From the historic homes along Shorter Avenue to the established neighborhoods off Dean Avenue — we know these properties inside and out.</p>
+          </div>
+          <div className="area-card">
+            <h3>North Rome</h3>
+            <p>Serving the communities along North Broad and up toward the Ridge Ferry Park area. Older homes with character that deserve proper upkeep.</p>
+          </div>
+          <div className="area-card">
+            <h3>East Rome</h3>
+            <p>From East 2nd Street to the neighborhoods around Coosa Valley — reliable maintenance for working families and rental properties alike.</p>
+          </div>
+          <div className="area-card">
+            <h3>South Rome</h3>
+            <p>Covering South Broad, the residential streets off Burnett Ferry Road, and everywhere in between. We show up on time, every time.</p>
+          </div>
+          <div className="area-card">
+            <h3>Downtown Rome</h3>
+            <p>The heart of our community. From Broad Street storefronts to loft apartments, we keep Downtown&rsquo;s properties in top shape.</p>
+          </div>
+          <div className="area-card">
+            <h3>Clocktower Hill</h3>
+            <p>One of Rome&rsquo;s most iconic spots. The properties around Clocktower Hill deserve care that matches their stunning views and historic appeal.</p>
+          </div>
+        </div>
+        <p className="service-areas-tagline">
+          If it&rsquo;s in Floyd County, we&rsquo;re there. <Link to="/contact">Contact us</Link> to
+          confirm coverage for your specific area.
+        </p>
+      </section>
+
       <TestimonialCarousel />
 
       <section className="home-cta reveal">

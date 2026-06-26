@@ -30,6 +30,18 @@ function Footer() {
               <li><a href="https://g.page/r/CWiM9mqvEGVkEBM/review" target="_blank" rel="noopener noreferrer">Leave a Google Review</a></li>
             </ul>
           </div>
+          <div className="footer-col">
+            <h4>Service Areas</h4>
+            <ul>
+              <li>West Rome</li>
+              <li>North Rome</li>
+              <li>East Rome</li>
+              <li>South Rome</li>
+              <li>Downtown Rome</li>
+              <li>Clocktower Hill</li>
+              <li>Floyd County</li>
+            </ul>
+          </div>
         </div>
 
         <div className="footer-bottom">
