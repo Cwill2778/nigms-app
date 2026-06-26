@@ -194,7 +194,7 @@ function About() {
       </section>
 
       <section className="about-section about-local reveal">
-        <h2>Born &amp; Raised in Rome</h2>
+        <h2>Live & Breath Rome, Georgia 24 hrs a day | 7 days a week.</h2>
         <div className="accent-bar" aria-hidden="true"></div>
         <p>
           This isn&rsquo;t just where we work — it&rsquo;s home. Charles knows the
