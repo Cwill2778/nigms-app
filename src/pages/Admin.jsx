@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { subscribeToPush, unsubscribeFromPush, isPushSubscribed, registerServiceWorker } from '../lib/pushNotifications';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, CartesianGrid, Legend } from 'recharts';
 import './Admin.css';
 
@@ -10,6 +11,8 @@ function Admin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [pushEnabled, setPushEnabled] = useState(false);
+  const [newLeadCount, setNewLeadCount] = useState(0);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -23,6 +26,53 @@ function Admin() {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Push notifications & realtime listener for new leads
+  useEffect(() => {
+    if (!session) return;
+
+    // Check push subscription status
+    isPushSubscribed().then(setPushEnabled);
+
+    // Register service worker
+    registerServiceWorker();
+
+    // Listen for new name_your_price submissions in realtime
+    const channel = supabase
+      .channel('admin-nyp')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'name_your_price' }, (payload) => {
+        setNewLeadCount((c) => c + 1);
+        // Show browser notification if supported
+        if (Notification.permission === 'granted') {
+          navigator.serviceWorker.getRegistration().then((reg) => {
+            if (reg) {
+              reg.showNotification('🔨 New Lead!', {
+                body: `${payload.new.customer_name} submitted a $${(payload.new.offered_price / 100).toFixed(0)} offer`,
+                icon: '/favicon.jpg',
+                tag: 'nyp-' + payload.new.id,
+                data: { url: '/admin' },
+              });
+            }
+          });
+        }
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [session]);
+
+  async function togglePush() {
+    if (pushEnabled) {
+      await unsubscribeFromPush();
+      setPushEnabled(false);
+    } else {
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        await subscribeToPush();
+        setPushEnabled(true);
+      }
+    }
+  }
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -59,24 +109,30 @@ function Admin() {
           <p className="admin-user-name">{session.user.user_metadata?.full_name || session.user.email}</p>
           <p className="admin-user-id">ID: {session.user.id.substring(0, 8)}...</p>
         </div>
-        <button className="btn-sm" onClick={handleLogout}>Logout</button>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <button className="btn-sm" onClick={togglePush} title={pushEnabled ? 'Disable notifications' : 'Enable notifications'}>
+            {pushEnabled ? '🔔' : '🔕'} {pushEnabled ? 'Notifications On' : 'Enable Alerts'}
+          </button>
+          <button className="btn-sm" onClick={handleLogout}>Logout</button>
+        </div>
       </div>
       <h1>Admin Dashboard</h1>
 
       <div className="admin-tabs">
-        {['analytics', 'chat', 'reviews', 'faq', 'contacts', 'careers', 'settings'].map((t) => (
+        {['analytics', 'quotes', 'chat', 'reviews', 'faq', 'contacts', 'careers', 'settings'].map((t) => (
           <button
             key={t}
             className={`admin-tab${tab === t ? ' admin-tab--active' : ''}`}
-            onClick={() => setTab(t)}
+            onClick={() => { setTab(t); if (t === 'quotes') setNewLeadCount(0); }}
           >
-            {t}
+            {t}{t === 'quotes' && newLeadCount > 0 ? ` (${newLeadCount})` : ''}
           </button>
         ))}
       </div>
 
       <div className="admin-panel">
         {tab === 'analytics' && <AnalyticsPanel />}
+        {tab === 'quotes' && <QuotesPanel />}
         {tab === 'chat' && <ChatPanel />}
         {tab === 'reviews' && <ReviewsPanel />}
         {tab === 'faq' && <FAQPanel />}
@@ -1068,6 +1124,154 @@ function ChatPanel() {
         )}
       </div>
     </div>
+  );
+}
+
+// Quotes Panel (Name Your Price submissions)
+function QuotesPanel() {
+  const [submissions, setSubmissions] = useState([]);
+  const [selected, setSelected] = useState(null);
+  const [adminNotes, setAdminNotes] = useState('');
+  const [counterPrice, setCounterPrice] = useState('');
+
+  useEffect(() => { fetchSubmissions(); }, []);
+
+  async function fetchSubmissions() {
+    const { data } = await supabase
+      .from('name_your_price')
+      .select('*')
+      .order('created_at', { ascending: false });
+    setSubmissions(data || []);
+  }
+
+  async function updateStatus(id, status) {
+    const updates = { status, updated_at: new Date().toISOString() };
+    if (status === 'countered' && counterPrice) {
+      updates.counter_price = parseInt(counterPrice) * 100;
+    }
+    if (adminNotes.trim()) {
+      updates.admin_notes = adminNotes.trim();
+    }
+    await supabase.from('name_your_price').update(updates).eq('id', id);
+    fetchSubmissions();
+    setSelected(null);
+    setAdminNotes('');
+    setCounterPrice('');
+  }
+
+  async function markViewed(id) {
+    await supabase.from('name_your_price').update({ status: 'viewed', updated_at: new Date().toISOString() }).eq('id', id);
+    fetchSubmissions();
+  }
+
+  function getPublicUrl(path) {
+    const { data } = supabase.storage.from('nyp-attachments').getPublicUrl(path);
+    return data?.publicUrl || '';
+  }
+
+  const statusColors = { new: '#ff8a00', viewed: '#2196f3', accepted: '#4caf50', countered: '#ff9800', declined: '#f44336' };
+
+  if (selected) {
+    const s = submissions.find((sub) => sub.id === selected);
+    if (!s) return null;
+
+    return (
+      <>
+        <button className="btn-sm" onClick={() => setSelected(null)} style={{ marginBottom: '16px' }}>&larr; Back to List</button>
+        <div style={{ border: '1px solid var(--border)', borderRadius: '4px', padding: '24px', background: 'var(--bg-primary)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+            <h2 style={{ margin: 0 }}>{s.customer_name}</h2>
+            <span style={{ background: statusColors[s.status] || 'var(--border)', color: '#fff', padding: '4px 10px', borderRadius: '3px', fontSize: '0.75rem', fontWeight: 600 }}>{s.status.toUpperCase()}</span>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px', fontSize: '0.85rem' }}>
+            <p><strong>Phone:</strong> {s.customer_phone || '—'}</p>
+            <p><strong>Email:</strong> {s.customer_email || '—'}</p>
+            <p><strong>Offered Price:</strong> <span style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--accent)' }}>${(s.offered_price / 100).toFixed(0)}</span></p>
+            <p><strong>Submitted:</strong> {new Date(s.created_at).toLocaleString()}</p>
+          </div>
+
+          <div style={{ marginBottom: '20px' }}>
+            <h3 style={{ fontSize: '0.9rem', marginBottom: '8px' }}>Description</h3>
+            <p style={{ background: 'var(--bg-secondary)', padding: '16px', borderRadius: '4px', fontSize: '0.9rem', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{s.description}</p>
+          </div>
+
+          {s.attachments && s.attachments.length > 0 && (
+            <div style={{ marginBottom: '20px' }}>
+              <h3 style={{ fontSize: '0.9rem', marginBottom: '8px' }}>Attachments ({s.attachments.length})</h3>
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                {s.attachments.map((path, i) => {
+                  const url = getPublicUrl(path);
+                  const isVideo = /\.(mp4|mov|webm)$/i.test(path);
+                  return isVideo ? (
+                    <video key={i} src={url} controls style={{ maxWidth: '300px', maxHeight: '200px', borderRadius: '4px', border: '1px solid var(--border)' }} />
+                  ) : (
+                    <a key={i} href={url} target="_blank" rel="noopener noreferrer">
+                      <img src={url} alt={`Attachment ${i + 1}`} style={{ maxWidth: '200px', maxHeight: '150px', borderRadius: '4px', border: '1px solid var(--border)', objectFit: 'cover' }} />
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          <div style={{ borderTop: '1px solid var(--border)', paddingTop: '20px' }}>
+            <h3 style={{ fontSize: '0.9rem', marginBottom: '12px' }}>Actions</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <textarea
+                placeholder="Admin notes (optional)"
+                value={adminNotes}
+                onChange={(e) => setAdminNotes(e.target.value)}
+                style={{ padding: '10px', border: '1px solid var(--border)', borderRadius: '4px', background: 'var(--bg-secondary)', color: 'var(--text)', fontSize: '0.85rem', minHeight: '60px', resize: 'vertical' }}
+              />
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <label style={{ fontSize: '0.85rem', whiteSpace: 'nowrap' }}>Counter offer: $</label>
+                <input
+                  type="number"
+                  placeholder="Amount"
+                  value={counterPrice}
+                  onChange={(e) => setCounterPrice(e.target.value)}
+                  style={{ width: '100px', padding: '8px', border: '1px solid var(--border)', borderRadius: '4px', background: 'var(--bg-secondary)', color: 'var(--text)', fontSize: '0.85rem' }}
+                />
+              </div>
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <button className="cta-button" style={{ padding: '10px 16px', fontSize: '0.8rem' }} onClick={() => updateStatus(s.id, 'accepted')}>Accept Price</button>
+                <button className="cta-button" style={{ padding: '10px 16px', fontSize: '0.8rem', background: '#ff9800' }} onClick={() => updateStatus(s.id, 'countered')}>Send Counter</button>
+                <button className="btn-sm btn-sm--danger" onClick={() => updateStatus(s.id, 'declined')}>Decline</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  const newCount = submissions.filter((s) => s.status === 'new').length;
+
+  return (
+    <>
+      <h2>Name Your Price Submissions {newCount > 0 && <span style={{ background: 'var(--accent)', color: '#1a1a1d', padding: '2px 8px', borderRadius: '10px', fontSize: '0.8rem', marginLeft: '8px' }}>{newCount} new</span>}</h2>
+      {submissions.length === 0 ? (
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-sub)' }}>No submissions yet.</p>
+      ) : (
+        <table className="admin-table">
+          <thead><tr><th>Name</th><th>Price</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody>
+            {submissions.map((s) => (
+              <tr key={s.id}>
+                <td>{s.customer_name}</td>
+                <td style={{ fontWeight: 600, color: 'var(--accent)' }}>${(s.offered_price / 100).toFixed(0)}</td>
+                <td><span style={{ background: statusColors[s.status] || 'var(--border)', color: '#fff', padding: '2px 8px', borderRadius: '3px', fontSize: '0.7rem' }}>{s.status}</span></td>
+                <td>{new Date(s.created_at).toLocaleDateString()}</td>
+                <td>
+                  <button className="btn-sm" onClick={() => { setSelected(s.id); if (s.status === 'new') markViewed(s.id); }}>View</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </>
   );
 }
 
