@@ -24,6 +24,8 @@ function useFormAbandonTracker() {
   const flushedRef = useRef(false);
 
   useEffect(() => {
+    if (pathname === '/admin') return;
+
     lastFieldRef.current = null;
     formInteractedRef.current = false;
     fieldsFilledRef.current = new Set();

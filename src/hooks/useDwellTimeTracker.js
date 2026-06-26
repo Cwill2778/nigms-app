@@ -26,6 +26,8 @@ function useDwellTimeTracker() {
   const intervalRef = useRef(null);
 
   useEffect(() => {
+    if (pathname === '/admin') return;
+
     activeTimeRef.current = 0;
     lastTickRef.current = Date.now();
     isActiveRef.current = true;

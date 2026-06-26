@@ -17,6 +17,8 @@ function useExitTracker() {
   const flushedRef = useRef(false);
 
   useEffect(() => {
+    if (pathname === '/admin') return;
+
     enteredAtRef.current = Date.now();
     flushedRef.current = false;
 

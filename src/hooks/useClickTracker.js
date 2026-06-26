@@ -30,6 +30,8 @@ function useClickTracker() {
   const { pathname } = useLocation();
 
   useEffect(() => {
+    if (pathname === '/admin') return;
+
     function handleClick(event) {
       const el = getClickTarget(event);
       if (!el) return;

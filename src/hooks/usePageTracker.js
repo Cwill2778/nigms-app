@@ -38,6 +38,8 @@ function usePageTracker() {
   const { pathname } = useLocation();
 
   useEffect(() => {
+    if (pathname === '/admin') return;
+
     const { device, browser, os } = getDeviceInfo();
 
     supabase.from('page_visits').insert({

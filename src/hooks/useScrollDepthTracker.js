@@ -20,6 +20,8 @@ function useScrollDepthTracker() {
   const flushedRef = useRef(false);
 
   useEffect(() => {
+    if (pathname === '/admin') return;
+
     // Reset on route change
     maxDepthRef.current = 0;
     milestonesRef.current = [];

@@ -28,6 +28,8 @@ function useLeadAttribution() {
   const { pathname, search } = useLocation();
 
   useEffect(() => {
+    if (pathname === '/admin') return;
+
     // Only capture once per session
     if (sessionStorage.getItem(ATTRIBUTION_KEY)) return;
 
