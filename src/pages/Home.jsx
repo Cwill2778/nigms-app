@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import useScrollReveal from '../hooks/useScrollReveal';
 import usePageMeta from '../hooks/usePageMeta';
 import { supabase } from '../lib/supabase';
-import romeBroadSt from '../assets/romeBroadStSign.jpeg';
 import bridgeRome from '../assets/bridgeRome.jpg';
 import miniBar from '../assets/miniBar.jpg';
 import NameYourPrice from '../components/NameYourPrice';
