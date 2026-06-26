@@ -37,66 +37,23 @@
   .banner-track { animation: none; }
 }
 
-/* Protected home image */
-.home-protected {
-  padding: 20px 12px 32px;
-  text-align: center;
-}
-
-.hero-slideshow {
-  position: relative;
-  width: 100%;
-  max-width: 700px;
-  margin: 0 auto;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-}
-
-.hero-slide {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  animation: heroFade 12s infinite;
-}
-
-/* 2 images, 12s total cycle: each visible 6s */
-.hero-slide:nth-child(1) { animation-delay: 0s; }
-.hero-slide:nth-child(2) { animation-delay: 6s; }
-
-@keyframes heroFade {
-  0%    { opacity: 0; }
-  8%    { opacity: 1; }
-  50%   { opacity: 1; }
-  58%   { opacity: 0; }
-  100%  { opacity: 0; }
-}
-
-.protected-headline {
-  font-family: var(--heading);
-  font-size: 0.9rem;
-  font-weight: 500;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--text-sub);
-  margin: 16px 0 0;
-}
-
-/* Intro section */
-.home-intro {
-  padding: 32px 12px;
+/* Hero section */
+.home-hero {
+  padding: 48px 16px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-top: 1px solid var(--border);
+  gap: 32px;
 }
 
-.home-intro h1 { margin-bottom: 10px; }
+.home-hero-text {
+  max-width: 640px;
+}
+
+.home-hero-text h1 {
+  margin-bottom: 10px;
+}
 
 .hero-accent { color: var(--accent); }
 
@@ -112,6 +69,33 @@
   font-size: 0.85rem;
   font-style: italic;
   color: var(--text-sub);
+}
+
+/* Override NameYourPrice when inside hero */
+.home-hero .nyp-section {
+  padding: 0;
+  border-top: none;
+  background: transparent;
+  width: 100%;
+  max-width: 640px;
+}
+
+@media (min-width: 768px) {
+  .home-hero {
+    padding: 72px 32px;
+  }
+  .home-hero-text h1 {
+    font-size: 2.4rem;
+  }
+  .home-subtitle {
+    font-size: 1.15rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-hero {
+    padding: 88px 48px;
+  }
 }
 
 .hero-actions {
@@ -630,9 +614,6 @@
 
 /* Tablet+ */
 @media (min-width: 768px) {
-  .home-protected { padding: 40px 32px 56px; }
-  .home-intro { padding: 56px 32px; }
-  .home-subtitle { font-size: 1.15rem; }
   .home-why { padding: 56px 32px; }
   .home-subscriptions { padding: 56px 32px; }
   .home-perks { padding: 56px 32px; }
@@ -649,7 +630,6 @@
 }
 
 @media (min-width: 1024px) {
-  .home-intro { padding: 88px 48px; }
   .home-why { padding: 88px 48px; }
   .home-subscriptions { padding: 88px 48px; }
   .home-perks { padding: 88px 48px; }

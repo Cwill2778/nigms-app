@@ -5,11 +5,8 @@ import usePageMeta from '../hooks/usePageMeta';
 import { supabase } from '../lib/supabase';
 import romeBroadSt from '../assets/romeBroadStSign.jpeg';
 import bridgeRome from '../assets/bridgeRome.jpg';
-import riverRome from '../assets/riverDowntownRome.jpg';
 import NameYourPrice from '../components/NameYourPrice';
 import './Home.css';
-
-const heroImages = [romeBroadSt, riverRome];
 
 const fallbackTestimonials = [
   { stars: 5, text: 'Charles is proactive and very detail oriented. He has helped cure my landlord woes.', name: 'Charlie Ford' },
@@ -89,32 +86,18 @@ function Home() {
         </div>
       </a>
 
-      <section className="home-protected">
-        <div className="hero-slideshow">
-          {heroImages.map((src, i) => (
-            <img
-              key={i}
-              src={src}
-              alt={i === 0 ? 'Broad Street sign in Rome, Georgia' : 'Downtown Rome, Georgia river view'}
-              className="hero-slide"
-              style={{ animationDelay: `${i * 6}s` }}
-            />
-          ))}
+      <section className="home-hero">
+        <div className="home-hero-text">
+          <h1>Don&rsquo;t Just Fix It. <span className="hero-accent">Nail It.</span></h1>
+          <p className="home-subtitle">
+            Proactive Property Care for Rome Homeowners &amp; Landlords.
+          </p>
+          <p className="home-tagline">
+            Because &ldquo;Sort of fixed it&rdquo; just isn&rsquo;t a good business model.
+          </p>
         </div>
-        <p className="protected-headline">Equip your home today with a Nailed It subscription.</p>
+        <NameYourPrice />
       </section>
-
-      <section className="home-intro">
-        <h1>Don&rsquo;t Just Fix It. <span className="hero-accent">Nail It.</span></h1>
-        <p className="home-subtitle">
-          Proactive Property Care for Rome Homeowners &amp; Landlords.
-        </p>
-        <p className="home-tagline">
-          Because &ldquo;Sort of fixed it&rdquo; just isn&rsquo;t a good business model.
-        </p>
-      </section>
-
-      <NameYourPrice />
 
       <section className="home-why reveal">
         <h2>Stop Waiting for Things to Break.</h2>
