@@ -97,6 +97,7 @@ function AnalyticsPanel() {
   const [formAbandons, setFormAbandons] = useState([]);
   const [dwellStats, setDwellStats] = useState([]);
   const [attributionStats, setAttributionStats] = useState({ byChannel: [], bySource: [], byCampaign: [], byLanding: [] });
+  const [visitorStats, setVisitorStats] = useState({ devices: [], browsers: [], oses: [], sessions: [], uniqueVisitors: 0 });
 
   useEffect(() => {
     async function fetchStats() {
@@ -114,6 +115,39 @@ function AnalyticsPanel() {
         .map(([page, count]) => ({ page, count }));
 
       setStats({ total: (all || []).length, today: todayVisits.length, pages });
+
+      // Visitor/device stats
+      const deviceMap = {};
+      const browserMap = {};
+      const osMap = {};
+      const sessionMap = {};
+
+      (all || []).forEach((v) => {
+        if (v.device_type) deviceMap[v.device_type] = (deviceMap[v.device_type] || 0) + 1;
+        if (v.browser) browserMap[v.browser] = (browserMap[v.browser] || 0) + 1;
+        if (v.os) osMap[v.os] = (osMap[v.os] || 0) + 1;
+        if (v.session_id) {
+          if (!sessionMap[v.session_id]) {
+            sessionMap[v.session_id] = { pages: [], device: v.device_type, browser: v.browser, os: v.os, firstSeen: v.created_at };
+          }
+          sessionMap[v.session_id].pages.push(v.page);
+        }
+      });
+
+      const toSorted = (map) => Object.entries(map).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count);
+
+      const sessions = Object.entries(sessionMap)
+        .map(([id, info]) => ({ id: id.substring(0, 8), ...info, pageCount: info.pages.length }))
+        .sort((a, b) => new Date(b.firstSeen) - new Date(a.firstSeen))
+        .slice(0, 30);
+
+      setVisitorStats({
+        devices: toSorted(deviceMap),
+        browsers: toSorted(browserMap),
+        oses: toSorted(osMap),
+        sessions,
+        uniqueVisitors: Object.keys(sessionMap).length,
+      });
     }
 
     async function fetchScrollDepth() {
@@ -326,7 +360,71 @@ function AnalyticsPanel() {
           <p className="stat-number">{stats.today}</p>
           <p className="stat-label">Today</p>
         </div>
+        <div className="stat-card">
+          <p className="stat-number">{visitorStats.uniqueVisitors}</p>
+          <p className="stat-label">Unique Visitors</p>
+        </div>
       </div>
+
+      <h2 style={{ marginTop: '2rem' }}>Visitors &amp; Devices</h2>
+      {visitorStats.devices.length === 0 ? (
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-sub)' }}>No device data yet (data populates after migration is applied).</p>
+      ) : (
+        <>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+            <div style={{ height: 200 }}>
+              <h3 style={{ fontSize: '0.95rem', marginBottom: '0.5rem', textAlign: 'center' }}>Device Type</h3>
+              <ResponsiveContainer>
+                <PieChart>
+                  <Pie data={visitorStats.devices.map((d) => ({ name: d.name, value: d.count }))} cx="50%" cy="50%" outerRadius={60} dataKey="value" label={{ fontSize: 10 }}>
+                    {visitorStats.devices.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                  </Pie>
+                  <Tooltip contentStyle={tooltipStyle} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div style={{ height: 200 }}>
+              <h3 style={{ fontSize: '0.95rem', marginBottom: '0.5rem', textAlign: 'center' }}>Browser</h3>
+              <ResponsiveContainer>
+                <PieChart>
+                  <Pie data={visitorStats.browsers.map((b) => ({ name: b.name, value: b.count }))} cx="50%" cy="50%" outerRadius={60} dataKey="value" label={{ fontSize: 10 }}>
+                    {visitorStats.browsers.map((_, i) => <Cell key={i} fill={COLORS[(i + 2) % COLORS.length]} />)}
+                  </Pie>
+                  <Tooltip contentStyle={tooltipStyle} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div style={{ height: 200 }}>
+              <h3 style={{ fontSize: '0.95rem', marginBottom: '0.5rem', textAlign: 'center' }}>Operating System</h3>
+              <ResponsiveContainer>
+                <PieChart>
+                  <Pie data={visitorStats.oses.map((o) => ({ name: o.name, value: o.count }))} cx="50%" cy="50%" outerRadius={60} dataKey="value" label={{ fontSize: 10 }}>
+                    {visitorStats.oses.map((_, i) => <Cell key={i} fill={COLORS[(i + 4) % COLORS.length]} />)}
+                  </Pie>
+                  <Tooltip contentStyle={tooltipStyle} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          <h3 style={{ fontSize: '0.95rem', marginBottom: '0.5rem' }}>Recent Visitor Sessions</h3>
+          <table className="admin-table">
+            <thead><tr><th>Session</th><th>Device</th><th>Browser</th><th>OS</th><th>Pages</th><th>Journey</th></tr></thead>
+            <tbody>
+              {visitorStats.sessions.map((s) => (
+                <tr key={s.id}>
+                  <td><code style={{ fontSize: '0.7rem' }}>{s.id}</code></td>
+                  <td>{s.device || '—'}</td>
+                  <td>{s.browser || '—'}</td>
+                  <td>{s.os || '—'}</td>
+                  <td>{s.pageCount}</td>
+                  <td style={{ fontSize: '0.75rem', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.pages.join(' → ')}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
 
       <h2>Pages by Views</h2>
       {stats.pages.length > 0 && (
