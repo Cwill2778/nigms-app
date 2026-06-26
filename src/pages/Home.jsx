@@ -6,6 +6,7 @@ import { supabase } from '../lib/supabase';
 import romeBroadSt from '../assets/romeBroadStSign.jpeg';
 import bridgeRome from '../assets/bridgeRome.jpg';
 import riverRome from '../assets/riverDowntownRome.jpg';
+import NameYourPrice from '../components/NameYourPrice';
 import './Home.css';
 
 const heroImages = [romeBroadSt, riverRome];
@@ -112,6 +113,8 @@ function Home() {
           Because &ldquo;Sort of fixed it&rdquo; just isn&rsquo;t a good business model.
         </p>
       </section>
+
+      <NameYourPrice />
 
       <section className="home-why reveal">
         <h2>Stop Waiting for Things to Break.</h2>

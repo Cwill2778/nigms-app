@@ -1,0 +1,305 @@
+/* Name Your Price Section */
+.nyp-section {
+  padding: 48px 16px;
+  border-top: 2px solid var(--accent);
+  background: var(--bg-secondary);
+}
+
+.nyp-container {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.nyp-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.nyp-header h2 {
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+}
+
+.nyp-subtitle {
+  font-size: 1rem;
+  color: var(--text-sub);
+  line-height: 1.6;
+}
+
+/* Form */
+.nyp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.nyp-field label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+.nyp-field input[type="text"],
+.nyp-field input[type="tel"],
+.nyp-field input[type="email"],
+.nyp-field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-primary);
+  color: var(--text);
+  font-size: 0.9rem;
+  font-family: var(--sans);
+  transition: border-color 0.2s;
+}
+
+.nyp-field input:focus,
+.nyp-field textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.nyp-field textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.nyp-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Price field */
+.nyp-price-field {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 20px;
+}
+
+.nyp-price-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.nyp-dollar {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.nyp-price-input {
+  width: 120px !important;
+  font-size: 2rem !important;
+  font-weight: 700;
+  text-align: center;
+  padding: 8px !important;
+  border: none !important;
+  border-bottom: 2px solid var(--accent) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--text) !important;
+}
+
+.nyp-price-input:focus {
+  border-bottom-color: var(--accent) !important;
+}
+
+/* Slider */
+.nyp-slider {
+  width: 100%;
+  height: 8px;
+  appearance: none;
+  background: var(--border);
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+}
+
+.nyp-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.nyp-slider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.nyp-price-range {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: var(--text-sub);
+}
+
+/* Upload area */
+.nyp-upload-area {
+  border: 2px dashed var(--border);
+  border-radius: 4px;
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.nyp-upload-area:hover {
+  border-color: var(--accent);
+}
+
+.nyp-upload-area p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-sub);
+}
+
+.nyp-upload-hint {
+  font-size: 0.75rem !important;
+  margin-top: 4px !important;
+}
+
+.nyp-file-list {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nyp-file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.nyp-file-item button {
+  background: none;
+  border: none;
+  color: var(--text-sub);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.nyp-file-item button:hover {
+  color: #f44336;
+}
+
+/* Terms */
+.nyp-terms {
+  margin-top: 8px;
+}
+
+.nyp-checkbox-label {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 10px;
+  font-weight: 400 !important;
+  font-size: 0.82rem !important;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.nyp-checkbox-label input[type="checkbox"] {
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.nyp-checkbox-label a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+/* Error */
+.nyp-error {
+  color: #f44336;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* Submit button */
+.nyp-submit {
+  width: 100%;
+  padding: 16px;
+  font-size: 1rem;
+  margin-top: 8px;
+}
+
+.nyp-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Success state */
+.nyp-success {
+  text-align: center;
+  padding: 48px 20px;
+}
+
+.nyp-success h2 {
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.nyp-success p {
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 24px;
+  color: var(--text-sub);
+}
+
+/* Terms text */
+.nyp-terms-text {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.nyp-terms-text h4 {
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+
+.nyp-terms-text p {
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: var(--text-sub);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .nyp-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 768px) {
+  .nyp-section {
+    padding: 72px 32px;
+  }
+  .nyp-header h2 {
+    font-size: 2.2rem;
+  }
+}
