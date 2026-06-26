@@ -92,7 +92,7 @@ function Home() {
         <div className="home-hero-text">
           <h1>Don&rsquo;t Just Fix It. <span className="hero-accent">Nail It.</span></h1>
           <p className="home-subtitle">
-            Proactive Property Care for Rome Homeowners &amp; Landlords.
+            Proactive Property Care &amp; Home Repairs for Rome, GA Residents.
           </p>
           <p className="home-tagline">
             Because &ldquo;Sort of fixed it&rdquo; just isn&rsquo;t a good business model.
