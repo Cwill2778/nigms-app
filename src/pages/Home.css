@@ -484,7 +484,22 @@
   font-size: 0.88rem;
   line-height: 1.6;
   color: var(--text-sub);
-  margin: 0;
+  margin: 0 0 10px;
+}
+
+.area-tagline {
+  font-style: italic;
+  color: var(--accent) !important;
+  font-weight: 500;
+  margin-bottom: 8px !important;
+}
+
+.area-repairs {
+  font-size: 0.82rem !important;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+  margin-top: 12px !important;
+  margin-bottom: 0 !important;
 }
 
 .service-areas-tagline {
@@ -501,7 +516,8 @@
 
 @media (min-width: 900px) {
   .service-areas-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
   }
 }
 

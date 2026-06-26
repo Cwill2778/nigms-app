@@ -284,28 +284,40 @@ function Home() {
         </p>
         <div className="service-areas-grid">
           <div className="area-card">
-            <h3>West Rome</h3>
-            <p>From the historic homes along Shorter Avenue to the established neighborhoods off Dean Avenue — we know these properties inside and out.</p>
-          </div>
-          <div className="area-card">
-            <h3>North Rome</h3>
-            <p>Serving the communities along North Broad and up toward the Ridge Ferry Park area. Older homes with character that deserve proper upkeep.</p>
-          </div>
-          <div className="area-card">
-            <h3>East Rome</h3>
-            <p>From East 2nd Street to the neighborhoods around Coosa Valley — reliable maintenance for working families and rental properties alike.</p>
-          </div>
-          <div className="area-card">
-            <h3>South Rome</h3>
-            <p>Covering South Broad, the residential streets off Burnett Ferry Road, and everywhere in between. We show up on time, every time.</p>
-          </div>
-          <div className="area-card">
             <h3>Downtown Rome</h3>
-            <p>The heart of our community. From Broad Street storefronts to loft apartments, we keep Downtown&rsquo;s properties in top shape.</p>
+            <p className="area-tagline">&ldquo;Keeping Broad Street Beautiful.&rdquo;</p>
+            <p>Whether you&rsquo;re managing a bustling storefront or a historic loft, we understand the unique demands of maintaining Downtown Rome&rsquo;s century-old brick and mortar. Let us handle the upkeep so you can focus on the heartbeat of the city.</p>
+            <p className="area-repairs"><strong>How We Repair It:</strong> Masonry tuckpointing and brickwork touch-ups, commercial-grade HVAC filter rotation, high-traffic flooring repairs, and updated fixture installations for modern lofts.</p>
           </div>
           <div className="area-card">
             <h3>Clocktower Hill</h3>
-            <p>One of Rome&rsquo;s most iconic spots. The properties around Clocktower Hill deserve care that matches their stunning views and historic appeal.</p>
+            <p className="area-tagline">&ldquo;Preserving the View from Neely Hill.&rdquo;</p>
+            <p>Steep drives, older foundations, and historic charm require a specific, careful touch. We handle the specialized maintenance for Rome&rsquo;s most iconic neighborhood so you can just sit back and enjoy the view.</p>
+            <p className="area-repairs"><strong>How We Repair It:</strong> Retaining wall stabilization, historic window weatherstripping, minor foundation crack sealing, and custom deck or balcony safety reinforcements.</p>
+          </div>
+          <div className="area-card">
+            <h3>East Rome</h3>
+            <p className="area-tagline">&ldquo;Protecting the Charm Under the Oaks.&rdquo;</p>
+            <p>East Rome is famous for its beautiful, mature trees — and the roof debris and clogged gutters that come with them. We handle the heavy seasonal maintenance to keep your classic East Rome property looking pristine year-round.</p>
+            <p className="area-repairs"><strong>How We Repair It:</strong> Complete gutter clearing and guard installation, wood rot repair on fascia and eaves, exterior soft-washing, and deck sealing to combat organic buildup.</p>
+          </div>
+          <div className="area-card">
+            <h3>West Rome</h3>
+            <p className="area-tagline">&ldquo;Your Coosa Valley Maintenance Crew.&rdquo;</p>
+            <p>From the busy traffic off Shorter Avenue to the river humidity, West Rome properties face their own kind of weather and wear. We&rsquo;re right around the corner with proactive solutions to protect your investment.</p>
+            <p className="area-repairs"><strong>How We Repair It:</strong> Moisture and mildew remediation, vinyl and hardie siding panel repairs, heavy-duty HVAC coil cleaning, and seamless drywall patching.</p>
+          </div>
+          <div className="area-card">
+            <h3>North Rome</h3>
+            <p className="area-tagline">&ldquo;More Space Shouldn&rsquo;t Mean More Stress.&rdquo;</p>
+            <p>Whether you&rsquo;re managing a newer build or a sprawling property out toward Armuchee, North Rome gives you room to breathe. We take the preventative maintenance off your plate so you can actually enjoy your weekends.</p>
+            <p className="area-repairs"><strong>How We Repair It:</strong> Perimeter fence mending, exterior trim repair, garage door hardware tune-ups, and modern smart-home fixture installations.</p>
+          </div>
+          <div className="area-card">
+            <h3>South Rome</h3>
+            <p className="area-tagline">&ldquo;Hardworking Care for Hardworking Homes.&rdquo;</p>
+            <p>From the historic mill town roots of Lindale to the banks of the Etowah, South Rome was built on reliability. We bring that same dependable, no-nonsense approach to keeping your home&rsquo;s systems running perfectly.</p>
+            <p className="area-repairs"><strong>How We Repair It:</strong> Porch and step carpentry reinforcement, aging plumbing fixture upgrades, subfloor patching, and reliable preventative maintenance for older home systems.</p>
           </div>
         </div>
         <p className="service-areas-tagline">
