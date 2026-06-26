@@ -5,6 +5,7 @@ import usePageMeta from '../hooks/usePageMeta';
 import { supabase } from '../lib/supabase';
 import romeBroadSt from '../assets/romeBroadStSign.jpeg';
 import bridgeRome from '../assets/bridgeRome.jpg';
+import miniBar from '../assets/miniBar.jpg';
 import NameYourPrice from '../components/NameYourPrice';
 import './Home.css';
 
@@ -86,7 +87,8 @@ function Home() {
         </div>
       </a>
 
-      <section className="home-hero">
+      <section className="home-hero" style={{ backgroundImage: `url(${miniBar})` }}>
+        <div className="home-hero-overlay"></div>
         <div className="home-hero-text">
           <h1>Don&rsquo;t Just Fix It. <span className="hero-accent">Nail It.</span></h1>
           <p className="home-subtitle">

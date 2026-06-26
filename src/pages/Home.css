@@ -39,12 +39,29 @@
 
 /* Hero section */
 .home-hero {
+  position: relative;
   padding: 48px 16px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 32px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.home-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 26, 29, 0.82);
+  z-index: 0;
+}
+
+.home-hero-text,
+.home-hero .nyp-section {
+  position: relative;
+  z-index: 1;
 }
 
 .home-hero-text {
@@ -53,6 +70,7 @@
 
 .home-hero-text h1 {
   margin-bottom: 10px;
+  color: #fff;
 }
 
 .hero-accent { color: var(--accent); }
@@ -60,7 +78,7 @@
 .home-subtitle {
   font-family: var(--sans);
   font-size: 1rem;
-  color: var(--text);
+  color: rgba(255, 255, 255, 0.9);
   font-weight: 600;
   margin-bottom: 6px;
 }
@@ -68,7 +86,7 @@
 .home-tagline {
   font-size: 0.85rem;
   font-style: italic;
-  color: var(--text-sub);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 /* Override NameYourPrice when inside hero */
@@ -80,6 +98,14 @@
   max-width: 640px;
 }
 
+.home-hero .nyp-container {
+  background: var(--bg-primary);
+  border-radius: 8px;
+  padding: 32px 24px;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
 @media (min-width: 768px) {
   .home-hero {
     padding: 72px 32px;
@@ -89,6 +115,9 @@
   }
   .home-subtitle {
     font-size: 1.15rem;
+  }
+  .home-hero .nyp-container {
+    padding: 40px 32px;
   }
 }
 
