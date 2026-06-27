@@ -72,6 +72,7 @@ function Dashboard() {
         <div>
           <h1>Welcome back{profile?.first_name ? `, ${profile.first_name}` : ''}</h1>
           <p className="dashboard-email">{session.user.email}</p>
+          {profile?.account_number && <p className="dashboard-account-number">Account: {profile.account_number}</p>}
         </div>
         <button className="btn-sm" onClick={handleLogout}>Sign Out</button>
       </div>
