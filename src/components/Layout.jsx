@@ -26,7 +26,6 @@ function Layout() {
 
   return (
     <div className="layout" style={{ backgroundImage: `url(${miniBar})` }}>
-      <div className="layout-overlay"></div>
       <Header />
       <NailProgress />
       <main>
