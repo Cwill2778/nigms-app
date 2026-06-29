@@ -302,8 +302,8 @@
   }
 
   .action-btn--text {
-    background: #25D366;
-    color: #000;
+    background: #000;
+    color: var(--accent);
   }
 
   /* Add bottom padding to page so content isn't hidden behind bar */
