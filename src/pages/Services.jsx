@@ -2,232 +2,212 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useScrollReveal from '../hooks/useScrollReveal';
 import usePageMeta from '../hooks/usePageMeta';
-import Lightbox from '../components/Lightbox';
-import kitchenBefore from '../assets/HarveyKitchenWallBefore.jpg';
-import kitchenAfter from '../assets/HarveyKitchenWallAfter.jpg';
-import charlesWorking from '../assets/charlesAtWorkIII.jpg';
-import miniBar from '../assets/miniBar.jpg';
 import './Services.css';
 
-const serviceCategories = [
-  {
-    title: 'Property Maintenance Subscriptions',
-    services: [
-      'Preventative HVAC maintenance (filter swaps, health checks)',
-      'Smoke & CO detector testing / battery replacement',
-      'Gutter cleaning',
-      'Visual property inspections (interior & exterior)',
-      'Property management reports',
-      'Priority tenant work order response',
-      'Included monthly handyman labor hours',
-      'Emergency dispatch',
-      'Trade coordination (licensed specialist oversight)',
-    ],
-  },
-  {
-    title: 'Unit Turnover Services',
-    services: [
-      'Turnover assessment & scope building',
-      'Paint touch-ups (walls, trim, baseboards)',
-      'Floor cleaning (sweep & deep mop)',
-      'Lock re-keying / replacement',
-      'Odor neutralization & air freshener install',
-      'Appliance & window functional audit',
-      'Property securing & key hand-off',
-      'Trash-out / junk removal',
-    ],
-  },
-  {
-    title: 'Drywall & Finishing',
-    services: [
-      'Sheetrock hanging & installation',
-      'Mudding, taping & smooth finish',
-      'Drywall patching (nail holes to large damage)',
-      'Texture matching',
-      'Custom built-in shelving & features',
-    ],
-  },
-  {
-    title: 'Interior Painting',
-    services: [
-      'Full room painting',
-      'Trim & baseboard touch-ups',
-      'Proper prep (sanding, priming, taping)',
-      'Color matching',
-    ],
-  },
-  {
-    title: 'Plumbing Repairs',
-    services: [
-      'Leaking faucet repair / replacement',
-      'Running toilet repair',
-      'Water heater maintenance',
-      'Fixture replacement',
-      'General plumbing troubleshooting',
-    ],
-  },
-  {
-    title: 'Exterior & Decks',
-    services: [
-      'Deck repair & restoration',
-      'Pressure washing',
-      'Siding repair',
-      'Stair replacement & repair',
-      'Outdoor living space construction',
-    ],
-  },
-  {
-    title: 'Windows & Doors',
-    services: [
-      'Window replacement (single & multi-pane)',
-      'Door replacement',
-      'Frame repair',
-      'Weathersealing & insulation',
-      'Hardware adjustment & replacement',
-    ],
-  },
-  {
-    title: 'General Property Repairs',
-    services: [
-      'Cabinet hinge tightening & adjustment',
-      'Light fixture replacement',
-      'Blind replacement',
-      'Minor carpentry (shelving, trim)',
-      'Lightbulb replacement',
-      'Anything else that\'s broken or wearing out',
-    ],
-  },
-];
+function ExpandCard({ title, subtitle, children }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className={`expand-card${open ? ' expand-card--open' : ''}`}>
+      <button className="expand-card-header" onClick={() => setOpen(!open)} aria-expanded={open}>
+        <div>
+          <h3>{title}</h3>
+          {subtitle && <p className="expand-card-subtitle">{subtitle}</p>}
+        </div>
+        <span className="expand-card-icon">{open ? '−' : '+'}</span>
+      </button>
+      {open && <div className="expand-card-body">{children}</div>}
+    </div>
+  );
+}
 
 function Services() {
   useScrollReveal();
   usePageMeta(
-    'Handyman & Property Maintenance Services Rome, GA | Nailed It',
-    'Explore our full range of property solutions in Rome, GA, including drywall repair, plumbing checks, general maintenance, and preventative care.'
+    'Services, Subscriptions & Turnovers | Nailed It Property Solutions',
+    'Explore all property maintenance services, subscription plans, and unit turnover packages from Nailed It Property Solutions in Rome, GA.'
   );
-
-  const [lightbox, setLightbox] = useState(null);
 
   return (
     <div className="services">
-      {lightbox && (
-        <Lightbox
-          src={lightbox.src}
-          alt={lightbox.alt}
-          onClose={() => setLightbox(null)}
-        />
-      )}
-
-      <section className="services-intro reveal">
-        <h1>Our Services</h1>
-        <p>
-          Straightforward property maintenance and repair services at fair,
-          flat-rate prices. No hidden fees, no inflated quotes — just quality
-          work you can count on.
-        </p>
+      <section className="services-hero reveal">
+        <h1>What We Do</h1>
+        <p>Flat-rate pricing. No hidden fees. Quality work you can count on.</p>
       </section>
 
-      <section className="services-categories reveal">
-        <h2>What We Offer</h2>
+      {/* Service Categories */}
+      <section className="services-section reveal">
+        <h2>Repair &amp; Maintenance Services</h2>
         <div className="accent-bar" aria-hidden="true"></div>
-        <div className="categories-grid">
-          {serviceCategories.map((category, index) => (
-            <div className="category-card" key={index}>
-              <h3>{category.title}</h3>
-              <ul>
-                {category.services.map((service, sIndex) => (
-                  <li key={sIndex}>{service}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
+        <div className="services-cards">
+          <ExpandCard title="Drywall & Finishing" subtitle="Patch to perfection.">
+            <ul>
+              <li>Sheetrock hanging & installation</li>
+              <li>Mudding, taping & smooth finish</li>
+              <li>Drywall patching (nail holes to large damage)</li>
+              <li>Texture matching</li>
+              <li>Custom built-in shelving & features</li>
+            </ul>
+          </ExpandCard>
+          <ExpandCard title="Interior Painting" subtitle="Proper prep. Clean lines.">
+            <ul>
+              <li>Full room painting</li>
+              <li>Trim & baseboard touch-ups</li>
+              <li>Proper prep (sanding, priming, taping)</li>
+              <li>Color matching</li>
+            </ul>
+          </ExpandCard>
+          <ExpandCard title="Plumbing Repairs" subtitle="Leaks, fixtures, and peace of mind.">
+            <ul>
+              <li>Leaking faucet repair / replacement</li>
+              <li>Running toilet repair</li>
+              <li>Water heater maintenance</li>
+              <li>Fixture replacement</li>
+              <li>General plumbing troubleshooting</li>
+            </ul>
+          </ExpandCard>
+          <ExpandCard title="Exterior & Decks" subtitle="Curb appeal that lasts.">
+            <ul>
+              <li>Deck repair & restoration</li>
+              <li>Pressure washing</li>
+              <li>Siding repair</li>
+              <li>Stair replacement & repair</li>
+              <li>Outdoor living space construction</li>
+            </ul>
+          </ExpandCard>
+          <ExpandCard title="Windows & Doors" subtitle="Sealed tight. Opens right.">
+            <ul>
+              <li>Window replacement (single & multi-pane)</li>
+              <li>Door replacement</li>
+              <li>Frame repair</li>
+              <li>Weathersealing & insulation</li>
+              <li>Hardware adjustment & replacement</li>
+            </ul>
+          </ExpandCard>
+          <ExpandCard title="General Repairs" subtitle="If it's broken, we fix it.">
+            <ul>
+              <li>Cabinet hinge tightening & adjustment</li>
+              <li>Light fixture replacement</li>
+              <li>Blind replacement</li>
+              <li>Minor carpentry (shelving, trim)</li>
+              <li>Anything else that's wearing out</li>
+            </ul>
+          </ExpandCard>
         </div>
+        <Link to="/contact" className="cta-button services-cta-btn">Get a Free Quote &rarr;</Link>
       </section>
 
-      <section className="services-showcase reveal">
-        <h2>Recent Work</h2>
+      {/* Subscription Plans */}
+      <section className="services-section reveal">
+        <h2>Maintenance Subscriptions</h2>
         <div className="accent-bar" aria-hidden="true"></div>
-
-        <div className="showcase-item">
-          <div className="showcase-header">
-            <h3>Custom Mini Bar Build</h3>
-            <span className="gallery-category">Custom Carpentry</span>
-          </div>
-          <p className="showcase-description">
-            A custom-built mini bar designed and installed to client specifications.
-            Quality craftsmanship that turns a vision into reality.
-          </p>
-          <div className="showcase-single-image">
-            <button
-              className="photo-button"
-              onClick={() => setLightbox({ src: miniBar, alt: 'Custom mini bar build' })}
-              aria-label="View full image: Custom mini bar"
-            >
-              <img src={miniBar} alt="Custom mini bar build" width="500" height="350" />
-            </button>
-          </div>
+        <p className="section-intro">Predictable monthly pricing. No surprise invoices. Choose your level of care.</p>
+        <div className="services-cards">
+          <ExpandCard title="Essential — $99/mo" subtitle="Basic compliance & asset protection.">
+            <ul>
+              <li>Bi-annual preventative maintenance (2 visits/year)</li>
+              <li>Seasonal gutter cleaning, HVAC filter swaps</li>
+              <li>Smoke & CO detector testing</li>
+              <li>Annual visual inspection</li>
+              <li>Standard tenant portal for work orders</li>
+              <li>Annual property management report</li>
+            </ul>
+          </ExpandCard>
+          <ExpandCard title="Proactive — $199/mo" subtitle="Faster response & predictable costs.">
+            <ul>
+              <li>Quarterly preventative maintenance (4 visits/year)</li>
+              <li>2 hours of handyman labor included monthly</li>
+              <li>Priority tenant portal — 48-hour guaranteed response</li>
+              <li>Bi-annual property management reports</li>
+              <li>Everything in Essential</li>
+            </ul>
+          </ExpandCard>
+          <ExpandCard title="Comprehensive — $399/mo" subtitle="Completely hands-off ownership.">
+            <ul>
+              <li>Monthly preventative check-ins (12 visits/year)</li>
+              <li>5 hours of handyman labor included monthly</li>
+              <li>Emergency dispatch — 24-hour priority response</li>
+              <li>Trade coordination & specialist oversight</li>
+              <li>Quarterly property management reports</li>
+              <li>Everything in Essential & Proactive</li>
+            </ul>
+          </ExpandCard>
         </div>
+        <Link to="/contact" className="cta-button services-cta-btn">Contact Us to Subscribe &rarr;</Link>
+      </section>
 
-        <div className="showcase-item">
-          <div className="showcase-header">
-            <h3>Kitchen Wall — Sheetrock &amp; Smooth Finish</h3>
-            <span className="gallery-category">Drywall &amp; Finishing</span>
-          </div>
-          <p className="showcase-description">
-            Full sheetrock installation with professional mud and a smooth finish,
-            plus a custom built-in mini shelf. Done right, done once — that&rsquo;s
-            how we believe every job should go.
-          </p>
-          <div className="before-after-images">
-            <figure className="before">
-              <button
-                className="photo-button"
-                onClick={() => setLightbox({ src: kitchenBefore, alt: 'Kitchen wall before — exposed framing' })}
-                aria-label="View full image: Kitchen wall before"
-              >
-                <img src={kitchenBefore} alt="Kitchen wall before — exposed framing" width="400" height="280" />
-              </button>
-              <figcaption>Before</figcaption>
-            </figure>
-            <figure className="after">
-              <button
-                className="photo-button"
-                onClick={() => setLightbox({ src: kitchenAfter, alt: 'Kitchen wall after — smooth sheetrock finish with built-in shelf' })}
-                aria-label="View full image: Kitchen wall after"
-              >
-                <img src={kitchenAfter} alt="Kitchen wall after — smooth sheetrock finish with built-in shelf" width="400" height="280" />
-              </button>
-              <figcaption>After</figcaption>
-            </figure>
-          </div>
+      {/* Unit Turnovers */}
+      <section className="services-section reveal">
+        <h2>Unit Turnovers</h2>
+        <div className="accent-bar" aria-hidden="true"></div>
+        <p className="section-intro">Move-in ready in 48 hours or less. $75–$100 assessment fee (credited toward your invoice).</p>
+        <div className="services-cards">
+          <ExpandCard title="Light Touch-Up" subtitle="Minor work for well-maintained units.">
+            <ul>
+              <li>Re-key locks</li>
+              <li>Replace HVAC filters</li>
+              <li>Test smoke & CO detectors</li>
+              <li>Tighten cabinet hinges</li>
+              <li>Patch nail holes in drywall</li>
+              <li>Replace burnt-out bulbs</li>
+            </ul>
+          </ExpandCard>
+          <ExpandCard title="Standard Turn" subtitle="Moderate wear from previous tenant.">
+            <ul>
+              <li>Everything in Light Touch-Up</li>
+              <li>Replace broken blinds</li>
+              <li>Repair medium drywall damage</li>
+              <li>Swap damaged faucet or fixture</li>
+              <li>Touch up paint on trim & baseboards</li>
+            </ul>
+          </ExpandCard>
+          <ExpandCard title="Heavy Turn" subtitle="Significant restoration needed.">
+            <ul>
+              <li>Everything in Standard Turn</li>
+              <li>Major drywall repair</li>
+              <li>Full room painting</li>
+              <li>Door replacements</li>
+              <li>Repair minor tenant vandalism</li>
+              <li>Sand & refinish hardwood floors</li>
+              <li>Replace or repair appliances</li>
+            </ul>
+          </ExpandCard>
+          <ExpandCard title="Heavy Rescue Add-Ons" subtitle="When a property took a beating.">
+            <ul>
+              <li>Complete property trash-outs</li>
+              <li>Major drywall & damage repair</li>
+              <li>Asset recovery & hardware replacement</li>
+              <li>Custom flat-rate project pricing after walkthrough</li>
+            </ul>
+          </ExpandCard>
         </div>
+        <Link to="/contact" className="cta-button services-cta-btn">Schedule a Walkthrough &rarr;</Link>
+      </section>
 
-        <div className="showcase-item">
-          <div className="showcase-header">
-            <h3>On-Site Work</h3>
-            <span className="gallery-category">General Property Repairs</span>
+      {/* Materials */}
+      <section className="services-section services-materials reveal">
+        <h2>Who Supplies Materials?</h2>
+        <div className="accent-bar" aria-hidden="true"></div>
+        <div className="materials-options-display">
+          <div className="material-card">
+            <h3>You Supply</h3>
+            <p>Buy your own fixtures, paint, or parts — we provide the labor and expertise to install them right.</p>
           </div>
-          <div className="showcase-single-image">
-            <button
-              className="photo-button"
-              onClick={() => setLightbox({ src: charlesWorking, alt: 'Charles at work on a property repair' })}
-              aria-label="View full image: Charles at work"
-            >
-              <img src={charlesWorking} alt="Charles at work on a property repair" width="500" height="350" />
-            </button>
+          <div className="material-card">
+            <h3>We Supply</h3>
+            <p>We source quality materials at cost and handle everything. One price, no extra trips to the store.</p>
+          </div>
+          <div className="material-card">
+            <h3>Not Sure?</h3>
+            <p>No problem. We'll assess the job and recommend the best option for your budget and timeline.</p>
           </div>
         </div>
       </section>
 
-      <section className="services-cta reveal">
+      {/* Final CTA */}
+      <section className="services-final-cta reveal">
         <h2>Need Something Taken Care Of?</h2>
-        <p>
-          Tell us what&rsquo;s going on with your property. We&rsquo;ll give you an honest
-          assessment and a fair price — no pressure, no obligation.
-        </p>
-        <Link to="/contact" className="cta-button">
-          Get a Free Quote
-        </Link>
+        <p>Tell us what&rsquo;s going on. We&rsquo;ll give you an honest assessment and a fair price.</p>
+        <Link to="/contact" className="cta-button">Get a Free Quote &rarr;</Link>
       </section>
     </div>
   );

@@ -11,14 +11,12 @@ function Footer() {
           <div className="footer-col">
             <h4>Company</h4>
             <ul>
-              <li><Link to="/about">About</Link></li>
               <li><Link to="/services">Services</Link></li>
-              <li><Link to="/subscriptions">Plans</Link></li>
-              <li><Link to="/turnovers">Turnovers</Link></li>
               <li><Link to="/reviews">Reviews</Link></li>
               <li><Link to="/faq">FAQ</Link></li>
               <li><Link to="/careers">Careers</Link></li>
               <li><Link to="/contact">Contact</Link></li>
+              <li><Link to="/terms">Terms</Link></li>
             </ul>
           </div>
           <div className="footer-col">

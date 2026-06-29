@@ -177,23 +177,6 @@ function NameYourPrice() {
               placeholder="Describe the work — be as specific as possible."
               rows={3}
             />
-            <div className="nyp-materials">
-              <label className="nyp-step-label">Who is supplying materials/fixtures?</label>
-              <div className="nyp-materials-options">
-                <label className={`nyp-material-option${materialsSupplied === 'customer' ? ' nyp-material-option--active' : ''}`}>
-                  <input type="radio" name="materials" value="customer" checked={materialsSupplied === 'customer'} onChange={() => setMaterialsSupplied('customer')} />
-                  <span>I&rsquo;ll supply them</span>
-                </label>
-                <label className={`nyp-material-option${materialsSupplied === 'nailedit' ? ' nyp-material-option--active' : ''}`}>
-                  <input type="radio" name="materials" value="nailedit" checked={materialsSupplied === 'nailedit'} onChange={() => setMaterialsSupplied('nailedit')} />
-                  <span>Nailed It supplies</span>
-                </label>
-                <label className={`nyp-material-option${materialsSupplied === 'unsure' ? ' nyp-material-option--active' : ''}`}>
-                  <input type="radio" name="materials" value="unsure" checked={materialsSupplied === 'unsure'} onChange={() => setMaterialsSupplied('unsure')} />
-                  <span>Not sure yet</span>
-                </label>
-              </div>
-            </div>
           </div>
 
           <div className="nyp-step" style={{ display: step === 1 ? 'block' : 'none' }}>
