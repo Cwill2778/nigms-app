@@ -2,6 +2,12 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useScrollReveal from '../hooks/useScrollReveal';
 import usePageMeta from '../hooks/usePageMeta';
+import miniBar from '../assets/miniBar.jpg';
+import charlesWorking1 from '../assets/CharlesWorking1.jpg';
+import charlesWorking2 from '../assets/CharlesWorking2.jpg';
+import charlesAtWork from '../assets/charlesAtWorkIII.jpg';
+import kitchenBefore from '../assets/HarveyKitchenWallBefore.jpg';
+import kitchenAfter from '../assets/HarveyKitchenWallAfter.jpg';
 import './Services.css';
 
 function ExpandCard({ title, subtitle, children }) {
@@ -200,6 +206,20 @@ function Services() {
             <h3>Not Sure?</h3>
             <p>No problem. We'll assess the job and recommend the best option for your budget and timeline.</p>
           </div>
+        </div>
+      </section>
+
+      {/* Work Gallery */}
+      <section className="services-section services-gallery reveal">
+        <h2>Our Work</h2>
+        <div className="accent-bar" aria-hidden="true"></div>
+        <div className="gallery-grid">
+          <img src={miniBar} alt="Custom mini bar build" />
+          <img src={kitchenBefore} alt="Kitchen wall before — exposed framing" />
+          <img src={kitchenAfter} alt="Kitchen wall after — smooth finish" />
+          <img src={charlesWorking1} alt="Charles working on a property" />
+          <img src={charlesWorking2} alt="Charles on another job site" />
+          <img src={charlesAtWork} alt="Charles at work" />
         </div>
       </section>
 
