@@ -168,48 +168,6 @@ function Home() {
         <a href="tel:+17068448193" className="cta-button">Call Now &mdash; (706) 844-8193</a>
       </section>
 
-      {/* Service Areas */}
-      <section className="home-service-areas reveal">
-        <h2>Proudly Serving Every Corner of Rome</h2>
-        <div className="accent-bar" aria-hidden="true"></div>
-        <p className="service-areas-intro">
-          We live here, work here, and know every neighborhood. Not a franchise. Not an app. Your neighbor.
-        </p>
-        <div className="service-areas-grid">
-          <div className="area-card">
-            <h3>Downtown Rome</h3>
-            <p className="area-tagline">&ldquo;Keeping Broad Street Beautiful.&rdquo;</p>
-            <p>Century-old brick and mortar demands specialized care. We understand the unique needs of Downtown&rsquo;s historic properties.</p>
-          </div>
-          <div className="area-card">
-            <h3>Clocktower Hill</h3>
-            <p className="area-tagline">&ldquo;Preserving the View from Neely Hill.&rdquo;</p>
-            <p>Steep drives, older foundations, and historic charm. We handle the specialized maintenance for Rome&rsquo;s most iconic neighborhood.</p>
-          </div>
-          <div className="area-card">
-            <h3>East Rome</h3>
-            <p className="area-tagline">&ldquo;Protecting the Charm Under the Oaks.&rdquo;</p>
-            <p>Beautiful mature trees mean roof debris and clogged gutters. We handle the heavy seasonal maintenance year-round.</p>
-          </div>
-          <div className="area-card">
-            <h3>West Rome</h3>
-            <p className="area-tagline">&ldquo;Your Coosa Valley Maintenance Crew.&rdquo;</p>
-            <p>River humidity and busy traffic wear. We&rsquo;re right around the corner with proactive solutions.</p>
-          </div>
-          <div className="area-card">
-            <h3>North Rome</h3>
-            <p className="area-tagline">&ldquo;More Space Shouldn&rsquo;t Mean More Stress.&rdquo;</p>
-            <p>Newer builds and sprawling properties out toward Armuchee. We take preventative maintenance off your plate.</p>
-          </div>
-          <div className="area-card">
-            <h3>South Rome</h3>
-            <p className="area-tagline">&ldquo;Hardworking Care for Hardworking Homes.&rdquo;</p>
-            <p>From Lindale&rsquo;s mill town roots to the banks of the Etowah. Dependable, no-nonsense maintenance.</p>
-          </div>
-        </div>
-        <Link to="/contact" className="cta-button">Get a Free Quote for Your Neighborhood &rarr;</Link>
-      </section>
-
       {/* Testimonials */}
       <section className="home-testimonials reveal">
         <h2>Don&rsquo;t Take Our Word for It.</h2>
