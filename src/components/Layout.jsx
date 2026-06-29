@@ -11,6 +11,7 @@ import useExitTracker from '../hooks/useExitTracker';
 import useFormAbandonTracker from '../hooks/useFormAbandonTracker';
 import useDwellTimeTracker from '../hooks/useDwellTimeTracker';
 import useLeadAttribution from '../hooks/useLeadAttribution';
+import miniBar from '../assets/miniBar.jpg';
 import './Layout.css';
 
 function Layout() {
@@ -24,7 +25,8 @@ function Layout() {
   useLeadAttribution();
 
   return (
-    <div className="layout">
+    <div className="layout" style={{ backgroundImage: `url(${miniBar})` }}>
+      <div className="layout-overlay"></div>
       <Header />
       <NailProgress />
       <main>

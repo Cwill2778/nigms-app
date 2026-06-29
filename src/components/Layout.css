@@ -1,17 +1,25 @@
 .layout {
+  position: relative;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
-  background: var(--bg-primary);
-  /* Subtle brushed metal texture */
-  background-image:
-    repeating-linear-gradient(
-      0deg,
-      rgba(255, 255, 255, 0.01) 0px,
-      rgba(255, 255, 255, 0.01) 1px,
-      transparent 1px,
-      transparent 4px
-    );
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.layout-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 26, 29, 0.88);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.layout > *:not(.layout-overlay) {
+  position: relative;
+  z-index: 1;
 }
 
 .layout main {

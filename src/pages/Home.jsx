@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import useScrollReveal from '../hooks/useScrollReveal';
 import usePageMeta from '../hooks/usePageMeta';
 import { supabase } from '../lib/supabase';
-import miniBar from '../assets/miniBar.jpg';
 import NameYourPrice from '../components/NameYourPrice';
 import './Home.css';
 
@@ -64,8 +63,7 @@ function Home() {
       </a>
 
       {/* Hero + Name Your Price */}
-      <section className="home-hero" style={{ backgroundImage: `url(${miniBar})` }}>
-        <div className="home-hero-overlay"></div>
+      <section className="home-hero">
         <div className="home-hero-text">
           <h1>Don&rsquo;t Just Fix It. <span className="hero-accent">Nail It.</span></h1>
           <p className="home-subtitle">Proactive Property Care &amp; Home Repairs for Rome, GA Residents.</p>
@@ -197,7 +195,7 @@ function Home() {
 
       {/* Mobile Sticky Action Bar */}
       <div className="mobile-action-bar">
-        <a href="tel:+17068448193" className="action-btn action-btn--call">📞 Call Now</a>
+        <a href="tel:+17062378184" className="action-btn action-btn--call">📞 Call Now</a>
         <a href="sms:+17068448193" className="action-btn action-btn--text">💬 Text Us</a>
       </div>
     </div>

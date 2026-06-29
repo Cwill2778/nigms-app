@@ -36,29 +36,12 @@
 
 /* Hero section */
 .home-hero {
-  position: relative;
   padding: 48px 16px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 32px;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.home-hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(26, 26, 29, 0.82);
-  z-index: 0;
-}
-
-.home-hero-text,
-.home-hero .nyp-section {
-  position: relative;
-  z-index: 1;
 }
 
 .home-hero-text {
@@ -95,11 +78,12 @@
 }
 
 .home-hero .nyp-container {
-  background: var(--bg-primary);
+  background: rgba(26, 26, 29, 0.92);
   border-radius: 8px;
   padding: 32px 24px;
   border: 1px solid var(--border);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
 }
 
 /* Trust Badges */
