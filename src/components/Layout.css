@@ -13,7 +13,7 @@
   content: '';
   position: fixed;
   inset: 0;
-  background: rgba(245, 240, 235, 0.93);
+  background: rgba(26, 26, 29, 0.92);
   z-index: -1;
   pointer-events: none;
 }

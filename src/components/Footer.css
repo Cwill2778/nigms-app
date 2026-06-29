@@ -1,8 +1,8 @@
 .footer {
-  background: linear-gradient(135deg, #020617, #0F172A);
+  background: var(--bg-footer, #0B0B0C);
   padding: 40px 16px 24px;
   margin-top: auto;
-  border-top: none;
+  border-top: 1px solid var(--border);
   color: #F0F0F0;
 }
 
