@@ -1,170 +1,106 @@
-/* Name Your Price — Compact Wizard */
+/* Name Your Price — Simple Form */
 .nyp-section {
-  padding: 48px 16px;
-  border-top: 2px solid var(--accent);
-  background: var(--bg-secondary);
+  padding: 32px 16px;
 }
 
 .nyp-container {
-  max-width: 480px;
+  max-width: 500px;
   margin: 0 auto;
 }
 
-.nyp-header {
+.nyp-title {
+  font-size: 1.4rem;
   text-align: center;
-  margin-bottom: 20px;
-}
-
-.nyp-header h2 {
-  font-size: 1.5rem;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .nyp-subtitle {
   font-size: 0.88rem;
   color: var(--text-sub);
-  line-height: 1.5;
-}
-
-/* Progress dots */
-.nyp-progress {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
+  text-align: center;
   margin-bottom: 24px;
 }
 
-.nyp-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--border);
-  transition: background 0.3s, transform 0.3s;
+/* Form */
+.nyp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.nyp-dot--active {
-  background: var(--accent);
-  transform: scale(1.3);
-}
-
-.nyp-dot--done {
-  background: var(--accent);
-  opacity: 0.5;
-}
-
-/* Steps */
-.nyp-steps-wrapper {
-  min-height: 180px;
-}
-
-.nyp-step {
-  animation: stepFadeIn 0.3s ease;
-}
-
-@keyframes stepFadeIn {
-  from { opacity: 0; transform: translateX(12px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-.nyp-step-label {
-  display: block;
-  font-size: 0.95rem;
-  font-weight: 600;
-  margin-bottom: 12px;
-  color: var(--text);
-}
-
-.nyp-step textarea,
-.nyp-step input[type="text"],
-.nyp-step input[type="tel"],
-.nyp-step input[type="email"] {
+.nyp-form textarea,
+.nyp-form input[type="text"],
+.nyp-form input[type="tel"],
+.nyp-form input[type="email"] {
   width: 100%;
   padding: 12px 14px;
   border: 1px solid var(--border);
-  border-radius: 4px;
+  border-radius: 8px;
   background: var(--bg-primary);
   color: var(--text);
   font-size: 0.9rem;
   font-family: var(--sans);
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.nyp-step textarea:focus,
-.nyp-step input:focus {
+.nyp-form textarea:focus,
+.nyp-form input:focus {
   outline: none;
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
-.nyp-step textarea {
+.nyp-form textarea {
   resize: vertical;
   min-height: 80px;
 }
 
-.nyp-contact-fields {
-  display: flex;
-  flex-direction: column;
+/* Contact row */
+.nyp-contact-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 10px;
 }
 
-.nyp-contact-hint {
-  font-size: 0.8rem;
-  color: var(--text-sub);
-  margin-bottom: 12px;
-}
-
-/* Materials toggle */
-.nyp-materials {
-  margin-top: 16px;
-}
-
-.nyp-materials-options {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.nyp-material-option {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  font-size: 0.82rem;
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-}
-
-.nyp-material-option input[type="radio"] {
-  display: none;
-}
-
-.nyp-material-option--active {
-  border-color: var(--accent);
-  background: rgba(255, 138, 0, 0.1);
+@media (max-width: 560px) {
+  .nyp-contact-row { grid-template-columns: 1fr; }
 }
 
 /* Price */
-.nyp-price-display {
+.nyp-price-section {
+  padding: 16px;
+  background: var(--bg-card);
+  border-radius: 10px;
+}
+
+.nyp-price-section label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-sub);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.nyp-price-row {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  margin-bottom: 16px;
+  gap: 2px;
+  margin-bottom: 12px;
 }
 
 .nyp-dollar {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   font-weight: 700;
   color: var(--accent);
 }
 
 .nyp-price-input {
-  width: 100px !important;
-  font-size: 1.8rem !important;
+  width: 90px !important;
+  font-size: 1.6rem !important;
   font-weight: 700;
   text-align: center;
-  padding: 6px !important;
+  padding: 4px !important;
   border: none !important;
   border-bottom: 2px solid var(--accent) !important;
   border-radius: 0 !important;
@@ -174,180 +110,138 @@
 
 .nyp-slider {
   width: 100%;
-  height: 8px;
+  height: 6px;
   appearance: none;
   background: var(--border);
-  border-radius: 4px;
+  border-radius: 3px;
   outline: none;
   cursor: pointer;
 }
 
 .nyp-slider::-webkit-slider-thumb {
   appearance: none;
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: var(--accent);
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .nyp-slider::-moz-range-thumb {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: var(--accent);
   cursor: pointer;
   border: none;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .nyp-price-range {
   display: flex;
   justify-content: space-between;
-  margin-top: 8px;
-  font-size: 0.72rem;
+  margin-top: 6px;
+  font-size: 0.7rem;
   color: var(--text-sub);
 }
 
 /* Upload */
-.nyp-upload-area {
-  border: 2px dashed var(--border);
-  border-radius: 4px;
-  padding: 20px;
-  text-align: center;
+.nyp-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nyp-upload-btn {
+  background: none;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 0.82rem;
+  color: var(--text-sub);
   cursor: pointer;
   transition: border-color 0.2s;
 }
 
-.nyp-upload-area:hover {
-  border-color: var(--accent);
-}
+.nyp-upload-btn:hover { border-color: var(--accent); color: var(--text); }
 
-.nyp-upload-area p {
-  margin: 0;
-  font-size: 0.85rem;
+.nyp-file-count {
+  font-size: 0.78rem;
   color: var(--text-sub);
-}
-
-.nyp-upload-hint {
-  font-size: 0.7rem !important;
-  margin-top: 4px !important;
 }
 
 .nyp-file-list {
-  margin-top: 10px;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
-.nyp-file-item {
-  display: flex;
-  justify-content: space-between;
+.nyp-file-tag {
+  display: inline-flex;
   align-items: center;
-  padding: 6px 10px;
-  background: var(--bg-primary);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  font-size: 0.75rem;
+  gap: 4px;
+  padding: 4px 10px;
+  background: var(--bg-card);
+  border-radius: 20px;
+  font-size: 0.72rem;
+  color: var(--text-sub);
 }
 
-.nyp-file-item button {
+.nyp-file-tag button {
   background: none;
   border: none;
+  font-size: 0.9rem;
   color: var(--text-sub);
-  font-size: 1.1rem;
   cursor: pointer;
-  padding: 0 4px;
-}
-
-.nyp-file-item button:hover {
-  color: #f44336;
-}
-
-/* Terms notice */
-.nyp-terms-notice {
-  margin-top: 16px;
-  font-size: 0.78rem;
-  color: var(--text-sub);
-  text-align: center;
-}
-
-.nyp-terms-notice a {
-  color: var(--accent);
-  text-decoration: underline;
+  padding: 0;
 }
 
 /* Error */
 .nyp-error {
-  color: #f44336;
+  color: #e53935;
   font-size: 0.82rem;
-  margin: 12px 0 0;
   text-align: center;
+  margin: 0;
 }
 
-/* Navigation */
-.nyp-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 20px;
-  gap: 12px;
-}
-
-.nyp-back-btn {
-  background: none;
-  border: 1px solid var(--border);
-  color: var(--text-sub);
-  padding: 10px 20px;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: border-color 0.2s;
-}
-
-.nyp-back-btn:hover {
-  border-color: var(--accent);
-  color: var(--text);
-}
-
-.nyp-next-btn,
+/* Submit */
 .nyp-submit {
-  flex: 1;
-  padding: 12px 20px;
-  font-size: 0.9rem;
+  width: 100%;
+  padding: 14px;
+  font-size: 0.95rem;
+  border-radius: 10px;
 }
 
-.nyp-submit:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.nyp-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Terms notice */
+.nyp-terms-notice {
+  font-size: 0.72rem;
+  color: var(--text-sub);
+  text-align: center;
+  margin: 0;
 }
+
+.nyp-terms-notice a { color: var(--accent); text-decoration: underline; }
 
 /* Success */
 .nyp-success {
   text-align: center;
-  padding: 32px 16px;
+  padding: 40px 16px;
 }
 
-.nyp-success h2 {
-  color: var(--accent);
-  margin-bottom: 10px;
-  font-size: 1.3rem;
+.nyp-success-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #4caf50;
+  color: #fff;
+  font-size: 1.4rem;
+  margin-bottom: 16px;
 }
 
-.nyp-success p {
-  font-size: 0.9rem;
-  color: var(--text-sub);
-  margin-bottom: 20px;
-}
-
-/* Responsive */
-@media (min-width: 768px) {
-  .nyp-section {
-    padding: 48px 32px;
-  }
-  .nyp-header h2 {
-    font-size: 1.7rem;
-  }
-}
+.nyp-success h2 { margin-bottom: 8px; }
+.nyp-success p { font-size: 0.9rem; color: var(--text-sub); margin-bottom: 20px; }
