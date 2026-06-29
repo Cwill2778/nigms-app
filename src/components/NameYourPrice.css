@@ -12,11 +12,12 @@
   font-size: 1.4rem;
   text-align: center;
   margin-bottom: 4px;
+  color: #FFFFFF;
 }
 
 .nyp-subtitle {
   font-size: 0.88rem;
-  color: var(--text-sub);
+  color: rgba(255, 255, 255, 0.7);
   text-align: center;
   margin-bottom: 24px;
 }
@@ -34,10 +35,10 @@
 .nyp-form input[type="email"] {
   width: 100%;
   padding: 12px 14px;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
-  background: var(--bg-primary);
-  color: var(--text);
+  background: rgba(0, 0, 0, 0.3);
+  color: #FFFFFF;
   font-size: 0.9rem;
   font-family: var(--sans);
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -48,6 +49,11 @@
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.nyp-form textarea::placeholder,
+.nyp-form input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .nyp-form textarea {
@@ -69,14 +75,15 @@
 /* Price */
 .nyp-price-section {
   padding: 16px;
-  background: var(--bg-card);
+  background: rgba(0, 0, 0, 0.3);
   border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .nyp-price-section label {
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--text-sub);
+  color: rgba(255, 255, 255, 0.7);
   display: block;
   margin-bottom: 8px;
 }
@@ -105,7 +112,7 @@
   border-bottom: 2px solid var(--accent) !important;
   border-radius: 0 !important;
   background: transparent !important;
-  color: var(--text) !important;
+  color: #FFFFFF !important;
 }
 
 .nyp-slider {
@@ -154,16 +161,16 @@
 
 .nyp-upload-btn {
   background: none;
-  border: 1px dashed var(--border);
+  border: 1px dashed rgba(255, 255, 255, 0.3);
   border-radius: 8px;
   padding: 8px 14px;
   font-size: 0.82rem;
-  color: var(--text-sub);
+  color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
   transition: border-color 0.2s;
 }
 
-.nyp-upload-btn:hover { border-color: var(--accent); color: var(--text); }
+.nyp-upload-btn:hover { border-color: var(--accent); color: #FFFFFF; }
 
 .nyp-file-count {
   font-size: 0.78rem;

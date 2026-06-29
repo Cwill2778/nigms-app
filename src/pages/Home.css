@@ -78,11 +78,11 @@
 }
 
 .home-hero .nyp-container {
-  background: #FFFFFF;
+  background: rgba(26, 26, 29, 0.95);
   border-radius: 12px;
   padding: 32px 24px;
-  border: 1px solid var(--border);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 /* Trust Badges */
