@@ -262,6 +262,101 @@
   text-align: center;
 }
 
+/* Owner / About section */
+.home-about {
+  padding: 32px 16px;
+  max-width: 700px;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--border);
+}
+
+.owner-toggle {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 16px 20px;
+  background: rgba(26, 26, 29, 0.7);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  color: var(--text);
+  transition: border-color 0.2s;
+}
+
+.owner-toggle:hover { border-color: var(--accent); }
+
+.owner-toggle h3 {
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.owner-toggle p {
+  font-size: 0.78rem;
+  color: var(--text-sub);
+  margin: 2px 0 0;
+}
+
+.owner-toggle-icon {
+  margin-left: auto;
+  font-size: 1.4rem;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.owner-thumb {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent);
+  flex-shrink: 0;
+}
+
+.owner-content {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+.owner-portrait {
+  width: 140px;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 2px solid var(--border);
+}
+
+.owner-message p {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--text-sub);
+  margin-bottom: 12px;
+}
+
+.owner-signature {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.owner-signature span {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--text-sub);
+}
+
+@media (min-width: 768px) {
+  .owner-content {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  .owner-portrait { width: 160px; }
+}
+
 .home-cta h2 { margin-bottom: 12px; }
 .home-cta p { font-size: 1rem; color: var(--text-sub); margin-bottom: 24px; }
 

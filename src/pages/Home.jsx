@@ -4,6 +4,7 @@ import useScrollReveal from '../hooks/useScrollReveal';
 import usePageMeta from '../hooks/usePageMeta';
 import { supabase } from '../lib/supabase';
 import NameYourPrice from '../components/NameYourPrice';
+import portrait from '../assets/charlesImg.jpg';
 import './Home.css';
 
 const fallbackTestimonials = [
@@ -43,6 +44,50 @@ function TestimonialCarousel() {
         ))}
       </div>
     </div>
+  );
+}
+
+function OwnerSection() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button className="owner-toggle" onClick={() => setOpen(!open)} aria-expanded={open}>
+        <img src={portrait} alt="Charles Willis, Owner" className="owner-thumb" width="56" height="56" />
+        <div>
+          <h3>Meet the Man Behind the Hammer</h3>
+          <p>A note from Charles Willis, Owner</p>
+        </div>
+        <span className="owner-toggle-icon">{open ? '−' : '+'}</span>
+      </button>
+      {open && (
+        <div className="owner-content">
+          <img src={portrait} alt="Charles Willis" className="owner-portrait" width="200" height="250" />
+          <div className="owner-message">
+            <p>
+              &ldquo;When I started Nailed It Property Solutions, I wanted to build
+              something different: a service that local homeowners and property
+              managers could truly rely on. I know how stressful it can be to invite
+              someone into your space, which is why my promise to you is simple: we
+              treat every property like our own, ensuring every fix, patch, and
+              installation stands the test of time.
+            </p>
+            <p>
+              Whether you need a quick repair or a major update, you can expect
+              clear communication and absolute respect for your
+              home from the moment we arrive.
+            </p>
+            <p>
+              Thank you for trusting us to care for your property right here in the
+              Rome community. We look forward to working with you.&rdquo;
+            </p>
+            <p className="owner-signature">
+              — Charles Willis<br />
+              <span>Owner, Nailed It Property Solutions</span>
+            </p>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -184,6 +229,11 @@ function Home() {
           Nailed It and when they sign up, you both earn a free month of service.
         </p>
         <Link to="/contact" className="cta-button">Refer a Friend &rarr;</Link>
+      </section>
+
+      {/* About / Owner */}
+      <section className="home-about reveal">
+        <OwnerSection />
       </section>
 
       {/* Final CTA */}
