@@ -18,7 +18,6 @@ function NameYourPrice() {
   const [price, setPrice] = useState(250);
   const [priceInput, setPriceInput] = useState('250');
   const [files, setFiles] = useState([]);
-  const [termsAccepted, setTermsAccepted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
@@ -95,10 +94,6 @@ function NameYourPrice() {
       setStep(2);
       return;
     }
-    if (!termsAccepted) {
-      setError('Please accept the terms to continue.');
-      return;
-    }
 
     setSubmitting(true);
     try {
@@ -148,7 +143,7 @@ function NameYourPrice() {
         <div className="nyp-success">
           <h2>Submission Received!</h2>
           <p>We&rsquo;ll review your request and get back to you shortly.</p>
-          <button className="cta-button" onClick={() => { setSubmitted(false); setStep(0); setName(''); setPhone(''); setEmail(''); setDescription(''); setMaterialsSupplied('customer'); setPrice(250); setPriceInput('250'); setFiles([]); setTermsAccepted(false); }}>
+          <button className="cta-button" onClick={() => { setSubmitted(false); setStep(0); setName(''); setPhone(''); setEmail(''); setDescription(''); setMaterialsSupplied('customer'); setPrice(250); setPriceInput('250'); setFiles([]); }}>
             Submit Another
           </button>
         </div>
@@ -265,12 +260,7 @@ function NameYourPrice() {
               </div>
             )}
 
-            <div className="nyp-terms-inline">
-              <label className="nyp-checkbox-label">
-                <input type="checkbox" checked={termsAccepted} onChange={(e) => setTermsAccepted(e.target.checked)} />
-                <span>I accept the <Link to="/terms#name-your-price-terms">Terms of Use</Link></span>
-              </label>
-            </div>
+            <p className="nyp-terms-notice">By submitting, you agree to our <Link to="/terms#name-your-price-terms">Terms of Use</Link>.</p>
           </div>
         </div>
 

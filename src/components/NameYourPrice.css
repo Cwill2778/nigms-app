@@ -266,25 +266,15 @@
   color: #f44336;
 }
 
-/* Terms inline */
-.nyp-terms-inline {
+/* Terms notice */
+.nyp-terms-notice {
   margin-top: 16px;
-}
-
-.nyp-checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--text-sub);
-  cursor: pointer;
+  text-align: center;
 }
 
-.nyp-checkbox-label input[type="checkbox"] {
-  flex-shrink: 0;
-}
-
-.nyp-checkbox-label a {
+.nyp-terms-notice a {
   color: var(--accent);
   text-decoration: underline;
 }

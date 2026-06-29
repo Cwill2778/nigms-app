@@ -1180,6 +1180,7 @@ function QuotesPanel() {
             <p><strong>Phone:</strong> {s.customer_phone || '—'}</p>
             <p><strong>Email:</strong> {s.customer_email || '—'}</p>
             <p><strong>Offered Price:</strong> <span style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--accent)' }}>${(s.offered_price / 100).toFixed(0)}</span></p>
+            <p><strong>Materials:</strong> {s.materials_supplied_by === 'customer' ? 'Customer supplies' : s.materials_supplied_by === 'nailedit' ? 'Nailed It supplies' : 'Not sure yet'}</p>
             <p><strong>Submitted:</strong> {new Date(s.created_at).toLocaleString()}</p>
           </div>
 
