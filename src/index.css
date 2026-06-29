@@ -1,17 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Warm Professional Palette */
+  /* Nailed It Brand Palette */
   --bg-primary: #F5F0EB;
   --bg-secondary: #FFFFFF;
   --bg-card: #FFFFFF;
-  --bg-footer: #1A1A1D;
-  --accent: #FF8A00;
-  --accent-hover: #E67A00;
-  --accent-glow: rgba(255, 138, 0, 0.15);
+  --bg-footer: #020617;
+  --bg-header: #020617;
+  --accent: #F2C94C;
+  --accent-hover: #F2994A;
+  --accent-glow: rgba(242, 201, 76, 0.2);
   --text: #1A1A1D;
   --text-sub: #5A5A5A;
+  --text-light: #FFFFFF;
+  --text-slate: #94A3B8;
   --border: rgba(0, 0, 0, 0.1);
+  --midnight-dark: #020617;
+  --midnight-light: #0F172A;
 
   /* Typography */
   --sans: 'Inter', system-ui, -apple-system, sans-serif;
