@@ -11,6 +11,10 @@
   z-index: 1;
 }
 
+.layout > header {
+  z-index: 100;
+}
+
 .layout main {
   flex: 1;
   max-width: 1100px;
