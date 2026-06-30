@@ -56,6 +56,43 @@
   border-color: var(--accent);
 }
 
+/* Availability banner */
+.footer-availability {
+  text-align: center;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.footer-open-badge {
+  display: inline-block;
+  font-family: var(--heading);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #2ecc40;
+  margin-bottom: 8px;
+}
+
+.footer-availability p {
+  font-size: 0.85rem;
+  color: var(--text-sub);
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+.footer-phone {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-phone:hover {
+  color: var(--accent-hover);
+}
+
 /* Column links */
 .footer-links {
   display: grid;

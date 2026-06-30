@@ -67,22 +67,14 @@
   font-size: 0.85rem;
   font-style: italic;
   color: var(--text-sub);
+  margin-bottom: 24px;
 }
 
-.home-hero .nyp-section {
-  padding: 0;
-  border-top: none;
-  background: transparent;
-  width: 100%;
-  max-width: 640px;
-}
-
-.home-hero .nyp-container {
-  background: rgba(26, 26, 29, 0.95);
-  border-radius: 12px;
-  padding: 32px 24px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+.hero-paths {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
 }
 
 /* Trust Badges */
@@ -97,7 +89,7 @@
   justify-content: center;
   flex-wrap: wrap;
   gap: 16px 32px;
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
@@ -112,6 +104,52 @@
 
 .trust-icon {
   font-size: 1.1rem;
+}
+
+/* Owner Bio — always visible */
+.home-owner {
+  padding: 48px 16px;
+  max-width: 800px;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--border);
+}
+
+.owner-visible {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.owner-portrait {
+  width: 160px;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 2px solid var(--accent);
+  flex-shrink: 0;
+}
+
+.owner-message h2 {
+  margin-bottom: 8px;
+}
+
+.owner-message p {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--text-sub);
+  margin-bottom: 12px;
+}
+
+.owner-signature {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.owner-signature span {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--text-sub);
 }
 
 /* Problem Section */
@@ -133,7 +171,52 @@
   margin-bottom: 16px;
 }
 
-.home-problem .cta-button { margin-top: 16px; }
+/* Featured Reviews */
+.home-featured-reviews {
+  padding: 48px 16px;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.home-featured-reviews h2 { margin-bottom: 8px; }
+.home-featured-reviews .accent-bar { margin: 0 auto 24px; }
+
+.featured-reviews-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-bottom: 8px;
+}
+
+.featured-review {
+  padding: 28px 24px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-align: left;
+}
+
+.featured-review .testimonial-stars {
+  color: var(--accent);
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.featured-review-text {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-sub);
+  font-style: italic;
+  margin-bottom: 12px;
+}
+
+.featured-review-author {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
 
 /* Crisis Section */
 .home-crisis {
@@ -154,69 +237,137 @@
   margin-bottom: 20px;
 }
 
-/* Service Areas */
-.home-service-areas {
+/* Form Section — after trust building */
+.home-form-section {
   padding: 48px 16px;
-  max-width: 900px;
+  max-width: 700px;
   margin: 0 auto;
+  text-align: center;
   border-bottom: 1px solid var(--border);
 }
 
-.home-service-areas h2 { margin-bottom: 8px; text-align: center; }
-.home-service-areas .accent-bar { margin: 0 auto 24px; }
+.home-form-section h2 { margin-bottom: 8px; }
+.home-form-section .accent-bar { margin: 0 auto 24px; }
 
-.service-areas-intro {
+.form-intro {
   font-size: 0.95rem;
-  line-height: 1.6;
-  text-align: center;
-  margin-bottom: 28px;
   color: var(--text-sub);
+  margin-bottom: 24px;
 }
 
-.service-areas-grid {
+.home-form-section .nyp-section {
+  padding: 0;
+  border-top: none;
+  background: transparent;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.home-form-section .nyp-container {
+  background: rgba(26, 26, 29, 0.95);
+  border-radius: 12px;
+  padding: 32px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Landlord Section */
+.home-landlord {
+  padding: 48px 16px;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.home-landlord h2 { margin-bottom: 8px; }
+.home-landlord .accent-bar { margin: 0 auto 24px; }
+
+.landlord-intro {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-sub);
+  margin-bottom: 28px;
+  max-width: 650px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.landlord-tiers {
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
   margin-bottom: 28px;
 }
 
-.area-card {
-  padding: 20px 24px;
+.landlord-tier {
+  padding: 24px 20px;
   border: 1px solid var(--border);
-  border-radius: 4px;
+  border-radius: 8px;
   background: var(--bg-secondary);
+  text-align: left;
+  position: relative;
 }
 
-.area-card h3 {
-  font-family: var(--heading);
+.landlord-tier--popular {
+  border-color: var(--accent);
+  box-shadow: 0 0 16px rgba(255, 138, 0, 0.15);
+}
+
+.tier-badge {
+  position: absolute;
+  top: -10px;
+  right: 16px;
+  background: var(--accent);
+  color: #000;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  border-radius: 2px;
+}
+
+.landlord-tier h3 {
   font-size: 1rem;
-  margin-bottom: 4px;
-  color: var(--accent);
+  color: var(--text);
+  margin-bottom: 8px;
 }
 
-.area-card .area-tagline {
-  font-style: italic;
-  font-size: 0.82rem;
-  color: var(--accent);
-  margin-bottom: 6px;
-}
-
-.area-card p {
+.landlord-tier p {
   font-size: 0.85rem;
   line-height: 1.6;
   color: var(--text-sub);
-  margin: 0 0 6px;
+  margin: 0;
 }
 
-.home-service-areas .cta-button {
-  display: block;
+.landlord-proof {
+  padding: 20px 24px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 24px;
   text-align: center;
-  max-width: 360px;
-  margin: 0 auto;
 }
 
-@media (min-width: 600px) {
-  .service-areas-grid { grid-template-columns: repeat(2, 1fr); }
+.landlord-proof p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-sub);
+  font-style: italic;
+  margin-bottom: 6px;
+}
+
+.landlord-proof .testimonial-stars {
+  margin-bottom: 8px;
+}
+
+.landlord-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
 }
 
 /* Testimonials */
@@ -242,118 +393,10 @@
 .testimonial-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); border: none; cursor: pointer; padding: 0; }
 .testimonial-dot--active { background: var(--accent); }
 
-/* Referral */
-.home-referral {
-  padding: 48px 16px;
-  max-width: 700px;
-  margin: 0 auto;
-  text-align: center;
-  border-bottom: 1px solid var(--border);
-}
-
-.home-referral h2 { margin-bottom: 8px; }
-.home-referral .accent-bar { margin: 0 auto 24px; }
-.home-referral p { font-size: 0.95rem; line-height: 1.7; color: var(--text-sub); margin-bottom: 20px; }
-
 /* Final CTA */
 .home-cta {
   padding: 64px 16px;
   text-align: center;
-}
-
-/* Owner / About section */
-.home-about {
-  padding: 32px 16px;
-  max-width: 700px;
-  margin: 0 auto;
-  border-bottom: 1px solid var(--border);
-}
-
-.owner-toggle {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
-  padding: 16px 20px;
-  background: rgba(26, 26, 29, 0.7);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  cursor: pointer;
-  text-align: left;
-  color: var(--text);
-  transition: border-color 0.2s;
-}
-
-.owner-toggle:hover { border-color: var(--accent); }
-
-.owner-toggle h3 {
-  font-size: 0.95rem;
-  margin: 0;
-}
-
-.owner-toggle p {
-  font-size: 0.78rem;
-  color: var(--text-sub);
-  margin: 2px 0 0;
-}
-
-.owner-toggle-icon {
-  margin-left: auto;
-  font-size: 1.4rem;
-  color: var(--accent);
-  flex-shrink: 0;
-}
-
-.owner-thumb {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--accent);
-  flex-shrink: 0;
-}
-
-.owner-content {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  animation: fadeIn 0.3s ease;
-}
-
-.owner-portrait {
-  width: 140px;
-  height: auto;
-  border-radius: 8px;
-  object-fit: cover;
-  border: 2px solid var(--border);
-}
-
-.owner-message p {
-  font-size: 0.9rem;
-  line-height: 1.7;
-  color: var(--text-sub);
-  margin-bottom: 12px;
-}
-
-.owner-signature {
-  font-weight: 600;
-  color: var(--text);
-}
-
-.owner-signature span {
-  font-weight: 400;
-  font-size: 0.8rem;
-  color: var(--text-sub);
-}
-
-@media (min-width: 768px) {
-  .owner-content {
-    flex-direction: row;
-    align-items: flex-start;
-  }
-  .owner-portrait { width: 160px; }
 }
 
 .home-cta h2 { margin-bottom: 12px; }
@@ -400,30 +443,43 @@
     color: var(--accent);
   }
 
-  /* Add bottom padding to page so content isn't hidden behind bar */
   .home { padding-bottom: 60px; }
 }
 
 /* Responsive */
+@media (min-width: 600px) {
+  .featured-reviews-grid { grid-template-columns: 1fr 1fr; }
+  .landlord-tiers { grid-template-columns: repeat(3, 1fr); }
+}
+
 @media (min-width: 768px) {
   .home-hero { padding: 72px 32px; }
   .home-hero-text h1 { font-size: 2.4rem; }
   .home-subtitle { font-size: 1.15rem; }
-  .home-hero .nyp-container { padding: 40px 32px; }
+  .home-owner { padding: 72px 32px; }
+  .owner-visible {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 32px;
+  }
+  .owner-portrait { width: 180px; }
   .home-problem { padding: 72px 32px; }
+  .home-featured-reviews { padding: 72px 32px; }
   .home-crisis { padding: 72px 32px; }
-  .home-service-areas { padding: 72px 32px; }
+  .home-form-section { padding: 72px 32px; }
+  .home-landlord { padding: 72px 32px; }
   .home-testimonials { padding: 72px 32px; }
-  .home-referral { padding: 72px 32px; }
   .home-cta { padding: 88px 32px; }
 }
 
 @media (min-width: 1024px) {
   .home-hero { padding: 88px 48px; }
+  .home-owner { padding: 88px 48px; }
   .home-problem { padding: 88px 48px; }
+  .home-featured-reviews { padding: 88px 48px; }
   .home-crisis { padding: 88px 48px; }
-  .home-service-areas { padding: 88px 48px; }
+  .home-form-section { padding: 88px 48px; }
+  .home-landlord { padding: 88px 48px; }
   .home-testimonials { padding: 88px 48px; }
-  .home-referral { padding: 88px 48px; }
   .home-cta { padding: 104px 48px; }
 }

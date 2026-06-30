@@ -81,9 +81,38 @@ function Contact() {
             <a href="tel:+17068448059">(706) 844-8059</a>
           </div>
 
-          <div className="info-block">
-            <h3>Emergency Email</h3>
-            <a href="mailto:support.nailedit@gmail.com">support.nailedit@gmail.com</a>
+          <div className="info-block email-directory">
+            <h3>Email Directory</h3>
+            <ul className="email-list">
+              <li>
+                <span className="email-label">Free Estimate</span>
+                <a href="mailto:quote@naileditpropertysolutions.com">quote@naileditpropertysolutions.com</a>
+              </li>
+              <li>
+                <span className="email-label">Book an Inspection or Repair</span>
+                <a href="mailto:fixit@naileditpropertysolutions.com">fixit@naileditpropertysolutions.com</a>
+              </li>
+              <li>
+                <span className="email-label">General Information</span>
+                <a href="mailto:info@naileditpropertysolutions.com">info@naileditpropertysolutions.com</a>
+              </li>
+              <li>
+                <span className="email-label">Customer Support</span>
+                <a href="mailto:support@naileditpropertysolutions.com">support@naileditpropertysolutions.com</a>
+              </li>
+              <li>
+                <span className="email-label">Privacy Concerns</span>
+                <a href="mailto:privacy@naileditpropertysolutions.com">privacy@naileditpropertysolutions.com</a>
+              </li>
+              <li>
+                <span className="email-label">Pricing &amp; Billing</span>
+                <a href="mailto:billing@naileditpropertysolutions.com">billing@naileditpropertysolutions.com</a>
+              </li>
+              <li>
+                <span className="email-label">Reach the Owner (Charles)</span>
+                <a href="mailto:charles@naileditpropertysolutions.com">charles@naileditpropertysolutions.com</a>
+              </li>
+            </ul>
           </div>
 
           <div className="info-block">
@@ -95,24 +124,11 @@ function Contact() {
           </div>
 
           <div className="info-block">
-            <h3>Business Hours</h3>
-            <table className="hours-table">
-              <tbody>
-                <tr>
-                  <td>Monday – Friday</td>
-                  <td>9:30 AM – 5:30 PM</td>
-                </tr>
-                <tr>
-                  <td>Saturday – Sunday</td>
-                  <td>Open 24 Hours</td>
-                </tr>
-                <tr>
-                  <td colSpan="2" style={{ fontSize: '0.75rem', color: 'var(--text-sub)', fontStyle: 'italic', paddingTop: '8px' }}>
-                    We know your weekends are your only real time to get things handled. We&rsquo;re available when it works for you.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <h3>Hours of Operation</h3>
+            <p style={{ fontSize: '1rem', fontWeight: 600 }}>Open 24/7</p>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-sub)', fontStyle: 'italic', marginTop: '6px' }}>
+              When your home is at stake, we don&rsquo;t believe in business hours only.
+            </p>
           </div>
 
           <div className="info-block">

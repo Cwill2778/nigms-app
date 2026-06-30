@@ -51,6 +51,41 @@
   color: var(--accent);
 }
 
+/* Email directory */
+.email-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.email-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.email-list .email-label {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-sub);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.email-list a {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  word-break: break-all;
+}
+
+.email-list a:hover {
+  color: var(--accent);
+}
+
 .info-block address {
   font-style: normal;
   font-size: 0.95rem;

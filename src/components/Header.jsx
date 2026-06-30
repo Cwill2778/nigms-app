@@ -15,6 +15,7 @@ function Header() {
         <Link to="/" className="header-logo" onClick={closeMenu}>
           <img src={logo} alt="Nailed It Property Solutions" width="160" height="48" />
         </Link>
+        <span className="header-open-badge">Open 24/7</span>
         <button
           className={`hamburger${menuOpen ? ' hamburger--open' : ''}`}
           onClick={toggleMenu}
@@ -28,6 +29,8 @@ function Header() {
         <nav className={`header-nav${menuOpen ? ' header-nav--open' : ''}`} aria-label="Main navigation">
           <ul>
             <li><Link to="/" onClick={closeMenu}>Home</Link></li>
+            <li><Link to="/homeowners" onClick={closeMenu}>Homeowners</Link></li>
+            <li><Link to="/landlords" onClick={closeMenu}>Landlords</Link></li>
             <li><Link to="/services" onClick={closeMenu}>Services</Link></li>
             <li><Link to="/reviews" onClick={closeMenu}>Reviews</Link></li>
             <li><Link to="/contact" onClick={closeMenu}>Contact</Link></li>

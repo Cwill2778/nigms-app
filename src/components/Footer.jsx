@@ -7,6 +7,12 @@ function Footer() {
   return (
     <footer className="footer">
       <div className="footer-container">
+        <div className="footer-availability">
+          <span className="footer-open-badge">🟢 Open 24/7</span>
+          <p>When your home is at stake, we don&rsquo;t believe in business hours only.</p>
+          <a href="tel:+17068448193" className="footer-phone">(706) 844-8193</a>
+        </div>
+
         <div className="footer-links">
           <div className="footer-col">
             <h4>Company</h4>
@@ -25,6 +31,8 @@ function Footer() {
               <li><a href="https://nextdoor.com/page/nailed-it-property-solutions-rome-ga/" target="_blank" rel="noopener noreferrer">Nextdoor</a></li>
               <li><a href="https://maps.app.goo.gl/J6uxtzZ1p4EFmLnJ8" target="_blank" rel="noopener noreferrer">Google Business</a></li>
               <li><a href="https://www.yelp.com/biz/nailed-it-property-solutions-rome" target="_blank" rel="noopener noreferrer">Yelp</a></li>
+              <li><a href="https://www.bbb.org" target="_blank" rel="noopener noreferrer">Better Business Bureau</a></li>
+              <li><a href="https://www.linkedin.com/company/nailed-it-property-solutions" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
               <li><a href="https://g.page/r/CWiM9mqvEGVkEBM/review" target="_blank" rel="noopener noreferrer">Leave a Google Review</a></li>
             </ul>
           </div>
