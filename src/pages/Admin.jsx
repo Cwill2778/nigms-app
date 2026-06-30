@@ -6,8 +6,9 @@ import './Admin.css';
 
 function Admin() {
   const [session, setSession] = useState(null);
+  const [adminProfile, setAdminProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState('analytics');
+  const [tab, setTab] = useState('dashboard');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -17,15 +18,39 @@ function Admin() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      if (session) fetchAdminProfile(session.user);
       setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      if (session) fetchAdminProfile(session.user);
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  async function fetchAdminProfile(user) {
+    // Try to load admin profile from admin_profiles table
+    const { data } = await supabase
+      .from('admin_profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .single();
+
+    if (data) {
+      setAdminProfile(data);
+    } else {
+      // Fallback to user metadata
+      const meta = user.user_metadata || {};
+      setAdminProfile({
+        first_name: meta.first_name || meta.full_name?.split(' ')[0] || 'Admin',
+        last_name: meta.last_name || meta.full_name?.split(' ').slice(1).join(' ') || '',
+        employee_id: meta.employee_id || user.id.substring(0, 8).toUpperCase(),
+        email: user.email,
+      });
+    }
+  }
 
   // Push notifications & realtime listener for new leads
   useEffect(() => {
@@ -85,11 +110,12 @@ function Admin() {
   if (!session) {
     return (
       <div className="admin-login">
-        <h1>Admin Panel</h1>
-        <p>Nailed It Property Solutions</p>
+        <div className="admin-login-badge">🔒</div>
+        <h1>Admin Portal</h1>
+        <p>Nailed It Property Solutions — Authorized Personnel Only</p>
         <form onSubmit={handleLogin}>
-          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <input type="email" placeholder="Business Email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
+          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
           {error && <p className="admin-error">{error}</p>}
           <button type="submit" className="cta-button">Sign In</button>
         </form>
@@ -99,19 +125,23 @@ function Admin() {
 
   return (
     <div className="admin" style={{ position: 'relative' }}>
+      {/* Admin Header Bar with full profile */}
       <div className="admin-header-bar">
         <div className="admin-user-info">
-          <p className="admin-user-name">{session.user.user_metadata?.full_name || session.user.email}</p>
-          <p className="admin-user-id">ID: {session.user.id.substring(0, 8)}...</p>
+          <p className="admin-user-name">{adminProfile?.first_name} {adminProfile?.last_name}</p>
+          <div className="admin-user-details">
+            <span className="admin-user-id">EMP-{adminProfile?.employee_id}</span>
+            <span className="admin-user-email">{adminProfile?.email}</span>
+          </div>
         </div>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <button className="btn-sm" onClick={handleLogout}>Logout</button>
+          <span className="admin-status-badge">🟢 Online</span>
+          <button className="btn-sm btn-sm--danger" onClick={handleLogout}>Logout</button>
         </div>
       </div>
-      <h1>Admin Dashboard</h1>
 
       <div className="admin-tabs">
-        {['analytics', 'quotes', 'chat', 'reviews', 'faq', 'contacts', 'careers', 'settings'].map((t) => (
+        {['dashboard', 'quotes', 'analytics', 'reviews', 'faq', 'contacts', 'careers', 'settings'].map((t) => (
           <button
             key={t}
             className={`admin-tab${tab === t ? ' admin-tab--active' : ''}`}
@@ -123,14 +153,95 @@ function Admin() {
       </div>
 
       <div className="admin-panel">
-        {tab === 'analytics' && <AnalyticsPanel />}
+        {tab === 'dashboard' && <DashboardPanel />}
         {tab === 'quotes' && <QuotesPanel />}
-        {tab === 'chat' && <ChatPanel />}
+        {tab === 'analytics' && <AnalyticsPanel />}
         {tab === 'reviews' && <ReviewsPanel />}
         {tab === 'faq' && <FAQPanel />}
         {tab === 'contacts' && <ContactsPanel />}
         {tab === 'careers' && <CareersPanel />}
         {tab === 'settings' && <SettingsPanel />}
+      </div>
+    </div>
+  );
+}
+
+// Dashboard — compact analytics + chat side by side
+function DashboardPanel() {
+  const [stats, setStats] = useState({ total: 0, today: 0, uniqueVisitors: 0, newLeads: 0 });
+  const [recentLeads, setRecentLeads] = useState([]);
+
+  useEffect(() => {
+    async function fetchQuickStats() {
+      const { data: visits } = await supabase.from('page_visits').select('*');
+      const today = new Date().toISOString().split('T')[0];
+      const todayVisits = (visits || []).filter((v) => v.created_at.startsWith(today));
+      const sessionMap = {};
+      (visits || []).forEach((v) => { if (v.session_id) sessionMap[v.session_id] = true; });
+
+      const { data: leads } = await supabase.from('name_your_price').select('*').order('created_at', { ascending: false }).limit(5);
+      const newLeads = (leads || []).filter((l) => l.status === 'new').length;
+
+      setStats({
+        total: (visits || []).length,
+        today: todayVisits.length,
+        uniqueVisitors: Object.keys(sessionMap).length,
+        newLeads,
+      });
+      setRecentLeads(leads || []);
+    }
+    fetchQuickStats();
+  }, []);
+
+  return (
+    <div className="dashboard-layout">
+      {/* Left Column — Analytics Summary */}
+      <div className="dashboard-left">
+        <div className="stats-grid stats-grid--compact">
+          <div className="stat-card stat-card--mini">
+            <p className="stat-number">{stats.total}</p>
+            <p className="stat-label">Page Views</p>
+          </div>
+          <div className="stat-card stat-card--mini">
+            <p className="stat-number">{stats.today}</p>
+            <p className="stat-label">Today</p>
+          </div>
+          <div className="stat-card stat-card--mini">
+            <p className="stat-number">{stats.uniqueVisitors}</p>
+            <p className="stat-label">Visitors</p>
+          </div>
+          <div className="stat-card stat-card--mini">
+            <p className="stat-number">{stats.newLeads}</p>
+            <p className="stat-label">New Leads</p>
+          </div>
+        </div>
+
+        <div className="dashboard-section">
+          <h3>Recent Leads</h3>
+          {recentLeads.length === 0 ? (
+            <p className="empty-state">No leads yet.</p>
+          ) : (
+            <table className="admin-table admin-table--compact">
+              <thead><tr><th>Name</th><th>Price</th><th>Status</th><th>Date</th></tr></thead>
+              <tbody>
+                {recentLeads.map((s) => (
+                  <tr key={s.id}>
+                    <td>{s.customer_name}</td>
+                    <td style={{ fontWeight: 600, color: 'var(--accent)' }}>${(s.offered_price / 100).toFixed(0)}</td>
+                    <td><span className={`status-badge status-badge--${s.status}`}>{s.status}</span></td>
+                    <td>{new Date(s.created_at).toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
+
+      {/* Right Column — Live Chat */}
+      <div className="dashboard-right">
+        <h3>💬 Live Chat</h3>
+        <ChatPanel />
       </div>
     </div>
   );
