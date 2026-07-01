@@ -299,7 +299,7 @@ export function WorkOrdersPanel() {
 
 // Materials List Component
 const STORES = ['Home Depot', 'Lowes', 'Ace Hardware', 'Tractor Supply', 'Other'];
-const SERPAPI_KEY = import.meta.env.VITE_SERPAPI_KEY;
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 
 function MaterialsList({ workOrderId }) {
   const [materials, setMaterials] = useState([]);
@@ -357,38 +357,22 @@ function MaterialsList({ workOrderId }) {
     setSearching(true);
     setSearchResults([]);
     try {
-      const storeParam = newItem.store === 'Home Depot' ? '&engine=home_depot&store_id=0139' : '';
-      const url = storeParam
-        ? `https://serpapi.com/search.json?engine=home_depot&q=${encodeURIComponent(itemName)}&store_id=0139&api_key=${SERPAPI_KEY}`
-        : `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(itemName + ' ' + newItem.store + ' Rome GA')}&api_key=${SERPAPI_KEY}`;
-
-      const res = await fetch(url);
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/product-lookup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}` },
+        body: JSON.stringify({ query: itemName, store: newItem.store }),
+      });
       const data = await res.json();
 
-      if (data.products && data.products.length > 0) {
-        // Home Depot results
-        setSearchResults(data.products.slice(0, 8).map((p) => ({
-          name: p.title,
-          price: p.price ? parseFloat(p.price.toString().replace(/[^0-9.]/g, '')) : null,
-          aisle: p.aisle || p.pickup?.find((loc) => loc)?.aisle || '',
-          link: p.link,
-        })));
-      } else if (data.shopping_results && data.shopping_results.length > 0) {
-        // Google Shopping fallback
-        setSearchResults(data.shopping_results.slice(0, 8).map((p) => ({
-          name: p.title,
-          price: p.extracted_price || null,
-          aisle: '',
-          link: p.link,
-        })));
+      if (data.results && data.results.length > 0) {
+        setSearchResults(data.results);
       } else {
         setSearchResults([]);
       }
     } catch (err) {
-      console.error('SerpApi lookup failed:', err);
+      console.error('Product lookup failed:', err);
       // Fallback to Google search
-      const query = encodeURIComponent(`${itemName} ${newItem.store} Rome GA price aisle`);
-      window.open(`https://www.google.com/search?q=${query}`, '_blank');
+      smartSearch(itemName, newItem.store);
     }
     setSearching(false);
   }
