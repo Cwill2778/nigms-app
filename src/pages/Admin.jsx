@@ -142,29 +142,29 @@ function Admin() {
         </div>
       </div>
 
-      <div className="admin-tabs">
-        {['dashboard', 'customers', 'work orders', 'assets', 'quotes', 'analytics', 'reviews', 'faq', 'contacts', 'careers', 'settings'].map((t) => (
-          <button
-            key={t}
-            className={`admin-tab${tab === t ? ' admin-tab--active' : ''}`}
-            onClick={() => { setTab(t); if (t === 'quotes') setNewLeadCount(0); }}
-          >
-            {t}{t === 'quotes' && newLeadCount > 0 ? ` (${newLeadCount})` : ''}
-          </button>
-        ))}
+      <div className="admin-tabs-group">
+        <div className="admin-tabs">
+          {['dashboard', 'inbox', 'crm', 'assets', 'dispatch', 'billing', 'team', 'content', 'settings'].map((t) => (
+            <button
+              key={t}
+              className={`admin-tab${tab === t ? ' admin-tab--active' : ''}`}
+              onClick={() => setTab(t)}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="admin-panel">
         {tab === 'dashboard' && <DashboardPanel />}
-        {tab === 'customers' && <CustomersPanel />}
-        {tab === 'work orders' && <WorkOrdersPanel />}
+        {tab === 'inbox' && <InboxPanel />}
+        {tab === 'crm' && <CustomersPanel />}
         {tab === 'assets' && <AssetsPanel />}
-        {tab === 'quotes' && <QuotesPanel />}
-        {tab === 'analytics' && <AnalyticsPanel />}
-        {tab === 'reviews' && <ReviewsPanel />}
-        {tab === 'faq' && <FAQPanel />}
-        {tab === 'contacts' && <ContactsPanel />}
-        {tab === 'careers' && <CareersPanel />}
+        {tab === 'dispatch' && <WorkOrdersPanel />}
+        {tab === 'billing' && <BillingPanel />}
+        {tab === 'team' && <TeamPanel />}
+        {tab === 'content' && <ContentPanel />}
         {tab === 'settings' && <SettingsPanel />}
       </div>
     </div>
@@ -249,6 +249,162 @@ function DashboardPanel() {
         <ChatPanel />
       </div>
     </div>
+  );
+}
+
+// Inbox Panel — Unified Communications (Chat + Contacts + Quotes)
+function InboxPanel() {
+  const [inboxTab, setInboxTab] = useState('chat');
+
+  return (
+    <>
+      <h2>📬 Inbox</h2>
+      <div className="admin-subtabs">
+        {['chat', 'quotes', 'contact forms'].map((t) => (
+          <button key={t} className={`admin-subtab${inboxTab === t ? ' admin-subtab--active' : ''}`} onClick={() => setInboxTab(t)}>
+            {t}
+          </button>
+        ))}
+      </div>
+      <div style={{ marginTop: '16px' }}>
+        {inboxTab === 'chat' && <ChatPanel />}
+        {inboxTab === 'quotes' && <QuotesPanel />}
+        {inboxTab === 'contact forms' && <ContactsPanel />}
+      </div>
+    </>
+  );
+}
+
+// Billing Panel — Subscription & Invoice Management
+function BillingPanel() {
+  const [customers, setCustomers] = useState([]);
+  const [filterTier, setFilterTier] = useState('all');
+
+  useEffect(() => {
+    async function fetch() {
+      const { data } = await supabase.from('customers').select('*').neq('subscription_tier', 'none').order('last_name');
+      setCustomers(data || []);
+    }
+    fetch();
+  }, []);
+
+  const tierPrices = { essential: 99, proactive: 199, comprehensive: 399 };
+  const filtered = filterTier === 'all' ? customers : customers.filter((c) => c.subscription_tier === filterTier);
+  const mrr = customers.reduce((sum, c) => sum + (tierPrices[c.subscription_tier] || 0), 0);
+
+  return (
+    <>
+      <h2>💰 Billing &amp; Subscriptions</h2>
+      <div className="stats-grid stats-grid--compact" style={{ marginBottom: '20px' }}>
+        <div className="stat-card stat-card--mini">
+          <p className="stat-number">${mrr.toLocaleString()}</p>
+          <p className="stat-label">Monthly Revenue</p>
+        </div>
+        <div className="stat-card stat-card--mini">
+          <p className="stat-number">{customers.length}</p>
+          <p className="stat-label">Subscribers</p>
+        </div>
+        <div className="stat-card stat-card--mini">
+          <p className="stat-number">{customers.filter((c) => c.subscription_tier === 'essential').length}</p>
+          <p className="stat-label">Essential</p>
+        </div>
+        <div className="stat-card stat-card--mini">
+          <p className="stat-number">{customers.filter((c) => c.subscription_tier === 'proactive').length}</p>
+          <p className="stat-label">Proactive</p>
+        </div>
+      </div>
+
+      <div className="customers-filters" style={{ marginBottom: '16px' }}>
+        <select value={filterTier} onChange={(e) => setFilterTier(e.target.value)} className="customers-filter-select">
+          <option value="all">All Tiers</option>
+          <option value="essential">Essential ($99/mo)</option>
+          <option value="proactive">Proactive ($199/mo)</option>
+          <option value="comprehensive">Comprehensive ($399/mo)</option>
+        </select>
+      </div>
+
+      {filtered.length === 0 ? (
+        <p className="empty-state">No active subscribers.</p>
+      ) : (
+        <table className="admin-table">
+          <thead><tr><th>Name</th><th>Tier</th><th>Monthly</th><th>Since</th><th>Status</th></tr></thead>
+          <tbody>
+            {filtered.map((c) => (
+              <tr key={c.id}>
+                <td style={{ fontWeight: 600 }}>{c.first_name} {c.last_name}</td>
+                <td><span className="customer-badge" style={{ background: 'var(--accent)' }}>{c.subscription_tier}</span></td>
+                <td style={{ fontWeight: 600, color: 'var(--accent)' }}>${tierPrices[c.subscription_tier]}</td>
+                <td>{c.subscription_start ? new Date(c.subscription_start).toLocaleDateString() : '—'}</td>
+                <td><span className="customer-badge" style={{ background: c.status === 'active' ? '#4caf50' : '#999' }}>{c.status}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </>
+  );
+}
+
+// Team Panel — Internal Operations & Role Management
+function TeamPanel() {
+  const [admins, setAdmins] = useState([]);
+
+  useEffect(() => {
+    async function fetch() {
+      const { data } = await supabase.from('admin_profiles').select('*').order('first_name');
+      setAdmins(data || []);
+    }
+    fetch();
+  }, []);
+
+  return (
+    <>
+      <h2>👥 Team &amp; Operations</h2>
+      <p style={{ fontSize: '0.85rem', color: 'var(--text-sub)', marginBottom: '20px' }}>
+        Manage team members and role-based access.
+      </p>
+
+      {admins.length === 0 ? (
+        <p className="empty-state">No team members found. Make sure admin_profiles table is populated.</p>
+      ) : (
+        <table className="admin-table">
+          <thead><tr><th>Name</th><th>Employee ID</th><th>Email</th><th>Role</th><th>Added</th></tr></thead>
+          <tbody>
+            {admins.map((a) => (
+              <tr key={a.id}>
+                <td style={{ fontWeight: 600 }}>{a.first_name} {a.last_name}</td>
+                <td><code style={{ fontSize: '0.75rem', background: 'rgba(255,138,0,0.1)', padding: '2px 6px', borderRadius: '3px' }}>{a.employee_id}</code></td>
+                <td>{a.email}</td>
+                <td><span className="customer-badge" style={{ background: a.role === 'admin' ? '#2196f3' : '#4caf50' }}>{a.role || 'admin'}</span></td>
+                <td>{new Date(a.created_at).toLocaleDateString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </>
+  );
+}
+
+// Content Panel — Reviews & FAQ nested
+function ContentPanel() {
+  const [contentTab, setContentTab] = useState('reviews');
+
+  return (
+    <>
+      <h2>📝 Content Management</h2>
+      <div className="admin-subtabs">
+        {['reviews', 'faq'].map((t) => (
+          <button key={t} className={`admin-subtab${contentTab === t ? ' admin-subtab--active' : ''}`} onClick={() => setContentTab(t)}>
+            {t}
+          </button>
+        ))}
+      </div>
+      <div style={{ marginTop: '16px' }}>
+        {contentTab === 'reviews' && <ReviewsPanel />}
+        {contentTab === 'faq' && <FAQPanel />}
+      </div>
+    </>
   );
 }
 
