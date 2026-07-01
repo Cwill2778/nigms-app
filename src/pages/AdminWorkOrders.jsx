@@ -221,7 +221,7 @@ export function WorkOrdersPanel() {
 
               {selected.materials_needed && (
                 <div className="dashboard-section" style={{ marginTop: '12px' }}>
-                  <h3>Materials Needed</h3>
+                  <h3>Materials Notes</h3>
                   <p style={{ fontSize: '0.85rem', color: 'var(--text-sub)', whiteSpace: 'pre-wrap' }}>{selected.materials_needed}</p>
                 </div>
               )}
@@ -246,6 +246,9 @@ export function WorkOrdersPanel() {
               </div>
             </div>
           </div>
+
+          {/* Materials List */}
+          <MaterialsList workOrderId={selected.id} />
         </div>
       </>
     );
@@ -291,5 +294,199 @@ export function WorkOrdersPanel() {
         </table>
       )}
     </>
+  );
+}
+
+// Materials List Component
+const STORES = ['Home Depot', 'Lowes', 'Ace Hardware', 'Tractor Supply', 'Other'];
+
+function MaterialsList({ workOrderId }) {
+  const [materials, setMaterials] = useState([]);
+  const [showAdd, setShowAdd] = useState(false);
+  const [newItem, setNewItem] = useState({ name: '', store: 'Home Depot', price: '', quantity: '1', aisle: '', notes: '' });
+
+  useEffect(() => {
+    fetchMaterials();
+  }, [workOrderId]);
+
+  async function fetchMaterials() {
+    const { data } = await supabase
+      .from('work_order_materials')
+      .select('*')
+      .eq('work_order_id', workOrderId)
+      .order('created_at');
+    setMaterials(data || []);
+  }
+
+  async function addMaterial(e) {
+    e.preventDefault();
+    await supabase.from('work_order_materials').insert({
+      work_order_id: workOrderId,
+      name: newItem.name,
+      store: newItem.store,
+      price: newItem.price ? parseFloat(newItem.price) : null,
+      quantity: parseInt(newItem.quantity) || 1,
+      aisle: newItem.aisle || null,
+      notes: newItem.notes || null,
+    });
+    setNewItem({ name: '', store: 'Home Depot', price: '', quantity: '1', aisle: '', notes: '' });
+    setShowAdd(false);
+    fetchMaterials();
+  }
+
+  async function togglePurchased(id, current) {
+    await supabase.from('work_order_materials').update({ purchased: !current }).eq('id', id);
+    fetchMaterials();
+  }
+
+  async function deleteMaterial(id) {
+    await supabase.from('work_order_materials').delete().eq('id', id);
+    fetchMaterials();
+  }
+
+  function smartSearch(itemName, store) {
+    const query = encodeURIComponent(`${itemName} ${store} Rome GA price aisle`);
+    window.open(`https://www.google.com/search?q=${query}`, '_blank');
+  }
+
+  function handlePrint() {
+    const printContent = materials.map((m) =>
+      `${m.purchased ? '✓' : '☐'} ${m.name} (x${m.quantity}) — ${m.store}${m.aisle ? ` | ${m.aisle}` : ''}${m.price ? ` | $${(m.price * m.quantity).toFixed(2)}` : ''}`
+    ).join('\n');
+
+    const totalCost = materials.reduce((sum, m) => sum + ((m.price || 0) * (m.quantity || 1)), 0);
+
+    const win = window.open('', '_blank');
+    win.document.write(`
+      <html><head><title>Materials List</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 24px; font-size: 14px; }
+        h2 { margin-bottom: 4px; }
+        .subtitle { color: #666; margin-bottom: 16px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+        th, td { padding: 8px 12px; border: 1px solid #ddd; text-align: left; }
+        th { background: #f5f5f5; font-size: 12px; text-transform: uppercase; }
+        .total { font-weight: bold; text-align: right; margin-top: 12px; font-size: 16px; }
+        .purchased { text-decoration: line-through; color: #999; }
+        @media print { body { padding: 0; } }
+      </style></head><body>
+      <h2>Materials List</h2>
+      <p class="subtitle">Work Order — Nailed It Property Solutions</p>
+      <table>
+        <thead><tr><th>✓</th><th>Item</th><th>Qty</th><th>Store</th><th>Aisle/Bay</th><th>Unit Price</th><th>Total</th></tr></thead>
+        <tbody>
+          ${materials.map((m) => `
+            <tr class="${m.purchased ? 'purchased' : ''}">
+              <td>${m.purchased ? '✓' : '☐'}</td>
+              <td>${m.name}</td>
+              <td>${m.quantity}</td>
+              <td>${m.store}</td>
+              <td>${m.aisle || '—'}</td>
+              <td>${m.price ? '$' + m.price.toFixed(2) : '—'}</td>
+              <td>${m.price ? '$' + (m.price * m.quantity).toFixed(2) : '—'}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+      <p class="total">Total: $${totalCost.toFixed(2)}</p>
+      </body></html>
+    `);
+    win.document.close();
+    win.print();
+  }
+
+  const totalCost = materials.reduce((sum, m) => sum + ((m.price || 0) * (m.quantity || 1)), 0);
+  const allPurchased = materials.length > 0 && materials.every((m) => m.purchased);
+
+  return (
+    <div className="customer-properties" style={{ marginTop: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+        <h3>🛒 Materials List ({materials.length}){totalCost > 0 && <span style={{ fontWeight: 400, fontSize: '0.85rem', color: 'var(--accent)', marginLeft: '10px' }}>${totalCost.toFixed(2)} total</span>}</h3>
+        <div style={{ display: 'flex', gap: '6px' }}>
+          {materials.length > 0 && <button className="btn-sm" onClick={handlePrint}>🖨️ Print</button>}
+          <button className="btn-sm btn-sm--success" onClick={() => setShowAdd(true)}>+ Add Item</button>
+        </div>
+      </div>
+
+      {allPurchased && materials.length > 0 && (
+        <p style={{ fontSize: '0.8rem', color: '#4caf50', marginBottom: '12px' }}>✅ All materials purchased</p>
+      )}
+
+      {showAdd && (
+        <form onSubmit={addMaterial} style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '16px', background: 'var(--bg-primary)', border: '1px solid var(--border)', borderRadius: '4px', marginBottom: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '10px' }}>
+            <div>
+              <label style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-sub)', display: 'block', marginBottom: '4px' }}>Item Name *</label>
+              <input type="text" value={newItem.name} onChange={(e) => setNewItem({ ...newItem, name: e.target.value })} required placeholder="e.g. 1/2 inch PEX coupling" style={{ width: '100%', padding: '8px 10px', border: '1px solid var(--border)', borderRadius: '4px', background: 'var(--bg-secondary)', color: 'var(--text)', fontSize: '0.85rem', boxSizing: 'border-box' }} />
+            </div>
+            <div>
+              <label style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-sub)', display: 'block', marginBottom: '4px' }}>Store</label>
+              <select value={newItem.store} onChange={(e) => setNewItem({ ...newItem, store: e.target.value })} style={{ width: '100%', padding: '8px 10px', border: '1px solid var(--border)', borderRadius: '4px', background: 'var(--bg-secondary)', color: 'var(--text)', fontSize: '0.85rem', boxSizing: 'border-box' }}>
+                {STORES.map((s) => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </div>
+            <div>
+              <label style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-sub)', display: 'block', marginBottom: '4px' }}>Qty</label>
+              <input type="number" min="1" value={newItem.quantity} onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })} style={{ width: '100%', padding: '8px 10px', border: '1px solid var(--border)', borderRadius: '4px', background: 'var(--bg-secondary)', color: 'var(--text)', fontSize: '0.85rem', boxSizing: 'border-box' }} />
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr', gap: '10px' }}>
+            <div>
+              <label style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-sub)', display: 'block', marginBottom: '4px' }}>Price ($)</label>
+              <input type="number" step="0.01" value={newItem.price} onChange={(e) => setNewItem({ ...newItem, price: e.target.value })} placeholder="0.00" style={{ width: '100%', padding: '8px 10px', border: '1px solid var(--border)', borderRadius: '4px', background: 'var(--bg-secondary)', color: 'var(--text)', fontSize: '0.85rem', boxSizing: 'border-box' }} />
+            </div>
+            <div>
+              <label style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-sub)', display: 'block', marginBottom: '4px' }}>Aisle / Bay</label>
+              <input type="text" value={newItem.aisle} onChange={(e) => setNewItem({ ...newItem, aisle: e.target.value })} placeholder="Aisle 12, Bay 3" style={{ width: '100%', padding: '8px 10px', border: '1px solid var(--border)', borderRadius: '4px', background: 'var(--bg-secondary)', color: 'var(--text)', fontSize: '0.85rem', boxSizing: 'border-box' }} />
+            </div>
+            <div>
+              <label style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-sub)', display: 'block', marginBottom: '4px' }}>Notes</label>
+              <input type="text" value={newItem.notes} onChange={(e) => setNewItem({ ...newItem, notes: e.target.value })} placeholder="Optional notes" style={{ width: '100%', padding: '8px 10px', border: '1px solid var(--border)', borderRadius: '4px', background: 'var(--bg-secondary)', color: 'var(--text)', fontSize: '0.85rem', boxSizing: 'border-box' }} />
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <button type="submit" className="cta-button" style={{ padding: '8px 14px', fontSize: '0.78rem' }}>Add to List</button>
+            {newItem.name && <button type="button" className="btn-sm" onClick={() => smartSearch(newItem.name, newItem.store)}>🔍 Search Price</button>}
+            <button type="button" className="btn-sm" onClick={() => setShowAdd(false)}>Cancel</button>
+          </div>
+        </form>
+      )}
+
+      {materials.length === 0 && !showAdd && (
+        <p className="empty-state">No materials added yet.</p>
+      )}
+
+      {materials.length > 0 && (
+        <table className="admin-table" style={{ marginTop: '8px' }}>
+          <thead>
+            <tr><th style={{ width: '30px' }}>✓</th><th>Item</th><th>Store</th><th>Aisle</th><th>Qty</th><th>Price</th><th>Total</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            {materials.map((m) => (
+              <tr key={m.id} style={{ opacity: m.purchased ? 0.5 : 1, textDecoration: m.purchased ? 'line-through' : 'none' }}>
+                <td>
+                  <input
+                    type="checkbox"
+                    checked={m.purchased}
+                    onChange={() => togglePurchased(m.id, m.purchased)}
+                    style={{ cursor: 'pointer', width: '16px', height: '16px' }}
+                  />
+                </td>
+                <td style={{ fontWeight: 600 }}>{m.name}{m.notes && <span style={{ display: 'block', fontSize: '0.72rem', color: 'var(--text-sub)', fontWeight: 400 }}>{m.notes}</span>}</td>
+                <td>{m.store}</td>
+                <td>{m.aisle || '—'}</td>
+                <td>{m.quantity}</td>
+                <td>{m.price ? `$${m.price.toFixed(2)}` : '—'}</td>
+                <td style={{ fontWeight: 600, color: 'var(--accent)' }}>{m.price ? `$${(m.price * m.quantity).toFixed(2)}` : '—'}</td>
+                <td>
+                  <button className="btn-sm" onClick={() => smartSearch(m.name, m.store)} title="Search price online">🔍</button>
+                  <button className="btn-sm btn-sm--danger" onClick={() => deleteMaterial(m.id)}>×</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
   );
 }
