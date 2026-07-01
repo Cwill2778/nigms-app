@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { subscribeToPush, registerServiceWorker } from '../lib/pushNotifications';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, CartesianGrid, Legend } from 'recharts';
+import { WorkOrdersPanel } from './AdminWorkOrders';
+import { AssetsPanel } from './AdminAssets';
 import './Admin.css';
 
 function Admin() {
@@ -141,7 +143,7 @@ function Admin() {
       </div>
 
       <div className="admin-tabs">
-        {['dashboard', 'customers', 'quotes', 'analytics', 'reviews', 'faq', 'contacts', 'careers', 'settings'].map((t) => (
+        {['dashboard', 'customers', 'work orders', 'assets', 'quotes', 'analytics', 'reviews', 'faq', 'contacts', 'careers', 'settings'].map((t) => (
           <button
             key={t}
             className={`admin-tab${tab === t ? ' admin-tab--active' : ''}`}
@@ -155,6 +157,8 @@ function Admin() {
       <div className="admin-panel">
         {tab === 'dashboard' && <DashboardPanel />}
         {tab === 'customers' && <CustomersPanel />}
+        {tab === 'work orders' && <WorkOrdersPanel />}
+        {tab === 'assets' && <AssetsPanel />}
         {tab === 'quotes' && <QuotesPanel />}
         {tab === 'analytics' && <AnalyticsPanel />}
         {tab === 'reviews' && <ReviewsPanel />}
