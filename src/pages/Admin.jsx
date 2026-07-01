@@ -141,7 +141,7 @@ function Admin() {
       </div>
 
       <div className="admin-tabs">
-        {['dashboard', 'quotes', 'analytics', 'reviews', 'faq', 'contacts', 'careers', 'settings'].map((t) => (
+        {['dashboard', 'customers', 'quotes', 'analytics', 'reviews', 'faq', 'contacts', 'careers', 'settings'].map((t) => (
           <button
             key={t}
             className={`admin-tab${tab === t ? ' admin-tab--active' : ''}`}
@@ -154,6 +154,7 @@ function Admin() {
 
       <div className="admin-panel">
         {tab === 'dashboard' && <DashboardPanel />}
+        {tab === 'customers' && <CustomersPanel />}
         {tab === 'quotes' && <QuotesPanel />}
         {tab === 'analytics' && <AnalyticsPanel />}
         {tab === 'reviews' && <ReviewsPanel />}
@@ -244,6 +245,409 @@ function DashboardPanel() {
         <ChatPanel />
       </div>
     </div>
+  );
+}
+
+// Customers Panel — full CRUD for customers + properties
+function CustomersPanel() {
+  const [customers, setCustomers] = useState([]);
+  const [properties, setProperties] = useState([]);
+  const [view, setView] = useState('list'); // list, detail, add, edit
+  const [selected, setSelected] = useState(null);
+  const [filterRole, setFilterRole] = useState('all');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showPropertyForm, setShowPropertyForm] = useState(false);
+  const [form, setForm] = useState({
+    first_name: '', last_name: '', email: '', phone: '', secondary_phone: '',
+    role: 'homeowner', status: 'lead', subscription_tier: 'none', notes: '',
+  });
+  const [propertyForm, setPropertyForm] = useState({
+    address_line_1: '', address_line_2: '', city: 'Rome', state: 'GA',
+    zip_code: '', zone: 'North Rome', gate_code: '', square_footage: '',
+    unit_count: '1', year_built: '', notes: '', status: 'active',
+  });
+
+  useEffect(() => { fetchCustomers(); }, []);
+
+  async function fetchCustomers() {
+    const { data } = await supabase.from('customers').select('*').order('created_at', { ascending: false });
+    setCustomers(data || []);
+  }
+
+  async function fetchProperties(customerId) {
+    const { data } = await supabase.from('properties').select('*').eq('owner_id', customerId).order('created_at', { ascending: false });
+    setProperties(data || []);
+  }
+
+  async function handleAddCustomer(e) {
+    e.preventDefault();
+    const { error } = await supabase.from('customers').insert({
+      first_name: form.first_name,
+      last_name: form.last_name,
+      email: form.email,
+      phone: form.phone || null,
+      secondary_phone: form.secondary_phone || null,
+      role: form.role,
+      status: form.status,
+      subscription_tier: form.subscription_tier,
+      notes: form.notes || null,
+    });
+    if (!error) {
+      fetchCustomers();
+      setView('list');
+      resetForm();
+    }
+  }
+
+  async function handleEditCustomer(e) {
+    e.preventDefault();
+    const { error } = await supabase.from('customers').update({
+      first_name: form.first_name,
+      last_name: form.last_name,
+      email: form.email,
+      phone: form.phone || null,
+      secondary_phone: form.secondary_phone || null,
+      role: form.role,
+      status: form.status,
+      subscription_tier: form.subscription_tier,
+      notes: form.notes || null,
+    }).eq('id', selected.id);
+    if (!error) {
+      fetchCustomers();
+      setView('detail');
+      setSelected({ ...selected, ...form });
+    }
+  }
+
+  async function handleDeleteCustomer(id) {
+    if (!confirm('Delete this customer and all their properties? This cannot be undone.')) return;
+    await supabase.from('customers').delete().eq('id', id);
+    fetchCustomers();
+    setView('list');
+    setSelected(null);
+  }
+
+  async function handleAddProperty(e) {
+    e.preventDefault();
+    const { error } = await supabase.from('properties').insert({
+      owner_id: selected.id,
+      address_line_1: propertyForm.address_line_1,
+      address_line_2: propertyForm.address_line_2 || null,
+      city: propertyForm.city,
+      state: propertyForm.state,
+      zip_code: propertyForm.zip_code,
+      zone: propertyForm.zone,
+      gate_code: propertyForm.gate_code || null,
+      square_footage: propertyForm.square_footage ? parseInt(propertyForm.square_footage) : null,
+      unit_count: parseInt(propertyForm.unit_count) || 1,
+      year_built: propertyForm.year_built ? parseInt(propertyForm.year_built) : null,
+      notes: propertyForm.notes || null,
+      status: propertyForm.status,
+    });
+    if (!error) {
+      fetchProperties(selected.id);
+      setShowPropertyForm(false);
+      resetPropertyForm();
+    }
+  }
+
+  async function handleDeleteProperty(propId) {
+    if (!confirm('Delete this property?')) return;
+    await supabase.from('properties').delete().eq('id', propId);
+    fetchProperties(selected.id);
+  }
+
+  function resetForm() {
+    setForm({ first_name: '', last_name: '', email: '', phone: '', secondary_phone: '', role: 'homeowner', status: 'lead', subscription_tier: 'none', notes: '' });
+  }
+
+  function resetPropertyForm() {
+    setPropertyForm({ address_line_1: '', address_line_2: '', city: 'Rome', state: 'GA', zip_code: '', zone: 'North Rome', gate_code: '', square_footage: '', unit_count: '1', year_built: '', notes: '', status: 'active' });
+  }
+
+  function openDetail(customer) {
+    setSelected(customer);
+    fetchProperties(customer.id);
+    setView('detail');
+  }
+
+  function openEdit(customer) {
+    setForm({
+      first_name: customer.first_name,
+      last_name: customer.last_name,
+      email: customer.email,
+      phone: customer.phone || '',
+      secondary_phone: customer.secondary_phone || '',
+      role: customer.role,
+      status: customer.status,
+      subscription_tier: customer.subscription_tier,
+      notes: customer.notes || '',
+    });
+    setView('edit');
+  }
+
+  const filtered = customers.filter((c) => {
+    if (filterRole !== 'all' && c.role !== filterRole) return false;
+    if (filterStatus !== 'all' && c.status !== filterStatus) return false;
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      return (c.first_name + ' ' + c.last_name).toLowerCase().includes(term) || c.email.toLowerCase().includes(term) || (c.phone || '').includes(term);
+    }
+    return true;
+  });
+
+  const roleColors = { landlord: '#2196f3', tenant: '#9c27b0', homeowner: '#4caf50' };
+  const statusColors = { lead: '#ff8a00', active: '#4caf50', inactive: '#999', past: '#f44336' };
+  const tierLabels = { none: '—', essential: 'Essential', proactive: 'Proactive', comprehensive: 'Comprehensive' };
+  const zones = ['North Rome', 'West Rome', 'East Rome', 'South Rome', 'Downtown Rome', 'Clocktower Hill', 'Coosa', 'Armuchee', 'Lindale', 'Floyd County'];
+
+  // ADD / EDIT FORM VIEW
+  if (view === 'add' || view === 'edit') {
+    return (
+      <>
+        <button className="btn-sm" onClick={() => { setView(view === 'edit' ? 'detail' : 'list'); resetForm(); }}>&larr; Back</button>
+        <h2 style={{ marginTop: '16px' }}>{view === 'add' ? 'Add New Customer' : `Edit: ${form.first_name} ${form.last_name}`}</h2>
+        <form className="admin-form" onSubmit={view === 'add' ? handleAddCustomer : handleEditCustomer} style={{ maxWidth: '700px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <div>
+              <label>First Name *</label>
+              <input type="text" value={form.first_name} onChange={(e) => setForm({ ...form, first_name: e.target.value })} required />
+            </div>
+            <div>
+              <label>Last Name *</label>
+              <input type="text" value={form.last_name} onChange={(e) => setForm({ ...form, last_name: e.target.value })} required />
+            </div>
+          </div>
+          <div>
+            <label>Email *</label>
+            <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <div>
+              <label>Phone</label>
+              <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+            </div>
+            <div>
+              <label>Secondary Phone</label>
+              <input type="tel" value={form.secondary_phone} onChange={(e) => setForm({ ...form, secondary_phone: e.target.value })} />
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+            <div>
+              <label>Role *</label>
+              <select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}>
+                <option value="homeowner">Homeowner</option>
+                <option value="landlord">Landlord</option>
+                <option value="tenant">Tenant</option>
+              </select>
+            </div>
+            <div>
+              <label>Status</label>
+              <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
+                <option value="lead">Lead</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="past">Past</option>
+              </select>
+            </div>
+            <div>
+              <label>Subscription</label>
+              <select value={form.subscription_tier} onChange={(e) => setForm({ ...form, subscription_tier: e.target.value })}>
+                <option value="none">None</option>
+                <option value="essential">Essential ($99/mo)</option>
+                <option value="proactive">Proactive ($199/mo)</option>
+                <option value="comprehensive">Comprehensive ($399/mo)</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label>Internal Notes</label>
+            <textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="Admin-only notes about this customer..." />
+          </div>
+          <button type="submit" className="cta-button" style={{ alignSelf: 'flex-start', padding: '10px 20px', fontSize: '0.8rem' }}>
+            {view === 'add' ? 'Create Customer' : 'Save Changes'}
+          </button>
+        </form>
+      </>
+    );
+  }
+
+  // DETAIL VIEW
+  if (view === 'detail' && selected) {
+    return (
+      <>
+        <button className="btn-sm" onClick={() => { setView('list'); setSelected(null); }}>&larr; All Customers</button>
+        <div className="customer-detail">
+          <div className="customer-detail-header">
+            <div>
+              <h2 style={{ margin: 0 }}>{selected.first_name} {selected.last_name}</h2>
+              <div style={{ display: 'flex', gap: '8px', marginTop: '6px', flexWrap: 'wrap' }}>
+                <span className="customer-badge" style={{ background: roleColors[selected.role] }}>{selected.role}</span>
+                <span className="customer-badge" style={{ background: statusColors[selected.status] }}>{selected.status}</span>
+                {selected.subscription_tier !== 'none' && (
+                  <span className="customer-badge" style={{ background: 'var(--accent)' }}>{tierLabels[selected.subscription_tier]}</span>
+                )}
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: '6px' }}>
+              <button className="btn-sm" onClick={() => openEdit(selected)}>Edit</button>
+              <button className="btn-sm btn-sm--danger" onClick={() => handleDeleteCustomer(selected.id)}>Delete</button>
+            </div>
+          </div>
+
+          <div className="customer-detail-grid">
+            <div className="detail-field"><span className="detail-label">Email</span><a href={`mailto:${selected.email}`}>{selected.email}</a></div>
+            <div className="detail-field"><span className="detail-label">Phone</span>{selected.phone ? <a href={`tel:${selected.phone}`}>{selected.phone}</a> : '—'}</div>
+            <div className="detail-field"><span className="detail-label">Secondary</span>{selected.secondary_phone || '—'}</div>
+            <div className="detail-field"><span className="detail-label">Subscription</span>{tierLabels[selected.subscription_tier]}</div>
+            <div className="detail-field"><span className="detail-label">Since</span>{new Date(selected.created_at).toLocaleDateString()}</div>
+            <div className="detail-field"><span className="detail-label">Stripe ID</span>{selected.stripe_customer_id || '—'}</div>
+          </div>
+
+          {selected.notes && (
+            <div className="detail-notes">
+              <span className="detail-label">Notes</span>
+              <p>{selected.notes}</p>
+            </div>
+          )}
+
+          {/* Properties Section */}
+          <div className="customer-properties">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <h3>Properties ({properties.length})</h3>
+              <button className="btn-sm btn-sm--success" onClick={() => setShowPropertyForm(true)}>+ Add Property</button>
+            </div>
+
+            {showPropertyForm && (
+              <form className="admin-form" onSubmit={handleAddProperty} style={{ marginBottom: '16px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <div><label>Address Line 1 *</label><input type="text" value={propertyForm.address_line_1} onChange={(e) => setPropertyForm({ ...propertyForm, address_line_1: e.target.value })} required /></div>
+                  <div><label>Address Line 2</label><input type="text" value={propertyForm.address_line_2} onChange={(e) => setPropertyForm({ ...propertyForm, address_line_2: e.target.value })} /></div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+                  <div><label>City</label><input type="text" value={propertyForm.city} onChange={(e) => setPropertyForm({ ...propertyForm, city: e.target.value })} /></div>
+                  <div><label>State</label><input type="text" value={propertyForm.state} onChange={(e) => setPropertyForm({ ...propertyForm, state: e.target.value })} /></div>
+                  <div><label>ZIP *</label><input type="text" value={propertyForm.zip_code} onChange={(e) => setPropertyForm({ ...propertyForm, zip_code: e.target.value })} required /></div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+                  <div>
+                    <label>Zone *</label>
+                    <select value={propertyForm.zone} onChange={(e) => setPropertyForm({ ...propertyForm, zone: e.target.value })}>
+                      {zones.map((z) => <option key={z} value={z}>{z}</option>)}
+                    </select>
+                  </div>
+                  <div><label>Gate Code</label><input type="text" value={propertyForm.gate_code} onChange={(e) => setPropertyForm({ ...propertyForm, gate_code: e.target.value })} /></div>
+                  <div>
+                    <label>Status</label>
+                    <select value={propertyForm.status} onChange={(e) => setPropertyForm({ ...propertyForm, status: e.target.value })}>
+                      <option value="active">Active</option>
+                      <option value="vacant">Vacant</option>
+                      <option value="under_contract">Under Contract</option>
+                      <option value="inactive">Inactive</option>
+                    </select>
+                  </div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+                  <div><label>Sq Ft</label><input type="number" value={propertyForm.square_footage} onChange={(e) => setPropertyForm({ ...propertyForm, square_footage: e.target.value })} /></div>
+                  <div><label>Units</label><input type="number" value={propertyForm.unit_count} onChange={(e) => setPropertyForm({ ...propertyForm, unit_count: e.target.value })} /></div>
+                  <div><label>Year Built</label><input type="number" value={propertyForm.year_built} onChange={(e) => setPropertyForm({ ...propertyForm, year_built: e.target.value })} /></div>
+                </div>
+                <div><label>Notes</label><textarea value={propertyForm.notes} onChange={(e) => setPropertyForm({ ...propertyForm, notes: e.target.value })} placeholder="Beware of dog, meter location, etc." /></div>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button type="submit" className="cta-button" style={{ padding: '8px 16px', fontSize: '0.8rem' }}>Save Property</button>
+                  <button type="button" className="btn-sm" onClick={() => { setShowPropertyForm(false); resetPropertyForm(); }}>Cancel</button>
+                </div>
+              </form>
+            )}
+
+            {properties.length === 0 && !showPropertyForm && (
+              <p className="empty-state">No properties on file.</p>
+            )}
+
+            {properties.map((p) => (
+              <div key={p.id} className="property-card">
+                <div className="property-card-header">
+                  <div>
+                    <strong>{p.address_line_1}</strong>
+                    {p.address_line_2 && <span>, {p.address_line_2}</span>}
+                    <br />
+                    <span className="property-meta">{p.city}, {p.state} {p.zip_code} — {p.zone}</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                    <span className="customer-badge" style={{ background: p.status === 'active' ? '#4caf50' : p.status === 'vacant' ? '#ff8a00' : '#999' }}>{p.status}</span>
+                    <button className="btn-sm btn-sm--danger" onClick={() => handleDeleteProperty(p.id)}>×</button>
+                  </div>
+                </div>
+                <div className="property-card-details">
+                  {p.gate_code && <span>🔑 {p.gate_code}</span>}
+                  {p.square_footage && <span>📐 {p.square_footage.toLocaleString()} sqft</span>}
+                  {p.unit_count > 1 && <span>🏘️ {p.unit_count} units</span>}
+                  {p.year_built && <span>🏗️ Built {p.year_built}</span>}
+                </div>
+                {p.notes && <p className="property-notes">{p.notes}</p>}
+              </div>
+            ))}
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // LIST VIEW
+  return (
+    <>
+      <div className="customers-header">
+        <h2>Customers ({filtered.length})</h2>
+        <button className="cta-button" style={{ padding: '8px 16px', fontSize: '0.8rem' }} onClick={() => { resetForm(); setView('add'); }}>+ Add Customer</button>
+      </div>
+
+      <div className="customers-filters">
+        <input
+          type="text"
+          placeholder="Search name, email, or phone..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="customers-search"
+        />
+        <select value={filterRole} onChange={(e) => setFilterRole(e.target.value)} className="customers-filter-select">
+          <option value="all">All Roles</option>
+          <option value="homeowner">Homeowners</option>
+          <option value="landlord">Landlords</option>
+          <option value="tenant">Tenants</option>
+        </select>
+        <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} className="customers-filter-select">
+          <option value="all">All Statuses</option>
+          <option value="lead">Leads</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+          <option value="past">Past</option>
+        </select>
+      </div>
+
+      {filtered.length === 0 ? (
+        <p className="empty-state">No customers found.</p>
+      ) : (
+        <table className="admin-table">
+          <thead>
+            <tr><th>Name</th><th>Role</th><th>Status</th><th>Email</th><th>Subscription</th><th>Since</th><th></th></tr>
+          </thead>
+          <tbody>
+            {filtered.map((c) => (
+              <tr key={c.id}>
+                <td style={{ fontWeight: 600 }}>{c.first_name} {c.last_name}</td>
+                <td><span className="customer-badge" style={{ background: roleColors[c.role] }}>{c.role}</span></td>
+                <td><span className="customer-badge" style={{ background: statusColors[c.status] }}>{c.status}</span></td>
+                <td>{c.email}</td>
+                <td>{tierLabels[c.subscription_tier]}</td>
+                <td>{new Date(c.created_at).toLocaleDateString()}</td>
+                <td><button className="btn-sm" onClick={() => openDetail(c)}>View</button></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </>
   );
 }
 
