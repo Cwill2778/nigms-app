@@ -482,7 +482,7 @@ function CustomersPanel() {
           <div className="customer-detail-header">
             <div>
               <h2 style={{ margin: 0 }}>{selected.first_name} {selected.last_name}</h2>
-              <div style={{ display: 'flex', gap: '8px', marginTop: '6px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: '8px', marginTop: '8px', flexWrap: 'wrap' }}>
                 <span className="customer-badge" style={{ background: roleColors[selected.role] }}>{selected.role}</span>
                 <span className="customer-badge" style={{ background: statusColors[selected.status] }}>{selected.status}</span>
                 {selected.subscription_tier !== 'none' && (
@@ -496,98 +496,104 @@ function CustomersPanel() {
             </div>
           </div>
 
-          <div className="customer-detail-grid">
-            <div className="detail-field"><span className="detail-label">Email</span><a href={`mailto:${selected.email}`}>{selected.email}</a></div>
-            <div className="detail-field"><span className="detail-label">Phone</span>{selected.phone ? <a href={`tel:${selected.phone}`}>{selected.phone}</a> : '—'}</div>
-            <div className="detail-field"><span className="detail-label">Secondary</span>{selected.secondary_phone || '—'}</div>
-            <div className="detail-field"><span className="detail-label">Subscription</span>{tierLabels[selected.subscription_tier]}</div>
-            <div className="detail-field"><span className="detail-label">Since</span>{new Date(selected.created_at).toLocaleDateString()}</div>
-            <div className="detail-field"><span className="detail-label">Stripe ID</span>{selected.stripe_customer_id || '—'}</div>
-          </div>
-
-          {selected.notes && (
-            <div className="detail-notes">
-              <span className="detail-label">Notes</span>
-              <p>{selected.notes}</p>
-            </div>
-          )}
-
-          {/* Properties Section */}
-          <div className="customer-properties">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-              <h3>Properties ({properties.length})</h3>
-              <button className="btn-sm btn-sm--success" onClick={() => setShowPropertyForm(true)}>+ Add Property</button>
-            </div>
-
-            {showPropertyForm && (
-              <form className="admin-form" onSubmit={handleAddProperty} style={{ marginBottom: '16px' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                  <div><label>Address Line 1 *</label><input type="text" value={propertyForm.address_line_1} onChange={(e) => setPropertyForm({ ...propertyForm, address_line_1: e.target.value })} required /></div>
-                  <div><label>Address Line 2</label><input type="text" value={propertyForm.address_line_2} onChange={(e) => setPropertyForm({ ...propertyForm, address_line_2: e.target.value })} /></div>
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
-                  <div><label>City</label><input type="text" value={propertyForm.city} onChange={(e) => setPropertyForm({ ...propertyForm, city: e.target.value })} /></div>
-                  <div><label>State</label><input type="text" value={propertyForm.state} onChange={(e) => setPropertyForm({ ...propertyForm, state: e.target.value })} /></div>
-                  <div><label>ZIP *</label><input type="text" value={propertyForm.zip_code} onChange={(e) => setPropertyForm({ ...propertyForm, zip_code: e.target.value })} required /></div>
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
-                  <div>
-                    <label>Zone *</label>
-                    <select value={propertyForm.zone} onChange={(e) => setPropertyForm({ ...propertyForm, zone: e.target.value })}>
-                      {zones.map((z) => <option key={z} value={z}>{z}</option>)}
-                    </select>
-                  </div>
-                  <div><label>Gate Code</label><input type="text" value={propertyForm.gate_code} onChange={(e) => setPropertyForm({ ...propertyForm, gate_code: e.target.value })} /></div>
-                  <div>
-                    <label>Status</label>
-                    <select value={propertyForm.status} onChange={(e) => setPropertyForm({ ...propertyForm, status: e.target.value })}>
-                      <option value="active">Active</option>
-                      <option value="vacant">Vacant</option>
-                      <option value="under_contract">Under Contract</option>
-                      <option value="inactive">Inactive</option>
-                    </select>
-                  </div>
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
-                  <div><label>Sq Ft</label><input type="number" value={propertyForm.square_footage} onChange={(e) => setPropertyForm({ ...propertyForm, square_footage: e.target.value })} /></div>
-                  <div><label>Units</label><input type="number" value={propertyForm.unit_count} onChange={(e) => setPropertyForm({ ...propertyForm, unit_count: e.target.value })} /></div>
-                  <div><label>Year Built</label><input type="number" value={propertyForm.year_built} onChange={(e) => setPropertyForm({ ...propertyForm, year_built: e.target.value })} /></div>
-                </div>
-                <div><label>Notes</label><textarea value={propertyForm.notes} onChange={(e) => setPropertyForm({ ...propertyForm, notes: e.target.value })} placeholder="Beware of dog, meter location, etc." /></div>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <button type="submit" className="cta-button" style={{ padding: '8px 16px', fontSize: '0.8rem' }}>Save Property</button>
-                  <button type="button" className="btn-sm" onClick={() => { setShowPropertyForm(false); resetPropertyForm(); }}>Cancel</button>
-                </div>
-              </form>
-            )}
-
-            {properties.length === 0 && !showPropertyForm && (
-              <p className="empty-state">No properties on file.</p>
-            )}
-
-            {properties.map((p) => (
-              <div key={p.id} className="property-card">
-                <div className="property-card-header">
-                  <div>
-                    <strong>{p.address_line_1}</strong>
-                    {p.address_line_2 && <span>, {p.address_line_2}</span>}
-                    <br />
-                    <span className="property-meta">{p.city}, {p.state} {p.zip_code} — {p.zone}</span>
-                  </div>
-                  <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                    <span className="customer-badge" style={{ background: p.status === 'active' ? '#4caf50' : p.status === 'vacant' ? '#ff8a00' : '#999' }}>{p.status}</span>
-                    <button className="btn-sm btn-sm--danger" onClick={() => handleDeleteProperty(p.id)}>×</button>
-                  </div>
-                </div>
-                <div className="property-card-details">
-                  {p.gate_code && <span>🔑 {p.gate_code}</span>}
-                  {p.square_footage && <span>📐 {p.square_footage.toLocaleString()} sqft</span>}
-                  {p.unit_count > 1 && <span>🏘️ {p.unit_count} units</span>}
-                  {p.year_built && <span>🏗️ Built {p.year_built}</span>}
-                </div>
-                {p.notes && <p className="property-notes">{p.notes}</p>}
+          <div className="customer-detail-body">
+            <div>
+              <div className="customer-detail-grid">
+                <div className="detail-field"><span className="detail-label">Email</span><a href={`mailto:${selected.email}`}>{selected.email}</a></div>
+                <div className="detail-field"><span className="detail-label">Phone</span>{selected.phone ? <a href={`tel:${selected.phone}`}>{selected.phone}</a> : '—'}</div>
+                <div className="detail-field"><span className="detail-label">Secondary</span>{selected.secondary_phone || '—'}</div>
+                <div className="detail-field"><span className="detail-label">Subscription</span>{tierLabels[selected.subscription_tier]}</div>
+                <div className="detail-field"><span className="detail-label">Customer Since</span>{new Date(selected.created_at).toLocaleDateString()}</div>
+                <div className="detail-field"><span className="detail-label">Stripe ID</span>{selected.stripe_customer_id || '—'}</div>
               </div>
-            ))}
+
+              {selected.notes && (
+                <div className="detail-notes" style={{ marginTop: '16px' }}>
+                  <span className="detail-label">Internal Notes</span>
+                  <p>{selected.notes}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Properties Section */}
+            <div className="customer-properties">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                <h3>🏠 Properties ({properties.length})</h3>
+                <button className="btn-sm btn-sm--success" onClick={() => setShowPropertyForm(true)}>+ Add Property</button>
+              </div>
+
+              {showPropertyForm && (
+                <form className="admin-form" onSubmit={handleAddProperty} style={{ marginBottom: '16px', maxWidth: '100%' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                    <div><label>Address Line 1 *</label><input type="text" value={propertyForm.address_line_1} onChange={(e) => setPropertyForm({ ...propertyForm, address_line_1: e.target.value })} required /></div>
+                    <div><label>Address Line 2</label><input type="text" value={propertyForm.address_line_2} onChange={(e) => setPropertyForm({ ...propertyForm, address_line_2: e.target.value })} /></div>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+                    <div><label>City</label><input type="text" value={propertyForm.city} onChange={(e) => setPropertyForm({ ...propertyForm, city: e.target.value })} /></div>
+                    <div><label>State</label><input type="text" value={propertyForm.state} onChange={(e) => setPropertyForm({ ...propertyForm, state: e.target.value })} /></div>
+                    <div><label>ZIP *</label><input type="text" value={propertyForm.zip_code} onChange={(e) => setPropertyForm({ ...propertyForm, zip_code: e.target.value })} required /></div>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+                    <div>
+                      <label>Zone *</label>
+                      <select value={propertyForm.zone} onChange={(e) => setPropertyForm({ ...propertyForm, zone: e.target.value })}>
+                        {zones.map((z) => <option key={z} value={z}>{z}</option>)}
+                      </select>
+                    </div>
+                    <div><label>Gate Code</label><input type="text" value={propertyForm.gate_code} onChange={(e) => setPropertyForm({ ...propertyForm, gate_code: e.target.value })} /></div>
+                    <div>
+                      <label>Status</label>
+                      <select value={propertyForm.status} onChange={(e) => setPropertyForm({ ...propertyForm, status: e.target.value })}>
+                        <option value="active">Active</option>
+                        <option value="vacant">Vacant</option>
+                        <option value="under_contract">Under Contract</option>
+                        <option value="inactive">Inactive</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+                    <div><label>Sq Ft</label><input type="number" value={propertyForm.square_footage} onChange={(e) => setPropertyForm({ ...propertyForm, square_footage: e.target.value })} /></div>
+                    <div><label>Units</label><input type="number" value={propertyForm.unit_count} onChange={(e) => setPropertyForm({ ...propertyForm, unit_count: e.target.value })} /></div>
+                    <div><label>Year Built</label><input type="number" value={propertyForm.year_built} onChange={(e) => setPropertyForm({ ...propertyForm, year_built: e.target.value })} /></div>
+                  </div>
+                  <div><label>Notes</label><textarea value={propertyForm.notes} onChange={(e) => setPropertyForm({ ...propertyForm, notes: e.target.value })} placeholder="Beware of dog, meter location, etc." /></div>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button type="submit" className="cta-button" style={{ padding: '8px 16px', fontSize: '0.8rem' }}>Save Property</button>
+                    <button type="button" className="btn-sm" onClick={() => { setShowPropertyForm(false); resetPropertyForm(); }}>Cancel</button>
+                  </div>
+                </form>
+              )}
+
+              {properties.length === 0 && !showPropertyForm && (
+                <p className="empty-state">No properties on file.</p>
+              )}
+
+              <div className="properties-grid">
+                {properties.map((p) => (
+                  <div key={p.id} className="property-card">
+                    <div className="property-card-header">
+                      <div>
+                        <strong>{p.address_line_1}</strong>
+                        {p.address_line_2 && <span>, {p.address_line_2}</span>}
+                        <br />
+                        <span className="property-meta">{p.city}, {p.state} {p.zip_code} — {p.zone}</span>
+                      </div>
+                      <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                        <span className="customer-badge" style={{ background: p.status === 'active' ? '#4caf50' : p.status === 'vacant' ? '#ff8a00' : '#999' }}>{p.status}</span>
+                        <button className="btn-sm btn-sm--danger" onClick={() => handleDeleteProperty(p.id)}>×</button>
+                      </div>
+                    </div>
+                    <div className="property-card-details">
+                      {p.gate_code && <span>🔑 {p.gate_code}</span>}
+                      {p.square_footage && <span>📐 {p.square_footage.toLocaleString()} sqft</span>}
+                      {p.unit_count > 1 && <span>🏘️ {p.unit_count} units</span>}
+                      {p.year_built && <span>🏗️ Built {p.year_built}</span>}
+                    </div>
+                    {p.notes && <p className="property-notes">{p.notes}</p>}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </>
