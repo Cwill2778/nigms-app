@@ -299,11 +299,14 @@ export function WorkOrdersPanel() {
 
 // Materials List Component
 const STORES = ['Home Depot', 'Lowes', 'Ace Hardware', 'Tractor Supply', 'Other'];
+const SERPAPI_KEY = import.meta.env.VITE_SERPAPI_KEY;
 
 function MaterialsList({ workOrderId }) {
   const [materials, setMaterials] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
   const [newItem, setNewItem] = useState({ name: '', store: 'Home Depot', price: '', quantity: '1', aisle: '', notes: '' });
+  const [searchResults, setSearchResults] = useState([]);
+  const [searching, setSearching] = useState(false);
 
   useEffect(() => {
     fetchMaterials();
@@ -347,6 +350,57 @@ function MaterialsList({ workOrderId }) {
   function smartSearch(itemName, store) {
     const query = encodeURIComponent(`${itemName} ${store} Rome GA price aisle`);
     window.open(`https://www.google.com/search?q=${query}`, '_blank');
+  }
+
+  async function lookupProduct(itemName) {
+    if (!itemName.trim()) return;
+    setSearching(true);
+    setSearchResults([]);
+    try {
+      const storeParam = newItem.store === 'Home Depot' ? '&engine=home_depot&store_id=0139' : '';
+      const url = storeParam
+        ? `https://serpapi.com/search.json?engine=home_depot&q=${encodeURIComponent(itemName)}&store_id=0139&api_key=${SERPAPI_KEY}`
+        : `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(itemName + ' ' + newItem.store + ' Rome GA')}&api_key=${SERPAPI_KEY}`;
+
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (data.products && data.products.length > 0) {
+        // Home Depot results
+        setSearchResults(data.products.slice(0, 8).map((p) => ({
+          name: p.title,
+          price: p.price ? parseFloat(p.price.toString().replace(/[^0-9.]/g, '')) : null,
+          aisle: p.aisle || p.pickup?.find((loc) => loc)?.aisle || '',
+          link: p.link,
+        })));
+      } else if (data.shopping_results && data.shopping_results.length > 0) {
+        // Google Shopping fallback
+        setSearchResults(data.shopping_results.slice(0, 8).map((p) => ({
+          name: p.title,
+          price: p.extracted_price || null,
+          aisle: '',
+          link: p.link,
+        })));
+      } else {
+        setSearchResults([]);
+      }
+    } catch (err) {
+      console.error('SerpApi lookup failed:', err);
+      // Fallback to Google search
+      const query = encodeURIComponent(`${itemName} ${newItem.store} Rome GA price aisle`);
+      window.open(`https://www.google.com/search?q=${query}`, '_blank');
+    }
+    setSearching(false);
+  }
+
+  function selectProduct(product) {
+    setNewItem({
+      ...newItem,
+      name: product.name,
+      price: product.price ? product.price.toString() : newItem.price,
+      aisle: product.aisle || newItem.aisle,
+    });
+    setSearchResults([]);
   }
 
   function handlePrint() {
@@ -446,9 +500,30 @@ function MaterialsList({ workOrderId }) {
           </div>
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
             <button type="submit" className="cta-button" style={{ padding: '8px 14px', fontSize: '0.78rem' }}>Add to List</button>
-            {newItem.name && <button type="button" className="btn-sm" onClick={() => smartSearch(newItem.name, newItem.store)}>🔍 Search Price</button>}
-            <button type="button" className="btn-sm" onClick={() => setShowAdd(false)}>Cancel</button>
+            {newItem.name && <button type="button" className="btn-sm" onClick={() => lookupProduct(newItem.name)} disabled={searching}>{searching ? '⏳ Searching...' : '🔍 Lookup Price & Aisle'}</button>}
+            {newItem.name && <button type="button" className="btn-sm" onClick={() => smartSearch(newItem.name, newItem.store)}>🌐 Google</button>}
+            <button type="button" className="btn-sm" onClick={() => { setShowAdd(false); setSearchResults([]); }}>Cancel</button>
           </div>
+
+          {searchResults.length > 0 && (
+            <div style={{ marginTop: '10px', border: '1px solid var(--border)', borderRadius: '4px', overflow: 'hidden' }}>
+              <div style={{ padding: '8px 12px', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border)', fontSize: '0.75rem', fontWeight: 600, color: 'var(--accent)', textTransform: 'uppercase' }}>
+                Search Results — Click to auto-fill
+              </div>
+              {searchResults.map((r, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => selectProduct(r)}
+                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', padding: '10px 12px', border: 'none', borderBottom: '1px solid var(--border)', background: 'var(--bg-primary)', color: 'var(--text)', cursor: 'pointer', textAlign: 'left', fontSize: '0.82rem', gap: '12px' }}
+                >
+                  <span style={{ flex: 1 }}>{r.name}</span>
+                  <span style={{ fontWeight: 700, color: 'var(--accent)', whiteSpace: 'nowrap' }}>{r.price ? `$${r.price.toFixed(2)}` : '—'}</span>
+                  {r.aisle && <span style={{ fontSize: '0.75rem', color: 'var(--text-sub)', whiteSpace: 'nowrap' }}>{r.aisle}</span>}
+                </button>
+              ))}
+            </div>
+          )}
         </form>
       )}
 
@@ -479,7 +554,8 @@ function MaterialsList({ workOrderId }) {
                 <td>{m.price ? `$${m.price.toFixed(2)}` : '—'}</td>
                 <td style={{ fontWeight: 600, color: 'var(--accent)' }}>{m.price ? `$${(m.price * m.quantity).toFixed(2)}` : '—'}</td>
                 <td>
-                  <button className="btn-sm" onClick={() => smartSearch(m.name, m.store)} title="Search price online">🔍</button>
+                  <button className="btn-sm" onClick={() => { setNewItem({ ...newItem, name: m.name, store: m.store }); lookupProduct(m.name); setShowAdd(true); }} title="Lookup price via API">🔍</button>
+                  <button className="btn-sm" onClick={() => smartSearch(m.name, m.store)} title="Search on Google">🌐</button>
                   <button className="btn-sm btn-sm--danger" onClick={() => deleteMaterial(m.id)}>×</button>
                 </td>
               </tr>
