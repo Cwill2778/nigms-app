@@ -134,7 +134,7 @@ function Home() {
             <div className="flex-1 mt-2">
               <div className="flex justify-between items-start mb-4">
                 <h3 className="text-2xl text-text-main font-heading font-bold uppercase tracking-wider flex items-center"><span className="text-3xl mr-2">🍂</span> Advanced</h3>
-                <span className="text-2xl font-bold text-brand-orange">$129</span>
+                <span className="text-2xl font-bold text-brand-orange">$109</span>
               </div>
               <p className="text-sm text-text-main font-bold uppercase tracking-wider mb-4 border-b border-border-subtle pb-4">Four Seasons Turnover</p>
               <p className="text-text-sub mb-6 leading-relaxed">Active preventative care timed perfectly for spring preparation and winterization.</p>
@@ -172,7 +172,7 @@ function Home() {
             <div className="flex-1">
               <div className="flex justify-between items-start mb-4">
                 <h3 className="text-2xl text-text-main font-heading font-bold uppercase tracking-wider flex items-center"><span className="text-3xl mr-2">💎</span> Premier Tier</h3>
-                <span className="text-2xl font-bold text-brand-orange">$199</span>
+                <span className="text-2xl font-bold text-brand-orange">$169</span>
               </div>
               <p className="text-sm text-text-main font-bold uppercase tracking-wider mb-4 border-b border-border-subtle pb-4">Monthly White-Glove Preventative</p>
               <p className="text-text-sub mb-6 leading-relaxed">The ultimate high-touch experience. Micro-maintenance is handled before you even notice it.</p>
@@ -203,7 +203,7 @@ function Home() {
                 </li>
                 <li className="flex items-start">
                   <span className="text-brand-orange mr-3 mt-1">✓</span>
-                  <div><strong className="text-text-main">Plumbing Deep-Dive:</strong> <span className="text-text-sub">Test drain flow rates, check for silent toilet leaks, verify all GFCI.</span></div>
+                  <div><strong className="text-text-main">Plumbing:</strong> <span className="text-text-sub">Test drain flow rates, check for silent toilet leaks, verify all GFCI.</span></div>
                 </li>
               </ul>
             </div>
@@ -261,32 +261,6 @@ function Home() {
           <h2 className="text-3xl md:text-5xl text-text-main font-heading font-bold uppercase tracking-wider mb-6">Proudly Serving Our Neighbors in Rome.</h2>
           <div className="h-1 w-24 bg-brand-orange mx-auto mb-16"></div>
           <TestimonialCarousel />
-        </div>
-      </section>
-      
-      {/* 6. Owner Bio (Integrated naturally) */}
-      <section className="max-w-6xl mx-auto px-4 py-24">
-        <div className="flex flex-col md:flex-row items-center gap-12 bg-wood-card border border-border-subtle p-8 md:p-12 rounded-xl shadow-2xl">
-          <div className="w-full md:w-1/3">
-            <img src={portrait} alt="Charles Willis, Owner" className="w-full max-w-[300px] mx-auto rounded-lg shadow-2xl border border-brand-orange/30 grayscale hover:grayscale-0 transition-all duration-500" />
-          </div>
-          <div className="w-full md:w-2/3">
-            <h2 className="text-3xl md:text-4xl text-text-main font-heading font-bold uppercase tracking-wider mb-4">Meet the Man Behind the Hammer</h2>
-            <div className="h-1 w-16 bg-brand-orange mb-8"></div>
-            <p className="text-xl text-text-main leading-relaxed mb-6 italic border-l-4 border-brand-orange pl-6">
-              "When I started Nailed It Property Solutions, I wanted to build something different: a service that local homeowners and property managers could truly rely on. We treat every property like our own, ensuring every fix, patch, and installation stands the test of time."
-            </p>
-            <p className="text-lg text-text-sub leading-relaxed mb-8">
-              Whether you need a quick repair or a major update, you can expect clear communication and absolute respect for your home from the moment we arrive.
-            </p>
-            <div>
-              <p className="text-text-main font-heading font-bold uppercase tracking-widest text-xl">— Charles Willis</p>
-              <p className="text-brand-orange text-sm font-bold uppercase tracking-wider mt-1 mb-6">Owner, Nailed It Property Solutions</p>
-              <Link to="/about-us" className="inline-block border-2 border-brand-orange text-brand-orange hover:bg-brand-orange/10 font-heading font-bold uppercase tracking-wider px-6 py-2 rounded-md transition-colors text-sm">
-                Read Our Story / Meet the Team
-              </Link>
-            </div>
-          </div>
         </div>
       </section>
 

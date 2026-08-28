@@ -4,28 +4,28 @@
   bottom: 24px;
   right: 24px;
   z-index: 900;
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   background: var(--accent);
-  border: none;
+  border: 3px solid #fff;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 16px rgba(255, 138, 0, 0.4);
+  box-shadow: 0 0 0 3px rgba(211, 114, 2, 0.45), 0 6px 22px rgba(0, 0, 0, 0.55);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .chat-toggle:hover {
   transform: scale(1.08);
-  box-shadow: 0 6px 24px rgba(255, 138, 0, 0.5);
+  box-shadow: 0 0 0 4px rgba(255, 138, 0, 0.55), 0 8px 28px rgba(0, 0, 0, 0.6);
 }
 
 .chat-toggle svg {
-  width: 26px;
-  height: 26px;
-  fill: #1A1A1D;
+  width: 30px;
+  height: 30px;
+  fill: #fdfdff;
 }
 
 .chat-toggle--unread::after {
@@ -222,6 +222,11 @@
 }
 
 @media (max-width: 400px) {
+  .chat-toggle {
+    right: 16px;
+    bottom: 16px;
+  }
+
   .chat-window {
     width: calc(100vw - 32px);
     right: 16px;

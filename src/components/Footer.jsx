@@ -10,14 +10,13 @@ function Footer() {
           
           <div className="md:col-span-1 flex flex-col items-start">
             <span className="bg-brand-orange/20 text-brand-orange border border-brand-orange/50 px-3 py-1 rounded text-sm font-bold uppercase tracking-wider mb-4">
-              🟢 Open 24/7
+              🟢 Open 24/7 -Emergency Only
             </span>
-            <p className="text-text-sub text-sm leading-relaxed mb-4">
-              When your home is at stake, we don&rsquo;t believe in business hours only.
-            </p>
+            
             <a href="tel:7062378184" className="text-xl font-heading font-bold text-text-main hover:text-brand-orange transition-colors">
-              706.237.8184
+              Office No. 706.237.8184
             </a>
+
           </div>
 
           <div className="md:col-span-1">
@@ -41,19 +40,6 @@ function Footer() {
               <li><a href="https://www.bbb.org" target="_blank" rel="noopener noreferrer" className="text-text-sub hover:text-brand-orange text-sm transition-colors">Better Business Bureau</a></li>
               <li><a href="https://www.linkedin.com/company/nailed-it-property-solutions" target="_blank" rel="noopener noreferrer" className="text-text-sub hover:text-brand-orange text-sm transition-colors">LinkedIn</a></li>
               <li><a href="https://g.page/r/CWiM9mqvEGVkEBM/review" target="_blank" rel="noopener noreferrer" className="text-text-sub hover:text-brand-orange text-sm transition-colors">Leave a Google Review</a></li>
-            </ul>
-          </div>
-
-          <div className="md:col-span-1">
-            <h4 className="text-text-main font-heading font-bold uppercase tracking-wider mb-4">Service Areas</h4>
-            <ul className="space-y-2">
-              <li className="text-text-sub text-sm">West Rome</li>
-              <li className="text-text-sub text-sm">North Rome</li>
-              <li className="text-text-sub text-sm">East Rome</li>
-              <li className="text-text-sub text-sm">South Rome</li>
-              <li className="text-text-sub text-sm">Downtown Rome</li>
-              <li className="text-text-sub text-sm">Clocktower Hill</li>
-              <li className="text-text-sub text-sm">Floyd County</li>
             </ul>
           </div>
         </div>
