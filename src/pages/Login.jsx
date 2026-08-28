@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import usePageMeta from '../hooks/usePageMeta';
-import './Auth.css';
 
 function Login() {
   usePageMeta('Sign In | Nailed It Property Solutions', 'Sign in to your Nailed It Property Solutions account to manage properties and service requests.');
@@ -29,31 +28,57 @@ function Login() {
   }
 
   return (
-    <div className="auth-page">
-      <div className="auth-card">
-        <h1>Sign In</h1>
-        <p className="auth-subtitle">Welcome back. Sign in to manage your account.</p>
+    <div className="w-full bg-wood-900 min-h-screen py-24 flex items-center justify-center">
+      <div className="max-w-md w-full px-4">
+        <div className="bg-wood-card border border-border-subtle p-8 md:p-12 rounded-xl shadow-2xl">
+          <h1 className="text-3xl text-text-main font-heading font-bold uppercase tracking-wider mb-2 text-center">Sign In</h1>
+          <div className="h-1 w-16 bg-brand-orange mx-auto mb-6"></div>
+          <p className="text-text-sub text-center mb-8">Welcome back. Sign in to manage your account.</p>
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          <div className="auth-field">
-            <label htmlFor="login-email">Email</label>
-            <input id="login-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required />
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label htmlFor="login-email" className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">Email</label>
+              <input 
+                id="login-email" 
+                type="email" 
+                value={email} 
+                onChange={(e) => setEmail(e.target.value)} 
+                placeholder="you@example.com" 
+                required 
+                className="w-full bg-wood-900 border border-border-subtle rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="login-password" className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">Password</label>
+              <input 
+                id="login-password" 
+                type="password" 
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)} 
+                placeholder="Your password" 
+                required 
+                className="w-full bg-wood-900 border border-border-subtle rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors"
+              />
+            </div>
+
+            {error && <p className="text-red-500 text-sm font-bold bg-red-900/20 p-3 rounded border border-red-900/50">{error}</p>}
+
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="w-full bg-brand-orange hover:bg-brand-hover text-wood-900 font-heading font-bold uppercase tracking-wider px-8 py-4 rounded-md transition-all text-lg shadow-[0_0_15px_rgba(255,95,31,0.3)] hover:shadow-[0_0_20px_rgba(255,95,31,0.5)] disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Signing in...' : 'Sign In'}
+            </button>
+          </form>
+
+          <div className="mt-8 pt-6 border-t border-border-subtle text-center">
+            <p className="text-text-sub">
+              Don&rsquo;t have an account? <Link to="/signup" className="text-brand-orange hover:text-brand-hover font-bold tracking-wider uppercase transition-colors ml-2">Create one</Link>
+            </p>
           </div>
-          <div className="auth-field">
-            <label htmlFor="login-password">Password</label>
-            <input id="login-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Your password" required />
-          </div>
-
-          {error && <p className="auth-error">{error}</p>}
-
-          <button type="submit" className="cta-button auth-submit" disabled={loading}>
-            {loading ? 'Signing in...' : 'Sign In'}
-          </button>
-        </form>
-
-        <p className="auth-footer-text">
-          Don&rsquo;t have an account? <Link to="/signup">Create one</Link>
-        </p>
+        </div>
       </div>
     </div>
   );

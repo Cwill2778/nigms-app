@@ -1,5 +1,9 @@
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { toast } from 'sonner';
 import { supabase } from '../lib/supabase';
 import './NameYourPrice.css';
 
@@ -7,41 +11,42 @@ const MIN_PRICE = 55;
 const MAX_PRICE = 2499;
 const MAX_FILE_SIZE = 25 * 1024 * 1024;
 
+const nypSchema = z.object({
+  description: z.string().min(5, 'Please describe what you need done.'),
+  name: z.string().min(2, 'Please enter your name.'),
+  phone: z.string().optional(),
+  email: z.string().email('Invalid email address').optional().or(z.literal('')),
+  price: z.number().min(MIN_PRICE).max(MAX_PRICE),
+}).refine(data => data.phone || data.email, {
+  message: 'Please provide either a phone number or an email address.',
+  path: ['phone'],
+});
+
 function NameYourPrice() {
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [description, setDescription] = useState('');
-  const [price, setPrice] = useState(250);
-  const [priceInput, setPriceInput] = useState('250');
   const [files, setFiles] = useState([]);
-  const [submitting, setSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState('');
   const fileInputRef = useRef(null);
 
-  function handleSliderChange(e) {
-    const val = parseInt(e.target.value);
-    setPrice(val);
-    setPriceInput(val.toString());
-  }
+  const { register, handleSubmit, control, reset, setValue, watch, formState: { errors } } = useForm({
+    resolver: zodResolver(nypSchema),
+    defaultValues: {
+      description: '',
+      name: '',
+      phone: '',
+      email: '',
+      price: 250,
+    }
+  });
 
-  function handlePriceInput(e) {
-    const raw = e.target.value.replace(/[^0-9]/g, '');
-    setPriceInput(raw);
-    const val = parseInt(raw) || MIN_PRICE;
-    setPrice(Math.min(Math.max(val, MIN_PRICE), MAX_PRICE));
-  }
-
-  function handlePriceBlur() {
-    const clamped = Math.min(Math.max(parseInt(priceInput) || MIN_PRICE, MIN_PRICE), MAX_PRICE);
-    setPrice(clamped);
-    setPriceInput(clamped.toString());
-  }
+  const watchPrice = watch('price');
 
   function handleFileChange(e) {
     const selected = Array.from(e.target.files || []);
     const valid = selected.filter((f) => f.size <= MAX_FILE_SIZE);
+    if (valid.length !== selected.length) {
+      toast.warning('Some files were too large and were ignored (Max 25MB).');
+    }
     setFiles((prev) => [...prev, ...valid].slice(0, 5));
   }
 
@@ -49,15 +54,8 @@ function NameYourPrice() {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   }
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setError('');
-
-    if (!description.trim()) { setError('Please describe what you need done.'); return; }
-    if (!name.trim()) { setError('Please enter your name.'); return; }
-    if (!phone.trim() && !email.trim()) { setError('Please add a phone number or email so we can reach you.'); return; }
-
-    setSubmitting(true);
+  const onSubmit = async (data) => {
+    setIsSubmitting(true);
     try {
       const attachmentPaths = [];
       for (const file of files) {
@@ -68,24 +66,26 @@ function NameYourPrice() {
       }
 
       const { error: insertError } = await supabase.from('name_your_price').insert({
-        customer_name: name.trim(),
-        customer_phone: phone.trim() || null,
-        customer_email: email.trim() || null,
-        description: description.trim(),
-        offered_price: price * 100,
+        customer_name: data.name.trim(),
+        customer_phone: data.phone?.trim() || null,
+        customer_email: data.email?.trim() || null,
+        description: data.description.trim(),
+        offered_price: data.price * 100, // store in cents
         attachments: attachmentPaths.length > 0 ? attachmentPaths : [],
         terms_accepted: true,
       });
 
       if (insertError) throw insertError;
       if (window.rkp) window.rkp('event', 'CONTACT');
+      
+      toast.success('Request Submitted Successfully!');
       setSubmitted(true);
     } catch (err) {
-      setError(err?.message || 'Something went wrong. Please try again or call us.');
+      toast.error('Something went wrong.', { description: err?.message || 'Please try again or call us.' });
     } finally {
-      setSubmitting(false);
+      setIsSubmitting(false);
     }
-  }
+  };
 
   if (submitted) {
     return (
@@ -94,7 +94,7 @@ function NameYourPrice() {
           <span className="nyp-success-icon">✓</span>
           <h2>We Got It!</h2>
           <p>We&rsquo;ll review your request and reach out shortly. If your price works, we&rsquo;ll get you scheduled.</p>
-          <button className="cta-button" onClick={() => { setSubmitted(false); setName(''); setPhone(''); setEmail(''); setDescription(''); setPrice(250); setPriceInput('250'); setFiles([]); }}>
+          <button className="cta-button" onClick={() => { setSubmitted(false); reset(); setFiles([]); }}>
             Submit Another Request
           </button>
         </div>
@@ -108,35 +108,61 @@ function NameYourPrice() {
         <h2 className="nyp-title">Name Your Price</h2>
         <p className="nyp-subtitle">Tell us what you need and what you&rsquo;d like to pay. No commitment.</p>
 
-        <form className="nyp-form" onSubmit={handleSubmit}>
+        <form className="nyp-form" onSubmit={handleSubmit(onSubmit)}>
           <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            {...register('description')}
             placeholder="What do you need done?"
             rows={3}
+            className={errors.description ? 'input-error' : ''}
           />
+          {errors.description && <span className="error-text" style={{color: '#e63946', fontSize: '0.8rem', display: 'block', marginTop: '-12px', marginBottom: '16px'}}>{errors.description.message}</span>}
 
           <div className="nyp-price-section">
             <label>Your budget</label>
             <div className="nyp-price-row">
               <span className="nyp-dollar">$</span>
-              <input
-                type="text"
-                className="nyp-price-input"
-                value={priceInput}
-                onChange={handlePriceInput}
-                onBlur={handlePriceBlur}
-                inputMode="numeric"
+              <Controller
+                name="price"
+                control={control}
+                render={({ field }) => (
+                  <input
+                    type="number"
+                    className="nyp-price-input"
+                    value={field.value}
+                    onChange={(e) => field.onChange(parseInt(e.target.value) || MIN_PRICE)}
+                    onBlur={(e) => {
+                      const val = parseInt(e.target.value) || MIN_PRICE;
+                      field.onChange(Math.min(Math.max(val, MIN_PRICE), MAX_PRICE));
+                    }}
+                  />
+                )}
               />
             </div>
-            <input type="range" className="nyp-slider" min={MIN_PRICE} max={MAX_PRICE} step={5} value={price} onChange={handleSliderChange} />
+            <input 
+              type="range" 
+              className="nyp-slider" 
+              min={MIN_PRICE} 
+              max={MAX_PRICE} 
+              step={5} 
+              value={watchPrice} 
+              onChange={(e) => setValue('price', parseInt(e.target.value))} 
+            />
             <div className="nyp-price-range"><span>${MIN_PRICE}</span><span>${MAX_PRICE}</span></div>
           </div>
 
           <div className="nyp-contact-row">
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name *" />
-            <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone" />
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
+            <div>
+              <input type="text" {...register('name')} placeholder="Your name *" className={errors.name ? 'input-error' : ''} />
+              {errors.name && <span className="error-text" style={{color: '#e63946', fontSize: '0.8rem'}}>{errors.name.message}</span>}
+            </div>
+            <div>
+              <input type="tel" {...register('phone')} placeholder="Phone" className={errors.phone ? 'input-error' : ''} />
+              {errors.phone && <span className="error-text" style={{color: '#e63946', fontSize: '0.8rem'}}>{errors.phone.message}</span>}
+            </div>
+            <div>
+              <input type="email" {...register('email')} placeholder="Email" className={errors.email ? 'input-error' : ''} />
+              {errors.email && <span className="error-text" style={{color: '#e63946', fontSize: '0.8rem'}}>{errors.email.message}</span>}
+            </div>
           </div>
 
           <div className="nyp-upload-row">
@@ -155,10 +181,8 @@ function NameYourPrice() {
             </div>
           )}
 
-          {error && <p className="nyp-error">{error}</p>}
-
-          <button type="submit" className="cta-button nyp-submit" disabled={submitting}>
-            {submitting ? 'Sending...' : 'Submit Request'}
+          <button type="submit" className="cta-button nyp-submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Sending...' : 'Submit Request'}
           </button>
 
           <p className="nyp-terms-notice">By submitting, you agree to our <Link to="/terms#name-your-price-terms">Terms of Use</Link>.</p>

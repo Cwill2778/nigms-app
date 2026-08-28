@@ -1,214 +1,223 @@
 import { useState } from 'react';
-import useScrollReveal from '../hooks/useScrollReveal';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { toast } from 'sonner';
+import useScrollToTop from '../hooks/useScrollToTop';
 import usePageMeta from '../hooks/usePageMeta';
 import { supabase } from '../lib/supabase';
-import './Contact.css';
+import portrait from '../assets/charlesImg.jpg';
+
+const contactSchema = z.object({
+  name: z.string().min(2, 'Please provide your full name'),
+  address: z.string().min(5, 'We need the address to know where to go'),
+  email: z.string().email('Please provide a valid email'),
+  phone: z.string().min(10, 'We need a valid phone number to reach you'),
+  interest: z.string().min(1, 'Please select how we can help'),
+  message: z.string().min(10, 'Please provide a few more details so we know what to bring'),
+});
 
 function Contact() {
-  useScrollReveal();
+  useScrollToTop();
   usePageMeta(
-    'Contact Nailed It Property Solutions | Rome, GA Repairs',
-    'Need reliable property maintenance or emergency repairs in Rome, GA? Contact Nailed It Property Solutions today to get a quote or schedule a service.'
+    'Contact Nailed It Property Solutions | Book a Service',
+    'Reach out to Nailed It Property Solutions for estimates, emergency repairs, or maintenance subscriptions in Rome, GA.'
   );
 
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    interest: '',
-    message: '',
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+    resolver: zodResolver(contactSchema),
   });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const onSubmit = async (data) => {
+    setIsSubmitting(true);
+    try {
+      await supabase.from('contact_submissions').insert(data);
+      if (window.rkp) window.rkp('event', 'CONTACT');
+      
+      const res = await fetch('https://formspree.io/f/xqeooyyl', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(data),
+      });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const form = e.target;
-
-    // Save to Supabase for admin dashboard
-    supabase.from('contact_submissions').insert({
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone,
-      interest: formData.interest,
-      message: formData.message,
-    }).then();
-
-    // Roku Pixel: Contact event
-    if (window.rkp) window.rkp('event', 'CONTACT');
-
-    // Also send via Formspree for email notifications
-    fetch('https://formspree.io/f/xqeooyyl', {
-      method: 'POST',
-      body: new FormData(form),
-      headers: { Accept: 'application/json' },
-    })
-      .then((res) => {
-        if (res.ok) {
-          alert('Thank you! We will be in touch shortly.');
-          setFormData({ name: '', email: '', phone: '', interest: '', message: '' });
-        } else {
-          alert('Something went wrong. Please try again.');
-        }
-      })
-      .catch(() => alert('Something went wrong. Please try again.'));
+      if (res.ok) {
+        toast.success('Request Received!', { description: "We've got your info and will be in touch shortly." });
+        reset();
+      } else {
+        throw new Error('Formspree returned an error');
+      }
+    } catch (error) {
+      toast.error('Something went wrong.', { description: 'Please try again or call us directly.' });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="contact">
-      <section className="contact-intro reveal">
-        <h1>We&rsquo;re Here to Help.</h1>
-        <p>
-          Serving Rome, GA (30161 &amp; 30165) — honest work, fair prices, and a
-          team that actually picks up the phone.
+    <div className="w-full bg-wood-900 min-h-screen pb-24">
+      <section className="max-w-4xl mx-auto px-4 pt-24 pb-16 text-center">
+        <h1 className="text-4xl md:text-6xl text-text-main font-heading font-bold uppercase tracking-wider mb-6">
+          Let's Get To Work.
+        </h1>
+        <div className="h-1 w-24 bg-brand-orange mx-auto mb-8"></div>
+        <p className="text-xl text-text-sub leading-relaxed max-w-2xl mx-auto">
+          Stop dealing with property stress. Drop us a line below, and we'll get back to you with real solutions and honest pricing.
         </p>
       </section>
 
-      <section className="contact-content">
-        <div className="contact-info reveal">
-          <h2>Contact Information</h2>
-          <div className="accent-bar" aria-hidden="true"></div>
-
-          <div className="info-block">
-            <h3>Office Phone</h3>
-            <a href="tel:+17068448193">(706) 844-8193</a>
+      {/* Main Bio Grid from About Us */}
+      <section className="max-w-6xl mx-auto px-4 mb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-wood-card border border-border-subtle p-8 md:p-12 rounded-xl shadow-2xl">
+          <div className="order-2 lg:order-1 relative">
+            <div className="absolute inset-0 bg-brand-orange rounded-xl translate-x-4 translate-y-4 opacity-50"></div>
+            {/* Removed grayscale class so it is colored */}
+            <img 
+              src={portrait} 
+              alt="Charles Willis, Owner" 
+              className="relative z-10 w-full h-auto rounded-xl shadow-2xl border border-border-subtle"
+            />
+            <div className="absolute -bottom-6 -right-6 z-20 bg-wood-card border-2 border-brand-orange p-4 rounded-lg shadow-xl">
+              <p className="text-text-main font-heading font-bold uppercase tracking-wider">Charles Willis</p>
+              <p className="text-brand-orange text-sm font-bold uppercase tracking-widest">Founder & Operator</p>
+            </div>
           </div>
-
-          <div className="info-block">
-            <h3>Direct Line (Charles)</h3>
-            <a href="tel:+17068448059">(706) 844-8059</a>
-          </div>
-
-          <div className="info-block email-directory">
-            <h3>Email Directory</h3>
-            <ul className="email-list">
-              <li>
-                <span className="email-label">Free Estimate</span>
-                <a href="mailto:quote@naileditpropertysolutions.com">quote@naileditpropertysolutions.com</a>
-              </li>
-              <li>
-                <span className="email-label">Book an Inspection or Repair</span>
-                <a href="mailto:fixit@naileditpropertysolutions.com">fixit@naileditpropertysolutions.com</a>
-              </li>
-              <li>
-                <span className="email-label">General Information</span>
-                <a href="mailto:info@naileditpropertysolutions.com">info@naileditpropertysolutions.com</a>
-              </li>
-              <li>
-                <span className="email-label">Customer Support</span>
-                <a href="mailto:support@naileditpropertysolutions.com">support@naileditpropertysolutions.com</a>
-              </li>
-              <li>
-                <span className="email-label">Privacy Concerns</span>
-                <a href="mailto:privacy@naileditpropertysolutions.com">privacy@naileditpropertysolutions.com</a>
-              </li>
-              <li>
-                <span className="email-label">Pricing &amp; Billing</span>
-                <a href="mailto:billing@naileditpropertysolutions.com">billing@naileditpropertysolutions.com</a>
-              </li>
-              <li>
-                <span className="email-label">Reach the Owner (Charles)</span>
-                <a href="mailto:charles@naileditpropertysolutions.com">charles@naileditpropertysolutions.com</a>
-              </li>
-            </ul>
-          </div>
-
-          <div className="info-block">
-            <h3>Mailing Address</h3>
-            <address>
-              PO Box 53<br />
-              Rome, GA 30162
-            </address>
-          </div>
-
-          <div className="info-block">
-            <h3>Hours of Operation</h3>
-            <p style={{ fontSize: '1rem', fontWeight: 600 }}>Open 24/7</p>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-sub)', fontStyle: 'italic', marginTop: '6px' }}>
-              When your home is at stake, we don&rsquo;t believe in business hours only.
+          
+          <div className="order-1 lg:order-2">
+            <h2 className="text-3xl md:text-4xl text-text-main font-heading font-bold uppercase tracking-wider mb-6">
+              Built on Trust. <span className="block text-brand-orange mt-2">Driven by Craftsmanship.</span>
+            </h2>
+            <div className="h-1 w-16 bg-brand-orange mb-8"></div>
+            <p className="text-lg text-text-sub leading-relaxed mb-6">
+              Charles Willis is a skilled tradesman and Rome, GA native who built Nailed It Property Solutions to fix an industry plagued by unreliability.
+            </p>
+            <p className="text-md text-text-sub leading-relaxed mb-6 border-l-4 border-brand-orange pl-6 italic">
+              "I started this company because I saw too many homeowners getting ghosted by contractors, overcharged for simple fixes, or left with sub-par work. I wanted to bring professionalism and transparency back to the trades."
+            </p>
+            <p className="text-md text-text-sub leading-relaxed">
+              With a diverse background in heavy equipment operation, fine carpentry, and comprehensive property management, Charles possesses the unique ability to diagnose complex structural issues while maintaining an eye for finish details.
             </p>
           </div>
-
-          <div className="info-block">
-            <h3>Service Area</h3>
-            <p>Rome, GA — ZIP codes 30161 &amp; 30165</p>
-          </div>
         </div>
+      </section>
 
-        <div className="contact-form-wrapper reveal">
-          <h2>Send Us a Message</h2>
-          <div className="accent-bar" aria-hidden="true"></div>
-          <form className="contact-form" onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="name">Name</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
+      <section className="max-w-6xl mx-auto px-4">
+        <div className="flex flex-col md:flex-row gap-12">
+          {/* Contact Info Sidebar */}
+          <div className="w-full md:w-1/3 bg-wood-800/80 border border-border-subtle p-8 rounded-xl shadow-lg h-fit">
+            <h2 className="text-2xl text-text-main font-heading font-bold uppercase tracking-wider mb-6 border-b border-border-subtle pb-4">Reach Out Directly</h2>
+            
+            <div className="mb-6">
+              <h3 className="text-text-sub text-sm uppercase tracking-wider mb-1">Service Area</h3>
+              <p className="text-text-main font-bold">Proudly serving Rome, GA, and surrounding areas.</p>
             </div>
-
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
+            
+            <div className="mb-6">
+              <h3 className="text-text-sub text-sm uppercase tracking-wider mb-1">Call or Text</h3>
+              <a href="tel:7062378184" className="text-brand-orange text-xl font-heading font-bold hover:text-brand-hover transition-colors">706.237.8184</a>
             </div>
-
-            <div className="form-group">
-              <label htmlFor="phone">Phone</label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-              />
+            
+            <div className="mb-6">
+              <h3 className="text-text-sub text-sm uppercase tracking-wider mb-1">Email Us</h3>
+              <a href="mailto:info@naileditpropertysolutions.com" className="text-brand-orange hover:text-brand-hover transition-colors break-all">info@naileditpropertysolutions.com</a>
             </div>
+            
+            <div className="mb-6">
+              <h3 className="text-text-sub text-sm uppercase tracking-wider mb-1">Availability</h3>
+              <p className="text-text-main font-bold flex items-center"><span className="mr-2 text-brand-orange">🟢</span> 24/7 Response</p>
+              <p className="text-xs text-text-sub mt-1 italic">Because emergencies don't stick to business hours.</p>
+            </div>
+          </div>
 
-            <div className="form-group">
-              <label htmlFor="interest">I&apos;m Interested In</label>
-              <select
-                id="interest"
-                name="interest"
-                value={formData.interest}
-                onChange={handleChange}
-                required
+          {/* Contact Form */}
+          <div className="w-full md:w-2/3 bg-wood-card border border-border-subtle p-8 md:p-12 rounded-xl shadow-2xl">
+            <h2 className="text-2xl text-text-main font-heading font-bold uppercase tracking-wider mb-8">Tell Us What You Need</h2>
+            
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">Full Name</label>
+                  <input 
+                    type="text" 
+                    id="name" 
+                    {...register('name')} 
+                    className={`w-full bg-wood-900 border ${errors.name ? 'border-red-500' : 'border-border-subtle'} rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors`} 
+                  />
+                  {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
+                </div>
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">Best Contact Number</label>
+                  <input 
+                    type="tel" 
+                    id="phone" 
+                    {...register('phone')} 
+                    className={`w-full bg-wood-900 border ${errors.phone ? 'border-red-500' : 'border-border-subtle'} rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors`} 
+                  />
+                  {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>}
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="email" className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">Email Address</label>
+                <input 
+                  type="email" 
+                  id="email" 
+                  {...register('email')} 
+                  className={`w-full bg-wood-900 border ${errors.email ? 'border-red-500' : 'border-border-subtle'} rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors`} 
+                />
+                {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
+              </div>
+              
+              <div>
+                <label htmlFor="address" className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">Service Address</label>
+                <input 
+                  type="text" 
+                  id="address" 
+                  {...register('address')} 
+                  className={`w-full bg-wood-900 border ${errors.address ? 'border-red-500' : 'border-border-subtle'} rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors`} 
+                />
+                {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address.message}</p>}
+              </div>
+
+              <div>
+                <label htmlFor="interest" className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">How Can We Help?</label>
+                <select 
+                  id="interest" 
+                  {...register('interest')} 
+                  className={`w-full bg-wood-900 border ${errors.interest ? 'border-red-500' : 'border-border-subtle'} rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors appearance-none`}
+                >
+                  <option value="">Select an option...</option>
+                  <option value="I need something fixed right now (Emergency)">I need something fixed right now (Emergency)</option>
+                  <option value="I need a quote for a repair or project">I need a quote for a repair or project</option>
+                  <option value="I want to sign up for a Maintenance Subscription">I want to sign up for a Maintenance Subscription</option>
+                  <option value="I'm a landlord looking for Portfolio Management">I'm a landlord looking for Portfolio Management</option>
+                  <option value="I just have a general question">I just have a general question</option>
+                </select>
+                {errors.interest && <p className="text-red-500 text-xs mt-1">{errors.interest.message}</p>}
+              </div>
+
+              <div>
+                <label htmlFor="message" className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">Give Us The Details:</label>
+                <textarea 
+                  id="message" 
+                  rows="5" 
+                  placeholder="Tell us a little bit about what's going on..."
+                  {...register('message')} 
+                  className={`w-full bg-wood-900 border ${errors.message ? 'border-red-500' : 'border-border-subtle'} rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors`}
+                ></textarea>
+                {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message.message}</p>}
+              </div>
+
+              <button 
+                type="submit" 
+                disabled={isSubmitting}
+                className="w-full bg-brand-orange hover:bg-brand-hover text-wood-900 font-heading font-bold uppercase tracking-wider px-8 py-4 rounded-md transition-all text-lg shadow-[0_0_15px_rgba(255,95,31,0.3)] hover:shadow-[0_0_20px_rgba(255,95,31,0.5)] disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                <option value="">Select an option</option>
-                <option value="subscriptions">Property Maintenance Subscription</option>
-                <option value="turnovers">Unit Turnover Services</option>
-                <option value="both">Both</option>
-                <option value="other">Something Else</option>
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="message">Message</label>
-              <textarea
-                id="message"
-                name="message"
-                rows="5"
-                value={formData.message}
-                onChange={handleChange}
-                required
-              ></textarea>
-            </div>
-
-            <button type="submit" className="cta-button">
-              Send Message
-            </button>
-          </form>
+                {isSubmitting ? 'Sending...' : 'Submit Your Request'}
+              </button>
+            </form>
+          </div>
         </div>
       </section>
     </div>

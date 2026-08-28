@@ -14,9 +14,9 @@ function Landlords() {
   return (
     <div className="landlords">
       {/* Call Banner */}
-      <a href="tel:+17068448193" className="scrolling-banner" aria-label="Call us now">
+      <a href="tel:7062378184" className="scrolling-banner" aria-label="Call us now">
         <div className="banner-track">
-          <span>CLICK HERE TO CALL US NOW — <strong className="banner-phone">(706) 844-8193</strong></span>
+          <span>CLICK HERE TO CALL US NOW — <strong className="banner-phone">706.237.8184</strong></span>
         </div>
       </a>
 
@@ -229,17 +229,18 @@ function Landlords() {
         <p>Join Rome landlords who&rsquo;ve stopped chasing contractors and started sleeping better.</p>
         <div className="ll-cta-buttons">
           <Link to="/contact" className="cta-button">Get Started &rarr;</Link>
-          <a href="tel:+17068448193" className="cta-button cta-button--secondary">Call (706) 844-8193</a>
+          <a href="tel:7062378184" className="cta-button cta-button--secondary">Call 706.237.8184</a>
         </div>
       </section>
 
       {/* Mobile Sticky Action Bar */}
       <div className="mobile-action-bar">
-        <a href="tel:+17068448193" className="action-btn action-btn--call">📞 Call Now</a>
-        <a href="sms:+17068448193" className="action-btn action-btn--text">💬 Text Us</a>
+        <a href="tel:7062378184" className="action-btn action-btn--call">📞 Call Now</a>
+        <a href="sms:7062378184" className="action-btn action-btn--text">💬 Text Us</a>
       </div>
     </div>
   );
 }
 
 export default Landlords;
+

@@ -15,9 +15,9 @@ function Homeowners() {
   return (
     <div className="homeowners">
       {/* Call Banner */}
-      <a href="tel:+17068448193" className="scrolling-banner" aria-label="Call us now">
+      <a href="tel:7062378184" className="scrolling-banner" aria-label="Call us now">
         <div className="banner-track">
-          <span>CLICK HERE TO CALL US NOW — <strong className="banner-phone">(706) 844-8193</strong></span>
+          <span>CLICK HERE TO CALL US NOW — <strong className="banner-phone">706.237.8184</strong></span>
         </div>
       </a>
 
@@ -130,7 +130,7 @@ function Homeowners() {
           Call us, describe what&rsquo;s happening, and we&rsquo;ll dispatch within
           our 2-hour arrival window &mdash; no surprise fees, no runaround.
         </p>
-        <a href="tel:+17068448193" className="cta-button">Call Now &mdash; (706) 844-8193</a>
+        <a href="tel:7062378184" className="cta-button">Call Now &mdash; 706.237.8184</a>
       </section>
 
       {/* Second Featured Review */}
@@ -159,17 +159,18 @@ function Homeowners() {
         <p>Ready to stop worrying about your to-do list? Let us handle it.</p>
         <div className="ho-cta-buttons">
           <Link to="/contact" className="cta-button">Get a Free Quote &rarr;</Link>
-          <a href="tel:+17068448193" className="cta-button cta-button--secondary">Call (706) 844-8193</a>
+          <a href="tel:7062378184" className="cta-button cta-button--secondary">Call 706.237.8184</a>
         </div>
       </section>
 
       {/* Mobile Sticky Action Bar */}
       <div className="mobile-action-bar">
-        <a href="tel:+17068448193" className="action-btn action-btn--call">📞 Call Now</a>
-        <a href="sms:+17068448193" className="action-btn action-btn--text">💬 Text Us</a>
+        <a href="tel:7062378184" className="action-btn action-btn--call">📞 Call Now</a>
+        <a href="sms:7062378184" className="action-btn action-btn--text">💬 Text Us</a>
       </div>
     </div>
   );
 }
 
 export default Homeowners;
+
