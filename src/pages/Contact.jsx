@@ -125,8 +125,10 @@ function Contact() {
             
             <div className="mb-6">
               <h3 className="text-text-sub text-sm uppercase tracking-wider mb-1">Availability</h3>
-              <p className="text-text-main font-bold flex items-center"><span className="mr-2 text-brand-orange">🟢</span> 24/7 Response</p>
+              <p className="text-text-main font-bold flex items-center"><span className="mr-2 text-brand-orange">🟢</span> 24/7 Emergency Response</p>
               <p className="text-xs text-text-sub mt-1 italic">Because emergencies don't stick to business hours.</p>
+              <p className="text-text-main font-bold flex items-center">Business Hours: Monday - Saturday 7:00 a.m. to 7:00 p.m. & </p>
+              <p className="text-text-main flex items-center">Sunday 12:30 p.m. to 5:30 p.m.</p>
             </div>
           </div>
 
