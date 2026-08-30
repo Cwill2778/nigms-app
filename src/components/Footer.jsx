@@ -6,20 +6,22 @@ function Footer() {
   return (
     <footer className="bg-navy-900 border-t-2 border-brand-orange shadow-[0_-4px_15px_rgba(255,95,31,0.3)] pt-12 pb-8 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           
-          <div className="md:col-span-1 flex flex-col items-start">
-            <span className="bg-brand-orange/20 text-brand-orange border border-brand-orange/50 px-3 py-1 rounded text-sm font-bold uppercase tracking-wider mb-4">
-              🟢 Open 24/7 -Emergency Only
+          <div className="flex flex-col items-start">
+            <h3 className="text-2xl font-heading font-bold uppercase tracking-wider text-text-main mb-1">Nailed It</h3>
+            <p className="text-brand-orange text-xs font-bold uppercase tracking-widest mb-6 border-b border-border-subtle pb-4 w-full">Property Solutions</p>
+            
+            <span className="bg-brand-orange/20 text-brand-orange border border-brand-orange/50 px-3 py-1 rounded text-xs font-bold uppercase tracking-wider mb-4">
+              🟢 Open 24/7 - Emergency Only
             </span>
             
-            <a href="tel:7062378184" className="text-xl font-heading font-bold text-text-main hover:text-brand-orange transition-colors">
-              Office No. 706.237.8184
+            <a href="tel:7062378184" className="text-2xl font-heading font-bold text-text-main hover:text-brand-orange transition-colors">
+              706.237.8184
             </a>
-
           </div>
 
-          <div className="md:col-span-1">
+          <div>
             <h4 className="text-text-main font-heading font-bold uppercase tracking-wider mb-4">Company</h4>
             <ul className="space-y-2">
               <li><Link to="/services" className="text-text-sub hover:text-brand-orange text-sm transition-colors">Services</Link></li>
@@ -31,13 +33,13 @@ function Footer() {
             </ul>
           </div>
 
-          <div className="md:col-span-1">
+          <div>
             <h4 className="text-text-main font-heading font-bold uppercase tracking-wider mb-4">Find Us On</h4>
             <ul className="space-y-2">
               <li><a href="https://nextdoor.com/page/nailed-it-property-solutions-rome-ga/" target="_blank" rel="noopener noreferrer" className="text-text-sub hover:text-brand-orange text-sm transition-colors">Nextdoor</a></li>
               <li><a href="https://maps.app.goo.gl/J6uxtzZ1p4EFmLnJ8" target="_blank" rel="noopener noreferrer" className="text-text-sub hover:text-brand-orange text-sm transition-colors">Google Business</a></li>
               <li><a href="https://www.yelp.com/biz/nailed-it-property-solutions-rome" target="_blank" rel="noopener noreferrer" className="text-text-sub hover:text-brand-orange text-sm transition-colors">Yelp</a></li>
-              <li><a href="https://www.bbb.org" target="_blank" rel="noopener noreferrer" className="text-text-sub hover:text-brand-orange text-sm transition-colors">Better Business Bureau</a></li>
+              <li><a href="https://www.bbb.org/us/ga/rome/profile/property-maintenance/nailed-it-property-solutions-0483-80013717" target="_blank" rel="noopener noreferrer" className="text-text-sub hover:text-brand-orange text-sm transition-colors">Better Business Bureau</a></li>
               <li><a href="https://www.linkedin.com/company/nailed-it-property-solutions" target="_blank" rel="noopener noreferrer" className="text-text-sub hover:text-brand-orange text-sm transition-colors">LinkedIn</a></li>
               <li><a href="https://g.page/r/CWiM9mqvEGVkEBM/review" target="_blank" rel="noopener noreferrer" className="text-text-sub hover:text-brand-orange text-sm transition-colors">Leave a Google Review</a></li>
             </ul>

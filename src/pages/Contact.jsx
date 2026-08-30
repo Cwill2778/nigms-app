@@ -7,6 +7,7 @@ import useScrollToTop from '../hooks/useScrollToTop';
 import usePageMeta from '../hooks/usePageMeta';
 import { supabase } from '../lib/supabase';
 import portrait from '../assets/charlesImg.jpg';
+import storeFront from '../assets/storeFront.webp';
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Please provide your full name'),
@@ -57,14 +58,20 @@ function Contact() {
 
   return (
     <div className="w-full bg-wood-900 min-h-screen pb-24">
-      <section className="max-w-4xl mx-auto px-4 pt-24 pb-16 text-center">
-        <h1 className="text-4xl md:text-6xl text-text-main font-heading font-bold uppercase tracking-wider mb-6">
-          Let's Get To Work.
-        </h1>
-        <div className="h-1 w-24 bg-brand-orange mx-auto mb-8"></div>
-        <p className="text-xl text-text-sub leading-relaxed max-w-2xl mx-auto">
-          Stop dealing with property stress. Drop us a line below, and we'll get back to you with real solutions and honest pricing.
-        </p>
+      <section 
+        className="relative px-4 py-32 md:py-48 text-center bg-cover bg-center bg-no-repeat mb-16 border-b-2 border-brand-orange shadow-[0_4px_20px_rgba(255,95,31,0.2)]"
+        style={{ backgroundImage: `url(${storeFront})` }}
+      >
+        <div className="absolute inset-0 bg-wood-900/85"></div>
+        <div className="relative z-10 max-w-4xl mx-auto">
+          <h1 className="text-4xl md:text-6xl text-text-main font-heading font-bold uppercase tracking-wider mb-6 drop-shadow-lg">
+            Let's Get To Work.
+          </h1>
+          <div className="h-1 w-24 bg-brand-orange mx-auto mb-8"></div>
+          <p className="text-xl text-text-sub leading-relaxed max-w-2xl mx-auto drop-shadow-md">
+            Stop dealing with property stress. Drop us a line below, and we'll get back to you with real solutions and honest pricing.
+          </p>
+        </div>
       </section>
 
       {/* Main Bio Grid from About Us */}
@@ -133,7 +140,7 @@ function Contact() {
           </div>
 
           {/* Contact Form */}
-          <div className="w-full md:w-2/3 bg-wood-card border border-border-subtle p-8 md:p-12 rounded-xl shadow-2xl">
+          <div className="w-full md:w-2/3 bg-wood-800 p-8 md:p-12 rounded-xl shadow-[8px_8px_16px_rgba(0,0,0,0.6),-4px_-4px_12px_rgba(255,255,255,0.02)] border border-wood-700/50">
             <h2 className="text-2xl text-text-main font-heading font-bold uppercase tracking-wider mb-8">Tell Us What You Need</h2>
             
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -144,7 +151,7 @@ function Contact() {
                     type="text" 
                     id="name" 
                     {...register('name')} 
-                    className={`w-full bg-wood-900 border ${errors.name ? 'border-red-500' : 'border-border-subtle'} rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors`} 
+                    className={`w-full bg-wood-900 border-none rounded-md px-4 py-3 text-text-main shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow ${errors.name ? 'ring-1 ring-red-500' : ''}`} 
                   />
                   {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
                 </div>
@@ -154,7 +161,7 @@ function Contact() {
                     type="tel" 
                     id="phone" 
                     {...register('phone')} 
-                    className={`w-full bg-wood-900 border ${errors.phone ? 'border-red-500' : 'border-border-subtle'} rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors`} 
+                    className={`w-full bg-wood-900 border-none rounded-md px-4 py-3 text-text-main shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow ${errors.phone ? 'ring-1 ring-red-500' : ''}`} 
                   />
                   {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>}
                 </div>
@@ -166,7 +173,7 @@ function Contact() {
                   type="email" 
                   id="email" 
                   {...register('email')} 
-                  className={`w-full bg-wood-900 border ${errors.email ? 'border-red-500' : 'border-border-subtle'} rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors`} 
+                  className={`w-full bg-wood-900 border-none rounded-md px-4 py-3 text-text-main shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow ${errors.email ? 'ring-1 ring-red-500' : ''}`} 
                 />
                 {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
               </div>
@@ -177,7 +184,7 @@ function Contact() {
                   type="text" 
                   id="address" 
                   {...register('address')} 
-                  className={`w-full bg-wood-900 border ${errors.address ? 'border-red-500' : 'border-border-subtle'} rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors`} 
+                  className={`w-full bg-wood-900 border-none rounded-md px-4 py-3 text-text-main shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow ${errors.address ? 'ring-1 ring-red-500' : ''}`} 
                 />
                 {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address.message}</p>}
               </div>
@@ -187,7 +194,7 @@ function Contact() {
                 <select 
                   id="interest" 
                   {...register('interest')} 
-                  className={`w-full bg-wood-900 border ${errors.interest ? 'border-red-500' : 'border-border-subtle'} rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors appearance-none`}
+                  className={`w-full bg-wood-900 border-none rounded-md px-4 py-3 text-text-main shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow appearance-none ${errors.interest ? 'ring-1 ring-red-500' : ''}`}
                 >
                   <option value="">Select an option...</option>
                   <option value="I need something fixed right now (Emergency)">I need something fixed right now (Emergency)</option>
@@ -206,7 +213,7 @@ function Contact() {
                   rows="5" 
                   placeholder="Tell us a little bit about what's going on..."
                   {...register('message')} 
-                  className={`w-full bg-wood-900 border ${errors.message ? 'border-red-500' : 'border-border-subtle'} rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors`}
+                  className={`w-full bg-wood-900 border-none rounded-md px-4 py-3 text-text-main shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow ${errors.message ? 'ring-1 ring-red-500' : ''}`}
                 ></textarea>
                 {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message.message}</p>}
               </div>

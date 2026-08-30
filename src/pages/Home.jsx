@@ -4,6 +4,8 @@ import useScrollReveal from '../hooks/useScrollReveal';
 import usePageMeta from '../hooks/usePageMeta';
 import { supabase } from '../lib/supabase';
 import portrait from '../assets/charlesImg.jpg';
+import deckBeforeAfter from '../assets/deckBeforeAndAfter.webp';
+import hammerHero from '../assets/hammerSavesDrill.png';
 
 import TestimonialCarousel from '../components/TestimonialCarousel';
 
@@ -17,20 +19,26 @@ function Home() {
   return (
     <div className="w-full">
       {/* 1. The Hook (Hero Section) */}
-      <section className="max-w-5xl mx-auto px-4 py-24 md:py-32 text-center">
-        <h1 className="text-4xl md:text-6xl lg:text-7xl text-text-main font-heading font-bold uppercase tracking-wider mb-8 drop-shadow-lg leading-tight">
-          Tired of Endless Searching for the Right Person to Fix What's Broken?
-        </h1>
-        <p className="text-xl md:text-2xl text-text-main font-body leading-relaxed mb-12 text-justify md:text-center max-w-4xl mx-auto drop-shadow-md">
-          Finding a repairman shouldn't be this hard. We specialize in plumbing, finishing, appliances, sheetrock, siding, and more.
-        </p>
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-6">
-          <a href="tel:7062378184" className="bg-brand-orange hover:bg-brand-hover text-wood-900 font-heading font-bold uppercase tracking-wider px-8 py-4 rounded-md transition-all shadow-[0_0_15px_rgba(255,95,31,0.3)] hover:shadow-[0_0_25px_rgba(255,95,31,0.5)] w-full sm:w-auto text-center text-lg">
-            Request a Repair Now
-          </a>
-          <Link to="/maintenance-plans" className="border-2 border-brand-orange text-brand-orange hover:bg-brand-orange/10 font-heading font-bold uppercase tracking-wider px-8 py-4 rounded-md transition-colors w-full sm:w-auto text-center text-lg">
-            Explore Maintenance Plans
-          </Link>
+      <section 
+        className="relative px-4 py-32 md:py-48 text-center bg-cover bg-center bg-no-repeat mb-16 border-b-2 border-brand-orange shadow-[0_4px_20px_rgba(255,95,31,0.2)]"
+        style={{ backgroundImage: `url(${hammerHero})` }}
+      >
+        <div className="absolute inset-0 bg-wood-900/70"></div>
+        <div className="relative z-10 max-w-5xl mx-auto">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl text-text-main font-heading font-bold uppercase tracking-wider mb-8 drop-shadow-lg leading-tight">
+            Tired of Endless Searching for the Right Person to Fix What's Broken?
+          </h1>
+          <p className="text-xl md:text-2xl text-text-main font-body leading-relaxed mb-12 text-justify md:text-center max-w-4xl mx-auto drop-shadow-md">
+            Finding a repairman shouldn't be this hard. We specialize in plumbing, finishing, appliances, sheetrock, siding, and more.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-6">
+            <a href="tel:7062378184" className="bg-brand-orange hover:bg-brand-hover text-wood-900 font-heading font-bold uppercase tracking-wider px-8 py-4 rounded-md transition-all shadow-[0_0_15px_rgba(255,95,31,0.3)] hover:shadow-[0_0_25px_rgba(255,95,31,0.5)] w-full sm:w-auto text-center text-lg">
+              Request a Repair Now
+            </a>
+            <Link to="/maintenance-plans" className="border-2 border-brand-orange text-brand-orange hover:bg-brand-orange/10 font-heading font-bold uppercase tracking-wider px-8 py-4 rounded-md transition-colors w-full sm:w-auto text-center text-lg">
+              Explore Maintenance Plans
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -72,11 +80,15 @@ function Home() {
       </section>
 
       {/* 3. The Pivot */}
-      <section className="bg-wood-card border-y border-border-subtle py-24 shadow-2xl">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-5xl text-text-main font-heading font-bold uppercase tracking-wider mb-6">Stop Chasing Repairs.<br/>Start Protecting Your Property.</h2>
+      <section 
+        className="relative border-y border-brand-orange py-32 shadow-[0_4px_30px_rgba(255,95,31,0.15)] bg-cover bg-center bg-fixed"
+        style={{ backgroundImage: `url(${deckBeforeAfter})` }}
+      >
+        <div className="absolute inset-0 bg-wood-900/85"></div>
+        <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-5xl text-text-main font-heading font-bold uppercase tracking-wider mb-6 drop-shadow-lg">Stop Chasing Repairs.<br/>Start Protecting Your Property.</h2>
           <div className="h-1 w-24 bg-brand-orange mx-auto mb-8"></div>
-          <p className="text-xl text-text-sub leading-relaxed">
+          <p className="text-xl text-text-sub leading-relaxed drop-shadow-md font-bold">
             What if you never had to worry about changing filters, checking detectors, or remembering routine maintenance again? We realized our community needed a better way to manage their homes. That’s why we created a hands-off, worry-free approach to property care.
           </p>
         </div>

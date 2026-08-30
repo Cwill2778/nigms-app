@@ -74,7 +74,7 @@ function Signup() {
   return (
     <div className="w-full bg-wood-900 min-h-screen py-24 flex items-center justify-center">
       <div className="max-w-lg w-full px-4">
-        <div className="bg-wood-card border border-border-subtle p-8 md:p-12 rounded-xl shadow-2xl">
+        <div className="bg-wood-800 p-8 md:p-12 rounded-xl shadow-[8px_8px_16px_rgba(0,0,0,0.6),-4px_-4px_12px_rgba(255,255,255,0.02)] border border-wood-700/50">
           <h1 className="text-3xl text-text-main font-heading font-bold uppercase tracking-wider mb-2 text-center">Create Account</h1>
           <div className="h-1 w-16 bg-brand-orange mx-auto mb-6"></div>
           <p className="text-text-sub text-center mb-8">Sign up to manage your properties and track service requests.</p>
@@ -90,7 +90,7 @@ function Signup() {
                   onChange={(e) => setFirstName(e.target.value)} 
                   placeholder="First name" 
                   required 
-                  className="w-full bg-wood-900 border border-border-subtle rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors"
+                  className="w-full bg-wood-900 border-none rounded-md px-4 py-3 text-text-main shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow"
                 />
               </div>
               <div>
@@ -102,7 +102,7 @@ function Signup() {
                   onChange={(e) => setLastName(e.target.value)} 
                   placeholder="Last name" 
                   required 
-                  className="w-full bg-wood-900 border border-border-subtle rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors"
+                  className="w-full bg-wood-900 border-none rounded-md px-4 py-3 text-text-main shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow"
                 />
               </div>
             </div>
@@ -116,7 +116,7 @@ function Signup() {
                 onChange={(e) => setEmail(e.target.value)} 
                 placeholder="you@example.com" 
                 required 
-                className="w-full bg-wood-900 border border-border-subtle rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors"
+                className="w-full bg-wood-900 border-none rounded-md px-4 py-3 text-text-main shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow"
               />
             </div>
             
@@ -129,7 +129,7 @@ function Signup() {
                 onChange={(e) => setPassword(e.target.value)} 
                 placeholder="At least 6 characters" 
                 required 
-                className="w-full bg-wood-900 border border-border-subtle rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors"
+                className="w-full bg-wood-900 border-none rounded-md px-4 py-3 text-text-main shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow"
               />
             </div>
             
@@ -142,7 +142,7 @@ function Signup() {
                 onChange={(e) => setConfirmPassword(e.target.value)} 
                 placeholder="Confirm password" 
                 required 
-                className="w-full bg-wood-900 border border-border-subtle rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors"
+                className="w-full bg-wood-900 border-none rounded-md px-4 py-3 text-text-main shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow"
               />
             </div>
 

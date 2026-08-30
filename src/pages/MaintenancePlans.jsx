@@ -24,6 +24,8 @@ function FAQAccordion({ question, answer }) {
   );
 }
 
+import deckStain from '../assets/deckStainBeforeAndAfter.webp';
+
 function MaintenancePlans() {
   useScrollToTop();
   usePageMeta(
@@ -33,16 +35,23 @@ function MaintenancePlans() {
 
   return (
     <div className="w-full bg-wood-900 min-h-screen pb-24">
-      <section className="max-w-7xl mx-auto px-4 py-24">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-6xl text-text-main font-heading font-bold uppercase tracking-wider mb-6">
+      <section 
+        className="relative px-4 py-32 md:py-48 text-center bg-cover bg-center bg-no-repeat mb-16 border-b-2 border-brand-orange shadow-[0_4px_20px_rgba(255,95,31,0.2)]"
+        style={{ backgroundImage: `url(${deckStain})` }}
+      >
+        <div className="absolute inset-0 bg-wood-900/80"></div>
+        <div className="relative z-10 max-w-4xl mx-auto">
+          <h1 className="text-4xl md:text-6xl text-text-main font-heading font-bold uppercase tracking-wider mb-6 drop-shadow-lg">
             Stop Chasing Repairs. Start Protecting Your Property.
           </h1>
           <div className="h-1 w-24 bg-brand-orange mx-auto mb-8"></div>
-          <p className="text-xl text-text-sub leading-relaxed max-w-4xl mx-auto">
+          <p className="text-xl text-text-sub leading-relaxed max-w-4xl mx-auto drop-shadow-md">
             Routine maintenance is the secret to avoiding massive repair bills, but it’s the first thing that falls off a busy homeowner's to-do list. Our localized subscription tiers put your property care on autopilot.
           </p>
         </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4">
 
         <h2 className="text-3xl text-text-main font-heading font-bold uppercase tracking-wider mb-8 text-center">Choose Your Level of Care</h2>
 

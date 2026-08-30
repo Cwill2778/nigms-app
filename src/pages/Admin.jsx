@@ -126,48 +126,70 @@ function Admin() {
   }
 
   return (
-    <div className="admin" style={{ position: 'relative' }}>
-      {/* Admin Header Bar with full profile */}
-      <div className="admin-header-bar">
-        <div className="admin-user-info">
-          <p className="admin-user-name">{adminProfile?.first_name} {adminProfile?.last_name}</p>
-          <div className="admin-user-details">
-            <span className="admin-user-id">EMP-{adminProfile?.employee_id}</span>
-            <span className="admin-user-email">{adminProfile?.email}</span>
+    <div className="admin" style={{ display: 'flex', minHeight: '100vh', padding: 0, maxWidth: '100%', margin: 0 }}>
+      {/* SIDEBAR */}
+      <div className="admin-sidebar" style={{ width: '250px', background: 'var(--admin-panel)', borderRight: '1px solid var(--admin-border)', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ padding: '24px', borderBottom: '1px solid var(--admin-border)' }}>
+          <h2 style={{ margin: '0 0 16px 0', fontSize: '1.2rem', color: 'var(--admin-accent)' }}>COMMAND CENTER</h2>
+          <div className="admin-user-info" style={{ marginBottom: '16px' }}>
+            <p className="admin-user-name" style={{ fontSize: '0.9rem', margin: '0 0 4px 0', fontWeight: 'bold' }}>{adminProfile?.first_name} {adminProfile?.last_name}</p>
+            <div className="admin-user-details" style={{ display: 'flex', flexDirection: 'column', gap: '2px', fontSize: '0.75rem', color: 'var(--admin-text-sub)' }}>
+              <span>EMP-{adminProfile?.employee_id}</span>
+            </div>
           </div>
+          <span className="admin-status-badge" style={{ display: 'inline-block', fontSize: '0.75rem', padding: '4px 8px', background: 'rgba(76, 175, 80, 0.2)', color: '#4caf50', borderRadius: '4px', border: '1px solid #4caf50' }}>🟢 Online</span>
         </div>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <span className="admin-status-badge">🟢 Online</span>
-          <button className="btn-sm btn-sm--danger" onClick={handleLogout}>Logout</button>
-        </div>
-      </div>
-
-      <div className="admin-tabs-group">
-        <div className="admin-tabs">
+        
+        <div style={{ flex: 1, padding: '16px 0', overflowY: 'auto' }}>
           {['dashboard', 'inbox', 'crm', 'assets', 'dispatch', 'billing', 'team', 'content', 'settings'].map((t) => (
             <button
               key={t}
-              className={`admin-tab${tab === t ? ' admin-tab--active' : ''}`}
               onClick={() => setTab(t)}
+              style={{
+                display: 'block',
+                width: '100%',
+                textAlign: 'left',
+                padding: '12px 24px',
+                background: tab === t ? 'var(--admin-accent-glow)' : 'transparent',
+                border: 'none',
+                borderLeft: tab === t ? '4px solid var(--admin-accent)' : '4px solid transparent',
+                borderRadius: '0',
+                color: tab === t ? 'var(--admin-text)' : 'var(--admin-text-sub)',
+                boxShadow: 'none',
+                fontFamily: 'var(--heading)',
+                fontSize: '0.9rem',
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+                cursor: 'pointer',
+                marginBottom: '4px',
+                transition: 'all 0.2s',
+              }}
             >
               {t}
             </button>
           ))}
         </div>
+        <div style={{ padding: '24px', borderTop: '1px solid var(--admin-border)' }}>
+          <button className="btn-sm btn-sm--danger" onClick={handleLogout} style={{ width: '100%' }}>Logout</button>
+        </div>
       </div>
 
-      <div className="admin-panel">
-        {tab === 'dashboard' && <DashboardPanel />}
-        {tab === 'inbox' && <InboxPanel />}
-        {tab === 'crm' && <CustomersPanel />}
-        {tab === 'assets' && <AssetsPanel />}
-        {tab === 'dispatch' && <WorkOrdersPanel />}
-        {tab === 'billing' && <BillingPanel />}
-        {tab === 'team' && <TeamPanel />}
-        {tab === 'content' && <ContentPanel />}
-        {tab === 'settings' && <SettingsPanel />}
+      {/* MAIN CONTENT AREA */}
+      <div style={{ flex: 1, padding: '32px', overflowY: 'auto', background: 'var(--admin-bg)' }}>
+        <div className="admin-panel" style={{ minHeight: 'calc(100vh - 64px)', margin: '0 auto', maxWidth: '1400px' }}>
+          {tab === 'dashboard' && <DashboardPanel />}
+          {tab === 'inbox' && <InboxPanel adminProfile={adminProfile} />}
+          {tab === 'crm' && <CustomersPanel />}
+          {tab === 'assets' && <AssetsPanel />}
+          {tab === 'dispatch' && <WorkOrdersPanel />}
+          {tab === 'billing' && <BillingPanel />}
+          {tab === 'team' && <TeamPanel />}
+          {tab === 'content' && <ContentPanel />}
+          {tab === 'settings' && <SettingsPanel />}
+        </div>
       </div>
     </div>
+
   );
 }
 
@@ -253,12 +275,12 @@ function DashboardPanel() {
 }
 
 // Inbox Panel — Unified Communications (Chat + Contacts + Quotes)
-function InboxPanel() {
+function InboxPanel({ adminProfile }) {
   const [inboxTab, setInboxTab] = useState('chat');
 
   return (
     <>
-      <h2>📬 Inbox</h2>
+      <h2>📩 Inbox</h2>
       <div className="admin-subtabs">
         {['chat', 'quotes', 'contact forms'].map((t) => (
           <button key={t} className={`admin-subtab${inboxTab === t ? ' admin-subtab--active' : ''}`} onClick={() => setInboxTab(t)}>
@@ -267,7 +289,7 @@ function InboxPanel() {
         ))}
       </div>
       <div style={{ marginTop: '16px' }}>
-        {inboxTab === 'chat' && <ChatPanel />}
+        {inboxTab === 'chat' && <ChatPanel adminProfile={adminProfile} />}
         {inboxTab === 'quotes' && <QuotesPanel />}
         {inboxTab === 'contact forms' && <ContactsPanel />}
       </div>
@@ -490,21 +512,7 @@ function CustomersPanel() {
 
   async function handleAddProperty(e) {
     e.preventDefault();
-    const { error } = await supabase.from('properties').insert({
-      owner_id: selected.id,
-      address_line_1: propertyForm.address_line_1,
-      address_line_2: propertyForm.address_line_2 || null,
-      city: propertyForm.city,
-      state: propertyForm.state,
-      zip_code: propertyForm.zip_code,
-      zone: propertyForm.zone,
-      gate_code: propertyForm.gate_code || null,
-      square_footage: propertyForm.square_footage ? parseInt(propertyForm.square_footage) : null,
-      unit_count: parseInt(propertyForm.unit_count) || 1,
-      year_built: propertyForm.year_built ? parseInt(propertyForm.year_built) : null,
-      notes: propertyForm.notes || null,
-      status: propertyForm.status,
-    });
+    const { error } = await supabase.from('properties').insert({ ...propertyForm, owner_id: selected.id });
     if (!error) {
       fetchProperties(selected.id);
       setShowPropertyForm(false);
@@ -528,296 +536,296 @@ function CustomersPanel() {
 
   function openDetail(customer) {
     setSelected(customer);
-    fetchProperties(customer.id);
     setView('detail');
+    fetchProperties(customer.id);
   }
 
   function openEdit(customer) {
-    setForm({
-      first_name: customer.first_name,
-      last_name: customer.last_name,
-      email: customer.email,
-      phone: customer.phone || '',
-      secondary_phone: customer.secondary_phone || '',
-      role: customer.role,
-      status: customer.status,
-      subscription_tier: customer.subscription_tier,
-      notes: customer.notes || '',
-    });
+    setSelected(customer);
+    setForm(customer);
     setView('edit');
   }
+
+  const roleColors = { homeowner: 'var(--accent)', landlord: '#4caf50', tenant: '#2196f3' };
+  const statusColors = { lead: '#ff9800', active: '#4caf50', inactive: '#9e9e9e', past: '#f44336' };
+  const tierLabels = { none: 'None', essential: 'Essential', proactive: 'Proactive', comprehensive: 'Comprehensive' };
 
   const filtered = customers.filter((c) => {
     if (filterRole !== 'all' && c.role !== filterRole) return false;
     if (filterStatus !== 'all' && c.status !== filterStatus) return false;
     if (searchTerm) {
-      const term = searchTerm.toLowerCase();
-      return (c.first_name + ' ' + c.last_name).toLowerCase().includes(term) || c.email.toLowerCase().includes(term) || (c.phone || '').includes(term);
+      const q = searchTerm.toLowerCase();
+      return (c.first_name + ' ' + c.last_name).toLowerCase().includes(q) || c.email.toLowerCase().includes(q);
     }
     return true;
   });
 
-  const roleColors = { landlord: '#2196f3', tenant: '#9c27b0', homeowner: '#4caf50' };
-  const statusColors = { lead: '#ff8a00', active: '#4caf50', inactive: '#999', past: '#f44336' };
-  const tierLabels = { none: '—', essential: 'Essential', proactive: 'Proactive', comprehensive: 'Comprehensive' };
-  const zones = ['North Rome', 'West Rome', 'East Rome', 'South Rome', 'Downtown Rome', 'Clocktower Hill', 'Coosa', 'Armuchee', 'Lindale', 'Floyd County'];
+  return (
+    <div style={{ position: 'relative', minHeight: '100%' }}>
+      {/* MAIN LIST */}
+      <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+        <div className="customers-header">
+          <h2>Customers ({filtered.length})</h2>
+          <button className="cta-button" style={{ padding: '8px 16px', fontSize: '0.8rem' }} onClick={() => { resetForm(); setView('add'); setSelected(null); }}>+ Add Customer</button>
+        </div>
 
-  // ADD / EDIT FORM VIEW
-  if (view === 'add' || view === 'edit') {
-    return (
-      <>
-        <button className="btn-sm" onClick={() => { setView(view === 'edit' ? 'detail' : 'list'); resetForm(); }}>&larr; Back</button>
-        <h2 style={{ marginTop: '16px' }}>{view === 'add' ? 'Add New Customer' : `Edit: ${form.first_name} ${form.last_name}`}</h2>
-        <form className="admin-form" onSubmit={view === 'add' ? handleAddCustomer : handleEditCustomer} style={{ maxWidth: '700px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-            <div>
-              <label>First Name *</label>
-              <input type="text" value={form.first_name} onChange={(e) => setForm({ ...form, first_name: e.target.value })} required />
-            </div>
-            <div>
-              <label>Last Name *</label>
-              <input type="text" value={form.last_name} onChange={(e) => setForm({ ...form, last_name: e.target.value })} required />
-            </div>
-          </div>
-          <div>
-            <label>Email *</label>
-            <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-            <div>
-              <label>Phone</label>
-              <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-            </div>
-            <div>
-              <label>Secondary Phone</label>
-              <input type="tel" value={form.secondary_phone} onChange={(e) => setForm({ ...form, secondary_phone: e.target.value })} />
-            </div>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
-            <div>
-              <label>Role *</label>
-              <select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}>
-                <option value="homeowner">Homeowner</option>
-                <option value="landlord">Landlord</option>
-                <option value="tenant">Tenant</option>
-              </select>
-            </div>
-            <div>
-              <label>Status</label>
-              <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
-                <option value="lead">Lead</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="past">Past</option>
-              </select>
-            </div>
-            <div>
-              <label>Subscription</label>
-              <select value={form.subscription_tier} onChange={(e) => setForm({ ...form, subscription_tier: e.target.value })}>
-                <option value="none">None</option>
-                <option value="essential">Essential ($99/mo)</option>
-                <option value="proactive">Proactive ($199/mo)</option>
-                <option value="comprehensive">Comprehensive ($399/mo)</option>
-              </select>
-            </div>
-          </div>
-          <div>
-            <label>Internal Notes</label>
-            <textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="Admin-only notes about this customer..." />
-          </div>
-          <button type="submit" className="cta-button" style={{ alignSelf: 'flex-start', padding: '10px 20px', fontSize: '0.8rem' }}>
-            {view === 'add' ? 'Create Customer' : 'Save Changes'}
-          </button>
-        </form>
-      </>
-    );
-  }
+        <div className="customers-filters">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search by name or email..."
+            className="customers-search"
+          />
+          <select value={filterRole} onChange={(e) => setFilterRole(e.target.value)} className="customers-filter-select">
+            <option value="all">All Roles</option>
+            <option value="homeowner">Homeowners</option>
+            <option value="landlord">Landlords</option>
+            <option value="tenant">Tenants</option>
+          </select>
+          <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} className="customers-filter-select">
+            <option value="all">All Statuses</option>
+            <option value="lead">Leads</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="past">Past</option>
+          </select>
+        </div>
 
-  // DETAIL VIEW
-  if (view === 'detail' && selected) {
-    return (
-      <>
-        <button className="btn-sm" onClick={() => { setView('list'); setSelected(null); }}>&larr; All Customers</button>
-        <div className="customer-detail">
-          <div className="customer-detail-header">
-            <div>
-              <h2 style={{ margin: 0 }}>{selected.first_name} {selected.last_name}</h2>
-              <div style={{ display: 'flex', gap: '8px', marginTop: '8px', flexWrap: 'wrap' }}>
-                <span className="customer-badge" style={{ background: roleColors[selected.role] }}>{selected.role}</span>
-                <span className="customer-badge" style={{ background: statusColors[selected.status] }}>{selected.status}</span>
-                {selected.subscription_tier !== 'none' && (
-                  <span className="customer-badge" style={{ background: 'var(--accent)' }}>{tierLabels[selected.subscription_tier]}</span>
-                )}
-              </div>
-            </div>
-            <div style={{ display: 'flex', gap: '6px' }}>
-              <button className="btn-sm" onClick={() => openEdit(selected)}>Edit</button>
-              <button className="btn-sm btn-sm--danger" onClick={() => handleDeleteCustomer(selected.id)}>Delete</button>
-            </div>
-          </div>
+        {filtered.length === 0 ? (
+          <p className="empty-state">No customers found.</p>
+        ) : (
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                {view === 'list' && <th>Role & Status</th>}
+                {view === 'list' && <th>Subscription</th>}
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((c) => (
+                <tr key={c.id} style={{ background: selected?.id === c.id ? 'var(--admin-accent-glow)' : 'transparent' }}>
+                  <td>
+                    <strong>{c.first_name} {c.last_name}</strong><br />
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-sub)' }}>{c.email}</span>
+                  </td>
+                  {view === 'list' && (
+                    <td>
+                      <span className="customer-badge" style={{ background: roleColors[c.role] }}>{c.role}</span>
+                      <span className="customer-badge" style={{ background: statusColors[c.status] }}>{c.status}</span>
+                    </td>
+                  )}
+                  {view === 'list' && (
+                    <td>{tierLabels[c.subscription_tier]}</td>
+                  )}
+                  <td>
+                    <button className="btn-sm" onClick={() => openDetail(c)}>View</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
 
-          <div className="customer-detail-body">
-            <div>
-              <div className="customer-detail-grid">
-                <div className="detail-field"><span className="detail-label">Email</span><a href={`mailto:${selected.email}`}>{selected.email}</a></div>
-                <div className="detail-field"><span className="detail-label">Phone</span>{selected.phone ? <a href={`tel:${selected.phone}`}>{selected.phone}</a> : '—'}</div>
-                <div className="detail-field"><span className="detail-label">Secondary</span>{selected.secondary_phone || '—'}</div>
-                <div className="detail-field"><span className="detail-label">Subscription</span>{tierLabels[selected.subscription_tier]}</div>
-                <div className="detail-field"><span className="detail-label">Customer Since</span>{new Date(selected.created_at).toLocaleDateString()}</div>
-                <div className="detail-field"><span className="detail-label">Stripe ID</span>{selected.stripe_customer_id || '—'}</div>
-              </div>
-
-              {selected.notes && (
-                <div className="detail-notes" style={{ marginTop: '16px' }}>
-                  <span className="detail-label">Internal Notes</span>
-                  <p>{selected.notes}</p>
-                </div>
-              )}
-            </div>
-
-            {/* Properties Section */}
-            <div className="customer-properties">
+      {/* MODAL POPUP */}
+      {view !== 'list' && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
+          <div style={{ background: 'var(--admin-card)', border: '1px solid var(--admin-border)', borderRadius: '12px', padding: '32px', width: '100%', maxWidth: '900px', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 20px 40px rgba(0,0,0,0.8)' }}>
+          
+          {(view === 'add' || view === 'edit') && (
+            <>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                <h3>🏠 Properties ({properties.length})</h3>
-                <button className="btn-sm btn-sm--success" onClick={() => setShowPropertyForm(true)}>+ Add Property</button>
+                <h2 style={{ margin: 0 }}>{view === 'add' ? 'Add New Customer' : `Edit: ${form.first_name} ${form.last_name}`}</h2>
+                <button className="btn-sm" onClick={() => { setView(view === 'edit' ? 'detail' : 'list'); resetForm(); }}>Close</button>
+              </div>
+              <form className="admin-form" onSubmit={view === 'add' ? handleAddCustomer : handleEditCustomer} style={{ maxWidth: '100%' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <div>
+                    <label>First Name *</label>
+                    <input type="text" value={form.first_name} onChange={(e) => setForm({ ...form, first_name: e.target.value })} required />
+                  </div>
+                  <div>
+                    <label>Last Name *</label>
+                    <input type="text" value={form.last_name} onChange={(e) => setForm({ ...form, last_name: e.target.value })} required />
+                  </div>
+                </div>
+                <div>
+                  <label>Email *</label>
+                  <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <div>
+                    <label>Phone</label>
+                    <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                  </div>
+                  <div>
+                    <label>Secondary Phone</label>
+                    <input type="tel" value={form.secondary_phone} onChange={(e) => setForm({ ...form, secondary_phone: e.target.value })} />
+                  </div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+                  <div>
+                    <label>Role *</label>
+                    <select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}>
+                      <option value="homeowner">Homeowner</option>
+                      <option value="landlord">Landlord</option>
+                      <option value="tenant">Tenant</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label>Status</label>
+                    <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
+                      <option value="lead">Lead</option>
+                      <option value="active">Active</option>
+                      <option value="inactive">Inactive</option>
+                      <option value="past">Past</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label>Subscription</label>
+                    <select value={form.subscription_tier} onChange={(e) => setForm({ ...form, subscription_tier: e.target.value })}>
+                      <option value="none">None</option>
+                      <option value="essential">Essential ($99/mo)</option>
+                      <option value="proactive">Proactive ($199/mo)</option>
+                      <option value="comprehensive">Comprehensive ($399/mo)</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label>Internal Notes</label>
+                  <textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="Admin-only notes about this customer..." />
+                </div>
+                <button type="submit" className="cta-button" style={{ alignSelf: 'flex-start', padding: '10px 20px', fontSize: '0.8rem' }}>
+                  {view === 'add' ? 'Create Customer' : 'Save Changes'}
+                </button>
+              </form>
+            </>
+          )}
+
+          {view === 'detail' && selected && (
+            <>
+              <div className="customer-detail-header" style={{ marginBottom: '24px' }}>
+                <div>
+                  <h2 style={{ margin: 0 }}>{selected.first_name} {selected.last_name}</h2>
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '8px', flexWrap: 'wrap' }}>
+                    <span className="customer-badge" style={{ background: roleColors[selected.role] }}>{selected.role}</span>
+                    <span className="customer-badge" style={{ background: statusColors[selected.status] }}>{selected.status}</span>
+                    {selected.subscription_tier !== 'none' && (
+                      <span className="customer-badge" style={{ background: 'var(--admin-accent)' }}>{tierLabels[selected.subscription_tier]}</span>
+                    )}
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  <button className="btn-sm" onClick={() => openEdit(selected)}>Edit</button>
+                  <button className="btn-sm" onClick={() => { setView('list'); setSelected(null); }}>Close</button>
+                </div>
               </div>
 
-              {showPropertyForm && (
-                <form className="admin-form" onSubmit={handleAddProperty} style={{ marginBottom: '16px', maxWidth: '100%' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                    <div><label>Address Line 1 *</label><input type="text" value={propertyForm.address_line_1} onChange={(e) => setPropertyForm({ ...propertyForm, address_line_1: e.target.value })} required /></div>
-                    <div><label>Address Line 2</label><input type="text" value={propertyForm.address_line_2} onChange={(e) => setPropertyForm({ ...propertyForm, address_line_2: e.target.value })} /></div>
+              <div className="customer-detail-body">
+                <div>
+                  <div className="customer-detail-grid" style={{ marginBottom: '24px' }}>
+                    <div className="detail-field"><span className="detail-label">Email</span><a href={`mailto:${selected.email}`}>{selected.email}</a></div>
+                    <div className="detail-field"><span className="detail-label">Phone</span>{selected.phone ? <a href={`tel:${selected.phone}`}>{selected.phone}</a> : '—'}</div>
+                    <div className="detail-field"><span className="detail-label">Secondary</span>{selected.secondary_phone || '—'}</div>
+                    <div className="detail-field"><span className="detail-label">Subscription</span>{tierLabels[selected.subscription_tier]}</div>
+                    <div className="detail-field"><span className="detail-label">Customer Since</span>{new Date(selected.created_at).toLocaleDateString()}</div>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
-                    <div><label>City</label><input type="text" value={propertyForm.city} onChange={(e) => setPropertyForm({ ...propertyForm, city: e.target.value })} /></div>
-                    <div><label>State</label><input type="text" value={propertyForm.state} onChange={(e) => setPropertyForm({ ...propertyForm, state: e.target.value })} /></div>
-                    <div><label>ZIP *</label><input type="text" value={propertyForm.zip_code} onChange={(e) => setPropertyForm({ ...propertyForm, zip_code: e.target.value })} required /></div>
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
-                    <div>
-                      <label>Zone *</label>
-                      <select value={propertyForm.zone} onChange={(e) => setPropertyForm({ ...propertyForm, zone: e.target.value })}>
-                        {zones.map((z) => <option key={z} value={z}>{z}</option>)}
-                      </select>
+                  {selected.notes && (
+                    <div className="detail-notes">
+                      <span className="detail-label">Internal Notes</span>
+                      <p>{selected.notes}</p>
                     </div>
-                    <div><label>Gate Code</label><input type="text" value={propertyForm.gate_code} onChange={(e) => setPropertyForm({ ...propertyForm, gate_code: e.target.value })} /></div>
-                    <div>
-                      <label>Status</label>
-                      <select value={propertyForm.status} onChange={(e) => setPropertyForm({ ...propertyForm, status: e.target.value })}>
-                        <option value="active">Active</option>
-                        <option value="vacant">Vacant</option>
-                        <option value="under_contract">Under Contract</option>
-                        <option value="inactive">Inactive</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
-                    <div><label>Sq Ft</label><input type="number" value={propertyForm.square_footage} onChange={(e) => setPropertyForm({ ...propertyForm, square_footage: e.target.value })} /></div>
-                    <div><label>Units</label><input type="number" value={propertyForm.unit_count} onChange={(e) => setPropertyForm({ ...propertyForm, unit_count: e.target.value })} /></div>
-                    <div><label>Year Built</label><input type="number" value={propertyForm.year_built} onChange={(e) => setPropertyForm({ ...propertyForm, year_built: e.target.value })} /></div>
-                  </div>
-                  <div><label>Notes</label><textarea value={propertyForm.notes} onChange={(e) => setPropertyForm({ ...propertyForm, notes: e.target.value })} placeholder="Beware of dog, meter location, etc." /></div>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <button type="submit" className="cta-button" style={{ padding: '8px 16px', fontSize: '0.8rem' }}>Save Property</button>
-                    <button type="button" className="btn-sm" onClick={() => { setShowPropertyForm(false); resetPropertyForm(); }}>Cancel</button>
-                  </div>
-                </form>
-              )}
+                  )}
+                </div>
 
-              {properties.length === 0 && !showPropertyForm && (
-                <p className="empty-state">No properties on file.</p>
-              )}
-
-              <div className="properties-grid">
-                {properties.map((p) => (
-                  <div key={p.id} className="property-card">
-                    <div className="property-card-header">
-                      <div>
-                        <strong>{p.address_line_1}</strong>
-                        {p.address_line_2 && <span>, {p.address_line_2}</span>}
-                        <br />
-                        <span className="property-meta">{p.city}, {p.state} {p.zip_code} — {p.zone}</span>
-                      </div>
-                      <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                        <span className="customer-badge" style={{ background: p.status === 'active' ? '#4caf50' : p.status === 'vacant' ? '#ff8a00' : '#999' }}>{p.status}</span>
-                        <button className="btn-sm btn-sm--danger" onClick={() => handleDeleteProperty(p.id)}>×</button>
-                      </div>
-                    </div>
-                    <div className="property-card-details">
-                      {p.gate_code && <span>🔑 {p.gate_code}</span>}
-                      {p.square_footage && <span>📐 {p.square_footage.toLocaleString()} sqft</span>}
-                      {p.unit_count > 1 && <span>🏘️ {p.unit_count} units</span>}
-                      {p.year_built && <span>🏗️ Built {p.year_built}</span>}
-                    </div>
-                    {p.notes && <p className="property-notes">{p.notes}</p>}
+                <div className="customer-properties">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                    <h3 style={{ margin: 0 }}>Properties ({properties.length})</h3>
+                    {!showPropertyForm && <button className="btn-sm" onClick={() => setShowPropertyForm(true)}>+ Add Property</button>}
                   </div>
-                ))}
+
+                  {showPropertyForm && (
+                    <form className="admin-form" onSubmit={handleAddProperty} style={{ marginBottom: '24px', padding: '16px', background: 'var(--bg-primary)', borderRadius: '4px', border: '1px solid var(--border)' }}>
+                      <h4 style={{ marginBottom: '12px' }}>New Property</h4>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                        <div>
+                          <label>Address Line 1 *</label>
+                          <input type="text" value={propertyForm.address_line_1} onChange={(e) => setPropertyForm({ ...propertyForm, address_line_1: e.target.value })} required />
+                        </div>
+                        <div>
+                          <label>Address Line 2</label>
+                          <input type="text" value={propertyForm.address_line_2} onChange={(e) => setPropertyForm({ ...propertyForm, address_line_2: e.target.value })} />
+                        </div>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+                        <div>
+                          <label>City *</label>
+                          <input type="text" value={propertyForm.city} onChange={(e) => setPropertyForm({ ...propertyForm, city: e.target.value })} required />
+                        </div>
+                        <div>
+                          <label>State *</label>
+                          <input type="text" value={propertyForm.state} onChange={(e) => setPropertyForm({ ...propertyForm, state: e.target.value })} required />
+                        </div>
+                        <div>
+                          <label>Zip Code</label>
+                          <input type="text" value={propertyForm.zip_code} onChange={(e) => setPropertyForm({ ...propertyForm, zip_code: e.target.value })} />
+                        </div>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                        <div>
+                          <label>Zone</label>
+                          <select value={propertyForm.zone} onChange={(e) => setPropertyForm({ ...propertyForm, zone: e.target.value })}>
+                            <option value="North Rome">North Rome</option>
+                            <option value="South Rome">South Rome</option>
+                            <option value="West Rome">West Rome</option>
+                            <option value="East Rome">East Rome</option>
+                            <option value="Surrounding County">Surrounding County</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label>Gate Code / Access</label>
+                          <input type="text" value={propertyForm.gate_code} onChange={(e) => setPropertyForm({ ...propertyForm, gate_code: e.target.value })} />
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
+                        <button type="submit" className="cta-button" style={{ padding: '8px 16px', fontSize: '0.8rem' }}>Save Property</button>
+                        <button type="button" className="btn-sm" onClick={() => { setShowPropertyForm(false); resetPropertyForm(); }}>Cancel</button>
+                      </div>
+                    </form>
+                  )}
+
+                  <div style={{ display: 'grid', gap: '12px' }}>
+                    {properties.map((p) => (
+                      <div key={p.id} style={{ background: 'var(--bg-primary)', padding: '16px', borderRadius: '4px', border: '1px solid var(--border)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <p style={{ margin: '0 0 4px 0', fontWeight: 600 }}>🏠 {p.address_line_1}</p>
+                          <button className="btn-sm btn-sm--danger" onClick={() => handleDeleteProperty(p.id)} style={{ padding: '2px 6px', fontSize: '0.7rem' }}>Delete</button>
+                        </div>
+                        <p style={{ margin: '0 0 8px 0', fontSize: '0.8rem', color: 'var(--text-sub)' }}>{p.city}, {p.state} {p.zip_code}</p>
+                        <div style={{ display: 'flex', gap: '12px', fontSize: '0.75rem' }}>
+                          <span style={{ background: 'var(--bg-secondary)', padding: '2px 6px', borderRadius: '3px' }}>Zone: {p.zone}</span>
+                          {p.gate_code && <span style={{ background: 'rgba(255,138,0,0.1)', color: 'var(--accent)', padding: '2px 6px', borderRadius: '3px' }}>Gate: {p.gate_code}</span>}
+                        </div>
+                      </div>
+                    ))}
+                    {properties.length === 0 && !showPropertyForm && <p style={{ fontSize: '0.85rem', color: 'var(--text-sub)' }}>No properties added.</p>}
+                  </div>
+                </div>
               </div>
-            </div>
+            </>
+          )}
+
           </div>
         </div>
-      </>
-    );
-  }
-
-  // LIST VIEW
-  return (
-    <>
-      <div className="customers-header">
-        <h2>Customers ({filtered.length})</h2>
-        <button className="cta-button" style={{ padding: '8px 16px', fontSize: '0.8rem' }} onClick={() => { resetForm(); setView('add'); }}>+ Add Customer</button>
-      </div>
-
-      <div className="customers-filters">
-        <input
-          type="text"
-          placeholder="Search name, email, or phone..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="customers-search"
-        />
-        <select value={filterRole} onChange={(e) => setFilterRole(e.target.value)} className="customers-filter-select">
-          <option value="all">All Roles</option>
-          <option value="homeowner">Homeowners</option>
-          <option value="landlord">Landlords</option>
-          <option value="tenant">Tenants</option>
-        </select>
-        <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} className="customers-filter-select">
-          <option value="all">All Statuses</option>
-          <option value="lead">Leads</option>
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
-          <option value="past">Past</option>
-        </select>
-      </div>
-
-      {filtered.length === 0 ? (
-        <p className="empty-state">No customers found.</p>
-      ) : (
-        <table className="admin-table">
-          <thead>
-            <tr><th>Name</th><th>Role</th><th>Status</th><th>Email</th><th>Subscription</th><th>Since</th><th></th></tr>
-          </thead>
-          <tbody>
-            {filtered.map((c) => (
-              <tr key={c.id}>
-                <td style={{ fontWeight: 600 }}>{c.first_name} {c.last_name}</td>
-                <td><span className="customer-badge" style={{ background: roleColors[c.role] }}>{c.role}</span></td>
-                <td><span className="customer-badge" style={{ background: statusColors[c.status] }}>{c.status}</span></td>
-                <td>{c.email}</td>
-                <td>{tierLabels[c.subscription_tier]}</td>
-                <td>{new Date(c.created_at).toLocaleDateString()}</td>
-                <td><button className="btn-sm" onClick={() => openDetail(c)}>View</button></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
       )}
-    </>
+    </div>
   );
 }
 
-// Analytics Panel
+
 function AnalyticsPanel() {
   const [stats, setStats] = useState({ total: 0, today: 0, pages: [] });
   const [scrollStats, setScrollStats] = useState([]);
@@ -1100,7 +1108,7 @@ function AnalyticsPanel() {
         <p style={{ fontSize: '0.85rem', color: 'var(--text-sub)' }}>No device data yet (data populates after migration is applied).</p>
       ) : (
         <>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
             <div style={{ height: 200 }}>
               <h3 style={{ fontSize: '0.95rem', marginBottom: '0.5rem', textAlign: 'center' }}>Device Type</h3>
               <ResponsiveContainer>
@@ -1250,7 +1258,7 @@ function AnalyticsPanel() {
         <p style={{ fontSize: '0.85rem', color: 'var(--text-sub)' }}>No exit data yet.</p>
       ) : (
         <>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '1rem' }}>
             <div style={{ height: 220 }}>
               <h3 style={{ fontSize: '0.95rem', marginBottom: '0.5rem', textAlign: 'center' }}>Exit Types</h3>
               <ResponsiveContainer>
@@ -1360,7 +1368,7 @@ function AnalyticsPanel() {
         <p style={{ fontSize: '0.85rem', color: 'var(--text-sub)' }}>No attribution data yet.</p>
       ) : (
         <>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
             <div style={{ height: 250 }}>
               <h3 style={{ fontSize: '0.95rem', marginBottom: '0.5rem', textAlign: 'center' }}>Traffic Channels</h3>
               <ResponsiveContainer>
@@ -1663,11 +1671,16 @@ function SettingsPanel() {
 }
 
 // Chat Panel
-function ChatPanel() {
+function ChatPanel({ adminProfile }) {
   const [conversations, setConversations] = useState([]);
   const [activeConvo, setActiveConvo] = useState(null);
   const [messages, setMessages] = useState([]);
   const [reply, setReply] = useState('');
+  
+  // Customer Lookup State
+  const [lookupEmail, setLookupEmail] = useState('');
+  const [lookupResult, setLookupResult] = useState(null);
+  const [lookupLoading, setLookupLoading] = useState(false);
 
   useEffect(() => {
     fetchConversations();
@@ -1704,16 +1717,29 @@ function ChatPanel() {
       .eq('conversation_id', id)
       .order('created_at');
     setMessages(data || []);
+    
+    // Auto-fill lookup email if visitor provided it
+    const convo = conversations.find(c => c.id === id);
+    if (convo && convo.visitor_email) {
+      setLookupEmail(convo.visitor_email);
+      handleLookup(convo.visitor_email);
+    } else {
+      setLookupEmail('');
+      setLookupResult(null);
+    }
   }
 
   async function sendReply(e) {
     e.preventDefault();
     if (!reply.trim() || !activeConvo) return;
 
+    const agentName = adminProfile?.first_name || 'Support';
+    const messageContent = `[Agent ${agentName}]: ${reply.trim()}`;
+
     await supabase.from('chat_messages').insert({
       conversation_id: activeConvo,
       sender: 'admin',
-      message: reply.trim(),
+      message: messageContent,
     });
 
     await supabase.from('chat_conversations').update({ updated_at: new Date().toISOString() }).eq('id', activeConvo);
@@ -1727,9 +1753,22 @@ function ChatPanel() {
     if (activeConvo === id) { setActiveConvo(null); setMessages([]); }
   }
 
+  async function handleLookup(emailOverride) {
+    const emailToSearch = typeof emailOverride === 'string' ? emailOverride : lookupEmail;
+    if (!emailToSearch.trim()) return;
+    setLookupLoading(true);
+    const { data } = await supabase.from('customers').select('*').ilike('email', `%${emailToSearch.trim()}%`).limit(1);
+    if (data && data.length > 0) {
+      setLookupResult(data[0]);
+    } else {
+      setLookupResult({ notFound: true });
+    }
+    setLookupLoading(false);
+  }
+
   return (
     <div style={{ display: 'flex', gap: '20px', minHeight: '400px' }}>
-      <div style={{ width: '250px', borderRight: '1px solid var(--border)', paddingRight: '16px' }}>
+      <div style={{ width: '250px', borderRight: '1px solid var(--admin-border)', paddingRight: '16px' }}>
         <h3 style={{ marginBottom: '12px' }}>Conversations</h3>
         {conversations.length === 0 && <p style={{ fontSize: '0.8rem' }}>No conversations yet.</p>}
         {conversations.map((c) => (
@@ -1742,57 +1781,109 @@ function ChatPanel() {
               textAlign: 'left',
               padding: '10px 12px',
               marginBottom: '6px',
-              background: activeConvo === c.id ? 'rgba(255,138,0,0.1)' : 'var(--bg-secondary)',
-              border: `1px solid ${activeConvo === c.id ? 'var(--accent)' : 'var(--border)'}`,
+              background: activeConvo === c.id ? 'var(--admin-accent-glow)' : 'var(--admin-panel)',
+              border: `1px solid ${activeConvo === c.id ? 'var(--admin-accent)' : 'var(--admin-border)'}`,
               borderRadius: '2px',
               cursor: 'pointer',
-              color: 'var(--text)',
+              color: 'var(--admin-text)',
               fontSize: '0.8rem',
             }}
           >
             <strong>{c.visitor_name || 'Visitor'}</strong>
             <br />
-            <span style={{ fontSize: '0.7rem', color: 'var(--text-sub)' }}>
-              {c.status === 'closed' ? '🔴 Closed' : '🟢 Active'}
+            <span style={{ fontSize: '0.7rem', color: 'var(--admin-text-sub)' }}>
+              {c.status === 'closed' ? '🔒 Closed' : '🟢 Active'}
             </span>
           </button>
         ))}
       </div>
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 1, display: 'flex', gap: '20px' }}>
         {!activeConvo ? (
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-sub)' }}>Select a conversation to view messages.</p>
+          <p style={{ fontSize: '0.85rem', color: 'var(--admin-text-sub)' }}>Select a conversation to view messages.</p>
         ) : (
           <>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-              <h3>Messages</h3>
-              <button className="btn-sm btn-sm--danger" onClick={() => closeConvo(activeConvo)}>Close Chat</button>
+            <div style={{ flex: 2, display: 'flex', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <h3>Messages</h3>
+                <button className="btn-sm btn-sm--danger" onClick={() => closeConvo(activeConvo)}>Close Chat</button>
+              </div>
+              <div style={{ flex: 1, maxHeight: '280px', overflowY: 'auto', marginBottom: '12px', padding: '8px', background: 'var(--admin-panel)', borderRadius: '2px', border: '1px solid var(--admin-border)' }}>
+                {messages.map((m) => {
+                  let displayMsg = m.message;
+                  let agentLabel = null;
+                  if (m.sender === 'admin') {
+                    const match = displayMsg.match(/^\[Agent (.*?)\]: (.*)$/);
+                    if (match) {
+                      agentLabel = match[1];
+                      displayMsg = match[2];
+                    }
+                  }
+                  
+                  return (
+                    <div key={m.id} style={{ marginBottom: '8px', textAlign: m.sender === 'admin' ? 'right' : 'left' }}>
+                      <div style={{ display: 'inline-flex', flexDirection: 'column', alignItems: m.sender === 'admin' ? 'flex-end' : 'flex-start' }}>
+                        {agentLabel && <span style={{ fontSize: '0.65rem', color: 'var(--admin-accent)', fontWeight: 'bold', marginBottom: '2px' }}>{agentLabel}</span>}
+                        <span style={{
+                          display: 'inline-block',
+                          padding: '8px 12px',
+                          borderRadius: '4px',
+                          fontSize: '0.85rem',
+                          background: m.sender === 'admin' ? 'var(--admin-accent)' : 'var(--admin-bg)',
+                          color: m.sender === 'admin' ? '#1A1A1D' : 'var(--admin-text)',
+                          border: m.sender === 'visitor' ? '1px solid var(--admin-border)' : 'none',
+                        }}>
+                          {displayMsg}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <form onSubmit={sendReply} style={{ display: 'flex', gap: '8px' }}>
+                <input
+                  value={reply}
+                  onChange={(e) => setReply(e.target.value)}
+                  placeholder="Type a reply..."
+                  style={{ flex: 1, padding: '10px 12px', border: '1px solid var(--admin-border)', borderRadius: '2px', background: 'var(--admin-panel)', color: 'var(--admin-text)', fontSize: '0.85rem' }}
+                />
+                <button type="submit" className="cta-button" style={{ padding: '10px 16px', fontSize: '0.8rem' }}>Send</button>
+              </form>
             </div>
-            <div style={{ maxHeight: '280px', overflowY: 'auto', marginBottom: '12px', padding: '8px', background: 'var(--bg-secondary)', borderRadius: '2px', border: '1px solid var(--border)' }}>
-              {messages.map((m) => (
-                <div key={m.id} style={{ marginBottom: '8px', textAlign: m.sender === 'admin' ? 'right' : 'left' }}>
-                  <span style={{
-                    display: 'inline-block',
-                    padding: '8px 12px',
-                    borderRadius: '4px',
-                    fontSize: '0.85rem',
-                    background: m.sender === 'admin' ? 'var(--accent)' : 'var(--bg-primary)',
-                    color: m.sender === 'admin' ? '#1A1A1D' : 'var(--text)',
-                    border: m.sender === 'visitor' ? '1px solid var(--border)' : 'none',
-                  }}>
-                    {m.message}
-                  </span>
-                </div>
-              ))}
+
+            <div style={{ flex: 1, borderLeft: '1px solid var(--admin-border)', paddingLeft: '16px' }}>
+              <h3 style={{ marginBottom: '12px' }}>Customer Lookup</h3>
+              <form onSubmit={(e) => { e.preventDefault(); handleLookup(); }} style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+                <input
+                  value={lookupEmail}
+                  onChange={(e) => setLookupEmail(e.target.value)}
+                  placeholder="Email..."
+                  style={{ flex: 1, padding: '6px 8px', border: '1px solid var(--admin-border)', borderRadius: '2px', background: 'var(--admin-panel)', color: 'var(--admin-text)', fontSize: '0.8rem' }}
+                />
+                <button type="submit" className="cta-button" style={{ padding: '6px 10px', fontSize: '0.7rem' }}>Search</button>
+              </form>
+
+              {lookupLoading && <p style={{ fontSize: '0.8rem', color: 'var(--admin-text-sub)' }}>Searching...</p>}
+              {lookupResult && !lookupLoading && (
+                lookupResult.notFound ? (
+                  <p style={{ fontSize: '0.8rem', color: 'var(--admin-accent)' }}>No customer found.</p>
+                ) : (
+                  <div style={{ background: 'var(--admin-panel)', padding: '12px', borderRadius: '4px', border: '1px solid var(--admin-border)' }}>
+                    <p style={{ margin: '0 0 8px 0', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--admin-text)' }}>
+                      {lookupResult.first_name} {lookupResult.last_name}
+                    </p>
+                    <p style={{ margin: '0 0 4px 0', fontSize: '0.8rem', color: 'var(--admin-text-sub)' }}>
+                      {lookupResult.email}
+                    </p>
+                    <p style={{ margin: '0 0 8px 0', fontSize: '0.8rem', color: 'var(--admin-text-sub)' }}>
+                      {lookupResult.phone}
+                    </p>
+                    <div style={{ display: 'inline-block', padding: '2px 6px', background: 'var(--admin-accent-glow)', border: '1px solid var(--admin-accent)', borderRadius: '2px', fontSize: '0.7rem', color: 'var(--admin-accent)', textTransform: 'uppercase' }}>
+                      {lookupResult.subscription_tier || 'No Plan'}
+                    </div>
+                  </div>
+                )
+              )}
             </div>
-            <form onSubmit={sendReply} style={{ display: 'flex', gap: '8px' }}>
-              <input
-                value={reply}
-                onChange={(e) => setReply(e.target.value)}
-                placeholder="Type a reply..."
-                style={{ flex: 1, padding: '10px 12px', border: '1px solid var(--border)', borderRadius: '2px', background: 'var(--bg-secondary)', color: 'var(--text)', fontSize: '0.85rem' }}
-              />
-              <button type="submit" className="cta-button" style={{ padding: '10px 16px', fontSize: '0.8rem' }}>Send</button>
-            </form>
           </>
         )}
       </div>
@@ -1800,7 +1891,6 @@ function ChatPanel() {
   );
 }
 
-// Quotes Panel (Name Your Price submissions)
 function QuotesPanel() {
   const [submissions, setSubmissions] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -1857,7 +1947,7 @@ function QuotesPanel() {
             <span style={{ background: statusColors[s.status] || 'var(--border)', color: '#fff', padding: '4px 10px', borderRadius: '3px', fontSize: '0.75rem', fontWeight: 600 }}>{s.status.toUpperCase()}</span>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px', fontSize: '0.85rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginBottom: '20px', fontSize: '0.85rem' }}>
             <p><strong>Phone:</strong> {s.customer_phone || '—'}</p>
             <p><strong>Email:</strong> {s.customer_email || '—'}</p>
             <p><strong>Offered Price:</strong> <span style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--accent)' }}>${(s.offered_price / 100).toFixed(0)}</span></p>

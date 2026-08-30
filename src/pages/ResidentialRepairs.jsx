@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
 import useScrollToTop from '../hooks/useScrollToTop';
 import usePageMeta from '../hooks/usePageMeta';
-import kitchenBefore from '../assets/kitchenBefore_new.jpg';
-import kitchenAfter from '../assets/kitchenAfter_new.jpg';
-import exteriorBefore from '../assets/exteriorHouseRoofSidingBefore.jpg';
-import exteriorAfter from '../assets/exteriorAfter.jpg';
 import miniBar from '../assets/miniBar.jpg';
+import deckStain from '../assets/deckStainBeforeAndAfter.webp';
+import deckRebuild from '../assets/deckBeforeAndAfter.webp';
+import miniBarBA from '../assets/miniBarBeforeAndAfter.PNG';
+import outdoorSitting from '../assets/outdoorSittingArea.jpg';
+import fanInstall from '../assets/exteriorFanInstallation.jpg';
 
 function ResidentialRepairs() {
   useScrollToTop();
@@ -17,11 +18,20 @@ function ResidentialRepairs() {
   return (
     <div className="w-full bg-wood-900 min-h-screen pb-24">
       {/* Hero Section */}
-      <section className="max-w-4xl mx-auto px-4 py-24 text-center">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl text-text-main font-heading font-bold uppercase tracking-wider mb-6">
-          Complete Residential Repairs for Rome Homeowners
-        </h1>
-        <div className="h-1 w-24 bg-brand-orange mx-auto mb-10"></div>
+      <section 
+        className="relative px-4 py-32 md:py-48 text-center bg-cover bg-center bg-no-repeat mb-16"
+        style={{ backgroundImage: `url(${miniBar})` }}
+      >
+        <div className="absolute inset-0 bg-wood-900/80"></div>
+        <div className="relative z-10 max-w-4xl mx-auto">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl text-text-main font-heading font-bold uppercase tracking-wider mb-6 drop-shadow-lg">
+            Complete Residential Repairs for Rome Homeowners
+          </h1>
+          <div className="h-1 w-24 bg-brand-orange mx-auto mb-10"></div>
+        </div>
+      </section>
+
+      <section className="max-w-4xl mx-auto px-4 text-center">
         <div className="bg-wood-card border border-border-subtle p-8 md:p-12 rounded-xl shadow-2xl text-left">
           <p className="text-xl text-text-sub leading-relaxed mb-6">
             Your home is your biggest investment, and keeping it in top shape shouldn't be a source of stress. Whether you are dealing with a hole in the drywall, a sticking door, or a deck that has seen better days, our team delivers high-quality, dependable repairs.
@@ -72,60 +82,63 @@ function ResidentialRepairs() {
       </section>
 
       {/* Gallery Section */}
-      <section className="max-w-6xl mx-auto px-4 py-12">
+      <section className="max-w-6xl mx-auto px-4 py-24">
         <h2 className="text-3xl md:text-5xl text-text-main font-heading font-bold uppercase tracking-wider mb-6 text-center">
-          See the Difference
+          Our Recent Projects
         </h2>
-        <div className="h-1 w-24 bg-brand-orange mx-auto mb-12"></div>
+        <div className="h-1 w-24 bg-brand-orange mx-auto mb-16"></div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
-          {/* Project 1 */}
-          <div className="bg-wood-800 border border-border-subtle rounded-xl overflow-hidden shadow-2xl group">
-            <div className="relative h-64 md:h-80 overflow-hidden">
-              <img src={kitchenBefore} alt="Kitchen before repair" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div className="absolute top-4 left-4 bg-wood-900/80 text-text-main px-4 py-1 rounded font-bold uppercase tracking-wider text-sm backdrop-blur-sm border border-border-subtle">Before</div>
-            </div>
-            <div className="relative h-64 md:h-80 overflow-hidden border-t-4 border-brand-orange">
-              <img src={kitchenAfter} alt="Kitchen after repair" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div className="absolute top-4 left-4 bg-brand-orange text-wood-900 px-4 py-1 rounded font-bold uppercase tracking-wider text-sm shadow-md">After</div>
+        {/* Before and After Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          <div className="bg-wood-800 border border-border-subtle rounded-xl overflow-hidden shadow-xl group">
+            <div className="relative h-64 overflow-hidden">
+              <img src={deckStain} alt="Deck Stain Before and After" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
             </div>
             <div className="p-6">
-              <h3 className="text-xl text-text-main font-heading font-bold uppercase tracking-wider mb-2">Kitchen Renovation</h3>
-              <p className="text-text-sub">Complete tear-out and refinishing to bring the heart of the home back to life.</p>
+              <h3 className="text-xl text-text-main font-heading font-bold uppercase tracking-wider mb-2">Deck Restoration</h3>
+              <p className="text-text-sub text-sm">Stripping, sanding, and re-staining to bring weathered wood back to life.</p>
             </div>
           </div>
 
-          {/* Project 2 */}
-          <div className="bg-wood-800 border border-border-subtle rounded-xl overflow-hidden shadow-2xl group">
-            <div className="relative h-64 md:h-80 overflow-hidden">
-              <img src={exteriorBefore} alt="Exterior Siding before repair" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div className="absolute top-4 left-4 bg-wood-900/80 text-text-main px-4 py-1 rounded font-bold uppercase tracking-wider text-sm backdrop-blur-sm border border-border-subtle">Before</div>
-            </div>
-            <div className="relative h-64 md:h-80 overflow-hidden border-t-4 border-brand-orange">
-              <img src={exteriorAfter} alt="Exterior Siding after repair" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div className="absolute top-4 left-4 bg-brand-orange text-wood-900 px-4 py-1 rounded font-bold uppercase tracking-wider text-sm shadow-md">After</div>
+          <div className="bg-wood-800 border border-border-subtle rounded-xl overflow-hidden shadow-xl group md:-translate-y-4">
+            <div className="relative h-64 overflow-hidden">
+              <img src={deckRebuild} alt="Deck Rebuild Before and After" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
             </div>
             <div className="p-6">
-              <h3 className="text-xl text-text-main font-heading font-bold uppercase tracking-wider mb-2">Exterior Siding & Repair</h3>
-              <p className="text-text-sub">Restoring the exterior envelope of the home, protecting it from the elements and boosting curb appeal.</p>
+              <h3 className="text-xl text-text-main font-heading font-bold uppercase tracking-wider mb-2">Deck Rebuild</h3>
+              <p className="text-text-sub text-sm">Full structural tear-down and rebuild for safety and outdoor enjoyment.</p>
+            </div>
+          </div>
+
+          <div className="bg-wood-800 border border-border-subtle rounded-xl overflow-hidden shadow-xl group">
+            <div className="relative h-64 overflow-hidden">
+              <img src={miniBarBA} alt="Mini Bar Before and After" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            </div>
+            <div className="p-6">
+              <h3 className="text-xl text-text-main font-heading font-bold uppercase tracking-wider mb-2">Custom Built-Ins</h3>
+              <p className="text-text-sub text-sm">Transforming dead space into a functional, beautiful custom mini-bar.</p>
             </div>
           </div>
         </div>
 
-        {/* Highlight Project */}
-        <div className="bg-wood-card border-2 border-brand-orange rounded-xl overflow-hidden shadow-[0_0_30px_rgba(255,95,31,0.15)] flex flex-col md:flex-row">
-          <div className="md:w-1/2">
-            <img src={miniBar} alt="Custom mini bar installation" className="w-full h-full object-cover" />
+        {/* Feature Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="relative rounded-xl overflow-hidden shadow-xl group h-80">
+            <img src={outdoorSitting} alt="Outdoor Sitting Area" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <div className="absolute inset-0 bg-gradient-to-t from-wood-900 via-wood-900/40 to-transparent"></div>
+            <div className="absolute bottom-0 left-0 p-8">
+              <span className="inline-block bg-brand-orange text-wood-900 px-3 py-1 rounded text-xs font-bold uppercase tracking-wider mb-2">Outdoor Living</span>
+              <h3 className="text-2xl text-text-main font-heading font-bold uppercase tracking-wider">Patio Upgrades</h3>
+            </div>
           </div>
-          <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
-            <div className="inline-block bg-brand-orange/20 text-brand-orange border border-brand-orange/30 px-4 py-1 rounded-full font-bold uppercase tracking-wider text-sm mb-4 w-max">Custom Carpentry</div>
-            <h3 className="text-2xl md:text-3xl text-text-main font-heading font-bold uppercase tracking-wider mb-4">Custom Mini-Bar Build</h3>
-            <p className="text-lg text-text-sub leading-relaxed mb-8">
-              Sometimes you need more than just a repair—you need an upgrade. From custom shelving and built-ins to specialized woodworking, we can bring your vision to life with craftsman precision.
-            </p>
-            <Link to="/contact" className="text-brand-orange hover:text-brand-hover font-bold uppercase tracking-widest border-b border-transparent hover:border-brand-orange transition-colors inline-block w-max">
-              Discuss Your Project &rarr;
-            </Link>
+
+          <div className="relative rounded-xl overflow-hidden shadow-xl group h-80">
+            <img src={fanInstall} alt="Exterior Fan Installation" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <div className="absolute inset-0 bg-gradient-to-t from-wood-900 via-wood-900/40 to-transparent"></div>
+            <div className="absolute bottom-0 left-0 p-8">
+              <span className="inline-block bg-brand-orange text-wood-900 px-3 py-1 rounded text-xs font-bold uppercase tracking-wider mb-2">Fixture Upgrades</span>
+              <h3 className="text-2xl text-text-main font-heading font-bold uppercase tracking-wider">Exterior Fans & Lighting</h3>
+            </div>
           </div>
         </div>
       </section>

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import useScrollToTop from '../hooks/useScrollToTop';
 import usePageMeta from '../hooks/usePageMeta';
+import aptKitchen from '../assets/clocktowerKitchenAptAfter.jpg';
 
 function LandlordSolutions() {
   useScrollToTop();
@@ -11,11 +12,20 @@ function LandlordSolutions() {
 
   return (
     <div className="w-full bg-wood-900 min-h-screen pb-24">
-      <section className="max-w-4xl mx-auto px-4 py-24 text-center">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl text-text-main font-heading font-bold uppercase tracking-wider mb-6">
-          Portfolio Management Without the Headache
-        </h1>
-        <div className="h-1 w-24 bg-brand-orange mx-auto mb-10"></div>
+      <section 
+        className="relative px-4 py-32 md:py-48 text-center bg-cover bg-center bg-no-repeat mb-16 border-b-2 border-brand-orange shadow-[0_4px_20px_rgba(255,95,31,0.2)]"
+        style={{ backgroundImage: `url(${aptKitchen})` }}
+      >
+        <div className="absolute inset-0 bg-wood-900/80"></div>
+        <div className="relative z-10 max-w-4xl mx-auto">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl text-text-main font-heading font-bold uppercase tracking-wider mb-6 drop-shadow-lg">
+            Portfolio Management Without the Headache
+          </h1>
+          <div className="h-1 w-24 bg-brand-orange mx-auto"></div>
+        </div>
+      </section>
+      
+      <section className="max-w-4xl mx-auto px-4">
         
         <div className="bg-wood-card border border-border-subtle p-8 md:p-12 rounded-xl shadow-2xl text-left mb-16">
           <p className="text-xl text-text-sub leading-relaxed mb-6">
