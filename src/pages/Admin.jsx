@@ -4,6 +4,7 @@ import { subscribeToPush, registerServiceWorker } from '../lib/pushNotifications
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, CartesianGrid, Legend } from 'recharts';
 import { WorkOrdersPanel } from './AdminWorkOrders';
 import { AssetsPanel } from './AdminAssets';
+import { PropertyRecordsPanel } from '../components/admin/PropertyRecordsPanel';
 import './Admin.css';
 
 function Admin() {
@@ -141,7 +142,7 @@ function Admin() {
         </div>
         
         <div style={{ flex: 1, padding: '16px 0', overflowY: 'auto' }}>
-          {['dashboard', 'inbox', 'crm', 'assets', 'dispatch', 'billing', 'team', 'content', 'settings'].map((t) => (
+          {['dashboard', 'inbox', 'crm', 'records', 'assets', 'dispatch', 'billing', 'team', 'content', 'settings'].map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -180,6 +181,7 @@ function Admin() {
           {tab === 'dashboard' && <DashboardPanel />}
           {tab === 'inbox' && <InboxPanel adminProfile={adminProfile} />}
           {tab === 'crm' && <CustomersPanel />}
+          {tab === 'records' && <PropertyRecordsPanel />}
           {tab === 'assets' && <AssetsPanel />}
           {tab === 'dispatch' && <WorkOrdersPanel />}
           {tab === 'billing' && <BillingPanel />}

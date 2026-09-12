@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import usePageMeta from '../hooks/usePageMeta';
+import { RecordsTab } from '../components/dashboard/RecordsTab';
 
 function Dashboard() {
   usePageMeta('My Account | Nailed It Property Solutions', 'Manage your properties, subscriptions, and service requests.');
@@ -86,7 +87,7 @@ function Dashboard() {
         </div>
 
         <div className="flex flex-wrap gap-2 mb-8 border-b border-white/10 pb-4">
-          {['overview', 'properties', 'requests', 'settings'].map((t) => (
+          {['overview', 'properties', 'records', 'requests', 'settings'].map((t) => (
             <button
               key={t}
               className={`font-heading font-bold uppercase tracking-wider px-6 py-3 rounded-t-md transition-colors ${tab === t ? 'bg-brand-gold text-[#0A0A0A] text-wood-900' : 'text-[#a0a0a0] hover:text-brand-gold bg-[#111111] border-t border-x border-white/10'}`}
@@ -100,6 +101,7 @@ function Dashboard() {
         <div className="bg-[#111111] border border-white/10 p-8 rounded-xl shadow-xl min-h-[500px]">
           {tab === 'overview' && <OverviewTab profile={profile} properties={properties} subscriptions={subscriptions} submissions={submissions} />}
           {tab === 'properties' && <PropertiesTab properties={properties} userId={session.user.id} onRefresh={() => loadData(session.user.id)} />}
+          {tab === 'records' && <RecordsTab properties={properties} />}
           {tab === 'requests' && <RequestsTab submissions={submissions} />}
           {tab === 'settings' && <SettingsTab profile={profile} userId={session.user.id} onRefresh={() => loadData(session.user.id)} />}
         </div>
