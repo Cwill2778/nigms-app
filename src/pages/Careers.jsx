@@ -104,16 +104,16 @@ function Careers() {
       .catch(() => alert('Something went wrong. Please try again.'));
   };
 
-  const inputClasses = "w-full bg-wood-900 border-none rounded-md p-3 text-text-main shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow mb-4";
-  const labelClasses = "block text-sm font-bold text-text-sub uppercase tracking-wider mb-2 mt-4";
-  const btnClasses = "bg-brand-orange hover:bg-brand-hover text-wood-900 font-heading font-bold uppercase tracking-wider px-6 py-2 rounded transition-colors shadow-[0_0_15px_rgba(255,95,31,0.3)] disabled:opacity-50 disabled:cursor-not-allowed";
-  const btnBackClasses = "bg-transparent border border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-wood-900 font-heading font-bold uppercase tracking-wider px-6 py-2 rounded transition-colors";
+  const inputClasses = "w-full bg-[#0A0A0A] border-none rounded-md p-3 text-white shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow mb-4";
+  const labelClasses = "block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2 mt-4";
+  const btnClasses = "bg-brand-gold text-[#0A0A0A] hover:opacity-90 text-wood-900 font-heading font-bold uppercase tracking-wider px-6 py-2 rounded transition-colors shadow-[0_0_15px_rgba(255,95,31,0.3)] disabled:opacity-50 disabled:cursor-not-allowed";
+  const btnBackClasses = "bg-transparent border border-brand-gold text-brand-gold hover:bg-brand-gold text-[#0A0A0A] hover:text-wood-900 font-heading font-bold uppercase tracking-wider px-6 py-2 rounded transition-colors";
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-16 page-fade-in">
       <section className="text-center mb-16 reveal">
-        <h1 className="text-4xl md:text-6xl text-text-main font-heading font-bold uppercase tracking-wider mb-6">Join Our Team</h1>
-        <div className="max-w-3xl mx-auto text-lg text-text-sub space-y-4">
+        <h1 className="text-4xl md:text-6xl text-white font-heading font-bold uppercase tracking-wider mb-6">Join Our Team</h1>
+        <div className="max-w-3xl mx-auto text-lg text-[#a0a0a0] space-y-4">
           <p>
             Nailed It Property Solutions is growing — and we&rsquo;re looking for
             skilled, reliable people who take pride in honest work. If you believe
@@ -129,8 +129,8 @@ function Careers() {
       </section>
 
       <section className="mb-20 reveal">
-        <h2 className="text-3xl font-heading font-bold text-center uppercase tracking-widest text-text-main mb-8">What We Look For</h2>
-        <div className="w-24 h-1 bg-brand-orange mx-auto mb-12 shadow-[0_0_10px_rgba(255,95,31,0.5)]"></div>
+        <h2 className="text-3xl font-heading font-bold text-center uppercase tracking-widest text-white mb-8">What We Look For</h2>
+        <div className="w-24 h-1 bg-brand-gold text-[#0A0A0A] mx-auto mb-12 shadow-[0_0_10px_rgba(255,95,31,0.5)]"></div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {[
             { title: 'Integrity', desc: 'You do the right thing even when no one is watching. You treat clients\' homes like your own.' },
@@ -138,22 +138,22 @@ function Careers() {
             { title: 'Skill & Willingness', desc: 'Whether you\'re experienced or eager to grow, we value people who take the craft seriously.' },
             { title: 'Local Pride', desc: 'You care about the Rome community and want to see properties — and people — thrive.' },
           ].map((val, i) => (
-            <div key={i} className="bg-wood-800 p-8 rounded-xl text-center border border-wood-700/50 shadow-[8px_8px_16px_rgba(0,0,0,0.6),-4px_-4px_12px_rgba(255,255,255,0.02)]">
-              <h3 className="text-xl font-heading font-bold uppercase text-brand-orange mb-4">{val.title}</h3>
-              <p className="text-text-sub">{val.desc}</p>
+            <div key={i} className="bg-[#111111] p-8 rounded-xl text-center border border-white/10/50 shadow-[8px_8px_16px_rgba(0,0,0,0.6),-4px_-4px_12px_rgba(255,255,255,0.02)]">
+              <h3 className="text-xl font-heading font-bold uppercase text-brand-gold mb-4">{val.title}</h3>
+              <p className="text-[#a0a0a0]">{val.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       <section className="reveal max-w-3xl mx-auto">
-        <h2 className="text-3xl font-heading font-bold text-center uppercase tracking-widest text-text-main mb-8">Apply Now</h2>
-        <div className="w-24 h-1 bg-brand-orange mx-auto mb-12 shadow-[0_0_10px_rgba(255,95,31,0.5)]"></div>
+        <h2 className="text-3xl font-heading font-bold text-center uppercase tracking-widest text-white mb-8">Apply Now</h2>
+        <div className="w-24 h-1 bg-brand-gold text-[#0A0A0A] mx-auto mb-12 shadow-[0_0_10px_rgba(255,95,31,0.5)]"></div>
 
         <div className="flex justify-between items-center mb-12 px-4">
           {STEPS.map((label, i) => (
-            <div key={label} className={`flex flex-col items-center flex-1 ${i === step ? 'text-brand-orange' : i < step ? 'text-text-main' : 'text-wood-700'}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-2 font-bold ${i === step ? 'bg-brand-orange text-wood-900 shadow-[0_0_10px_rgba(255,95,31,0.5)]' : i < step ? 'bg-wood-700 text-text-main' : 'bg-wood-800 text-wood-700 border border-wood-700'}`}>
+            <div key={label} className={`flex flex-col items-center flex-1 ${i === step ? 'text-brand-gold' : i < step ? 'text-white' : 'text-wood-700'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-2 font-bold ${i === step ? 'bg-brand-gold text-[#0A0A0A] text-wood-900 shadow-[0_0_10px_rgba(255,95,31,0.5)]' : i < step ? 'bg-[#222222] text-white' : 'bg-[#111111] text-wood-700 border border-white/10'}`}>
                 {i < step ? '✓' : i + 1}
               </div>
               <span className="text-xs font-heading uppercase tracking-wider hidden sm:block">{label}</span>
@@ -161,7 +161,7 @@ function Careers() {
           ))}
         </div>
 
-        <form className="bg-wood-800 p-8 md:p-12 rounded-xl border border-wood-700/50 shadow-[8px_8px_16px_rgba(0,0,0,0.6),-4px_-4px_12px_rgba(255,255,255,0.02)]" onSubmit={handleSubmit}>
+        <form className="bg-[#111111] p-8 md:p-12 rounded-xl border border-white/10/50 shadow-[8px_8px_16px_rgba(0,0,0,0.6),-4px_-4px_12px_rgba(255,255,255,0.02)]" onSubmit={handleSubmit}>
           {step === 0 && (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -190,7 +190,7 @@ function Careers() {
                 <label className={labelClasses}>Preferred Contact Method</label>
                 <div className="flex gap-6 mb-4">
                   {['Email', 'Text', 'Phone'].map(method => (
-                    <label key={method} className="flex items-center gap-2 cursor-pointer text-text-main">
+                    <label key={method} className="flex items-center gap-2 cursor-pointer text-white">
                       <input type="radio" name="contactMethod" value={method} checked={formData.contactMethod === method} onChange={handleChange} className="accent-brand-orange w-4 h-4" /> {method}
                     </label>
                   ))}
@@ -239,7 +239,7 @@ function Careers() {
                 <label className={labelClasses}>Trade Skills (check all that apply)</label>
                 <div className="grid grid-cols-2 gap-3 mb-4">
                   {['Plumbing basics', 'Electrical basics', 'HVAC', 'Drywall repair', 'Painting', 'Carpentry', 'Roofing'].map((skill) => (
-                    <label key={skill} className="flex items-center gap-2 cursor-pointer text-text-sub hover:text-text-main transition-colors">
+                    <label key={skill} className="flex items-center gap-2 cursor-pointer text-[#a0a0a0] hover:text-white transition-colors">
                       <input type="checkbox" name="skills" value={skill} checked={formData.skills.includes(skill)} onChange={handleChange} className="accent-brand-orange w-4 h-4 rounded" />
                       {skill}
                     </label>
@@ -250,7 +250,7 @@ function Careers() {
                 <label className={labelClasses}>Do you have your own tools?</label>
                 <div className="flex gap-6 mb-4">
                   {['Yes', 'No', 'Some'].map(opt => (
-                    <label key={opt} className="flex items-center gap-2 cursor-pointer text-text-main">
+                    <label key={opt} className="flex items-center gap-2 cursor-pointer text-white">
                       <input type="radio" name="hasTools" value={opt} checked={formData.hasTools === opt} onChange={handleChange} className="accent-brand-orange w-4 h-4" /> {opt}
                     </label>
                   ))}
@@ -273,7 +273,7 @@ function Careers() {
                 <label className={labelClasses}>Authorized to work in the US?</label>
                 <div className="flex gap-6 mb-4">
                   {['Yes', 'No'].map(opt => (
-                    <label key={opt} className="flex items-center gap-2 cursor-pointer text-text-main">
+                    <label key={opt} className="flex items-center gap-2 cursor-pointer text-white">
                       <input type="radio" name="workAuth" value={opt} checked={formData.workAuth === opt} onChange={handleChange} required className="accent-brand-orange w-4 h-4" /> {opt}
                     </label>
                   ))}
@@ -283,7 +283,7 @@ function Careers() {
                 <label className={labelClasses}>Are you 18 years of age or older?</label>
                 <div className="flex gap-6 mb-4">
                   {['Yes', 'No'].map(opt => (
-                    <label key={opt} className="flex items-center gap-2 cursor-pointer text-text-main">
+                    <label key={opt} className="flex items-center gap-2 cursor-pointer text-white">
                       <input type="radio" name="over18" value={opt} checked={formData.over18 === opt} onChange={handleChange} required className="accent-brand-orange w-4 h-4" /> {opt}
                     </label>
                   ))}
@@ -293,7 +293,7 @@ function Careers() {
                 <label className={labelClasses}>Valid driver&rsquo;s license &amp; reliable transportation?</label>
                 <div className="flex gap-6 mb-4">
                   {['Yes', 'No'].map(opt => (
-                    <label key={opt} className="flex items-center gap-2 cursor-pointer text-text-main">
+                    <label key={opt} className="flex items-center gap-2 cursor-pointer text-white">
                       <input type="radio" name="hasLicense" value={opt} checked={formData.hasLicense === opt} onChange={handleChange} required className="accent-brand-orange w-4 h-4" /> {opt}
                     </label>
                   ))}
@@ -315,7 +315,7 @@ function Careers() {
                 <label className={labelClasses}>Schedule Availability</label>
                 <div className="grid grid-cols-2 gap-3 mb-4">
                   {['Full-time', 'Part-time', 'Weekends', 'Emergency On-Call'].map((avail) => (
-                    <label key={avail} className="flex items-center gap-2 cursor-pointer text-text-sub hover:text-text-main transition-colors">
+                    <label key={avail} className="flex items-center gap-2 cursor-pointer text-[#a0a0a0] hover:text-white transition-colors">
                       <input type="checkbox" name="availability" value={avail} checked={formData.availability.includes(avail)} onChange={handleChange} className="accent-brand-orange w-4 h-4 rounded" />
                       {avail}
                     </label>
@@ -339,10 +339,10 @@ function Careers() {
 
           {step === 3 && (
             <>
-              <div className="bg-wood-900/50 p-6 rounded-lg mb-8 border border-wood-700/50">
+              <div className="bg-[#0A0A0A]/50 p-6 rounded-lg mb-8 border border-white/10/50">
                 <label className="flex items-start gap-4 cursor-pointer">
                   <input type="checkbox" name="acknowledge" checked={formData.acknowledge} onChange={handleChange} required className="accent-brand-orange w-5 h-5 mt-1" />
-                  <span className="text-sm text-text-sub leading-relaxed">I certify that the information provided is true and complete to the best of my knowledge. I understand that any false statements may disqualify me from employment or result in termination.</span>
+                  <span className="text-sm text-[#a0a0a0] leading-relaxed">I certify that the information provided is true and complete to the best of my knowledge. I understand that any false statements may disqualify me from employment or result in termination.</span>
                 </label>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -355,7 +355,7 @@ function Careers() {
                   <input className={inputClasses} type="date" id="signDate" name="signDate" value={formData.signDate} onChange={handleChange} required />
                 </div>
               </div>
-              <p className="text-xs text-text-sub italic text-center mt-4">
+              <p className="text-xs text-[#a0a0a0] italic text-center mt-4">
                 SSN, government ID, and resume will be collected securely after initial review.
               </p>
               <div className="flex justify-between mt-8">

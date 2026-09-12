@@ -53,18 +53,18 @@ function Dashboard() {
     navigate('/');
   }
 
-  if (loading) return <div className="w-full bg-wood-900 min-h-screen py-24 flex justify-center items-center"><p className="text-brand-orange font-bold font-heading uppercase tracking-widest animate-pulse text-xl">Loading Account...</p></div>;
+  if (loading) return <div className="w-full bg-[#0A0A0A] min-h-screen py-24 flex justify-center items-center"><p className="text-brand-gold font-bold font-heading uppercase tracking-widest animate-pulse text-xl">Loading Account...</p></div>;
 
   if (!session) {
     return (
-      <div className="w-full bg-wood-900 min-h-screen py-24 flex items-center justify-center">
+      <div className="w-full bg-[#0A0A0A] min-h-screen py-24 flex items-center justify-center">
         <div className="max-w-md w-full px-4 text-center">
-          <div className="bg-wood-card border border-border-subtle p-8 md:p-12 rounded-xl shadow-2xl">
-            <h1 className="text-3xl text-text-main font-heading font-bold uppercase tracking-wider mb-4">My Account</h1>
-            <div className="h-1 w-16 bg-brand-orange mx-auto mb-6"></div>
-            <p className="text-text-sub leading-relaxed mb-8">Sign in to manage your properties, subscriptions, and service requests.</p>
-            <Link to="/login" className="w-full bg-brand-orange hover:bg-brand-hover text-wood-900 font-heading font-bold uppercase tracking-wider px-8 py-4 rounded-md transition-all text-lg shadow-[0_0_15px_rgba(255,95,31,0.3)] hover:-translate-y-1 inline-block mb-6">Sign In</Link>
-            <p className="text-text-sub">Don&rsquo;t have an account? <Link to="/signup" className="text-brand-orange hover:text-brand-hover font-bold uppercase tracking-wider ml-2">Create one</Link></p>
+          <div className="bg-[#111111] border border-white/10 p-8 md:p-12 rounded-xl shadow-2xl">
+            <h1 className="text-3xl text-white font-heading font-bold uppercase tracking-wider mb-4">My Account</h1>
+            <div className="h-1 w-16 bg-brand-gold text-[#0A0A0A] mx-auto mb-6"></div>
+            <p className="text-[#a0a0a0] leading-relaxed mb-8">Sign in to manage your properties, subscriptions, and service requests.</p>
+            <Link to="/login" className="w-full bg-brand-gold text-[#0A0A0A] hover:opacity-90 text-wood-900 font-heading font-bold uppercase tracking-wider px-8 py-4 rounded-md transition-all text-lg shadow-[0_0_15px_rgba(255,95,31,0.3)] hover:-translate-y-1 inline-block mb-6">Sign In</Link>
+            <p className="text-[#a0a0a0]">Don&rsquo;t have an account? <Link to="/signup" className="text-brand-gold hover:text-white font-bold uppercase tracking-wider ml-2">Create one</Link></p>
           </div>
         </div>
       </div>
@@ -72,24 +72,24 @@ function Dashboard() {
   }
 
   return (
-    <div className="w-full bg-wood-900 min-h-screen py-24">
+    <div className="w-full bg-[#0A0A0A] min-h-screen py-24">
       <div className="max-w-6xl mx-auto px-4">
-        <div className="bg-wood-card border border-border-subtle p-8 md:p-12 rounded-xl shadow-2xl mb-8">
+        <div className="bg-[#111111] border border-white/10 p-8 md:p-12 rounded-xl shadow-2xl mb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div>
-              <h1 className="text-3xl md:text-4xl text-text-main font-heading font-bold uppercase tracking-wider mb-2">Welcome back{profile?.first_name ? `, ${profile.first_name}` : ''}</h1>
-              <p className="text-brand-orange font-bold tracking-widest uppercase text-sm mb-1">{session.user.email}</p>
-              {profile?.account_number && <p className="text-text-sub text-sm">Account: {profile.account_number}</p>}
+              <h1 className="text-3xl md:text-4xl text-white font-heading font-bold uppercase tracking-wider mb-2">Welcome back{profile?.first_name ? `, ${profile.first_name}` : ''}</h1>
+              <p className="text-brand-gold font-bold tracking-widest uppercase text-sm mb-1">{session.user.email}</p>
+              {profile?.account_number && <p className="text-[#a0a0a0] text-sm">Account: {profile.account_number}</p>}
             </div>
-            <button className="bg-wood-800 hover:bg-wood-900 border border-border-subtle text-text-main hover:text-brand-orange font-heading font-bold uppercase tracking-wider px-6 py-2 rounded transition-colors" onClick={handleLogout}>Sign Out</button>
+            <button className="bg-[#111111] hover:bg-[#0A0A0A] border border-white/10 text-white hover:text-brand-gold font-heading font-bold uppercase tracking-wider px-6 py-2 rounded transition-colors" onClick={handleLogout}>Sign Out</button>
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-8 border-b border-border-subtle pb-4">
+        <div className="flex flex-wrap gap-2 mb-8 border-b border-white/10 pb-4">
           {['overview', 'properties', 'requests', 'settings'].map((t) => (
             <button
               key={t}
-              className={`font-heading font-bold uppercase tracking-wider px-6 py-3 rounded-t-md transition-colors ${tab === t ? 'bg-brand-orange text-wood-900' : 'text-text-sub hover:text-brand-orange bg-wood-800 border-t border-x border-border-subtle'}`}
+              className={`font-heading font-bold uppercase tracking-wider px-6 py-3 rounded-t-md transition-colors ${tab === t ? 'bg-brand-gold text-[#0A0A0A] text-wood-900' : 'text-[#a0a0a0] hover:text-brand-gold bg-[#111111] border-t border-x border-white/10'}`}
               onClick={() => setTab(t)}
             >
               {t}
@@ -97,7 +97,7 @@ function Dashboard() {
           ))}
         </div>
 
-        <div className="bg-wood-card border border-border-subtle p-8 rounded-xl shadow-xl min-h-[500px]">
+        <div className="bg-[#111111] border border-white/10 p-8 rounded-xl shadow-xl min-h-[500px]">
           {tab === 'overview' && <OverviewTab profile={profile} properties={properties} subscriptions={subscriptions} submissions={submissions} />}
           {tab === 'properties' && <PropertiesTab properties={properties} userId={session.user.id} onRefresh={() => loadData(session.user.id)} />}
           {tab === 'requests' && <RequestsTab submissions={submissions} />}
@@ -116,32 +116,32 @@ function OverviewTab({ profile, properties, subscriptions, submissions, workOrde
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <div className="bg-wood-800 border border-border-subtle rounded-lg p-6 text-center">
-          <p className="text-5xl text-brand-orange font-heading font-bold mb-2">{properties.length}</p>
-          <p className="text-text-sub font-bold uppercase tracking-wider text-sm">Properties</p>
+        <div className="bg-[#111111] border border-white/10 rounded-lg p-6 text-center">
+          <p className="text-5xl text-brand-gold font-heading font-bold mb-2">{properties.length}</p>
+          <p className="text-[#a0a0a0] font-bold uppercase tracking-wider text-sm">Properties</p>
         </div>
-        <div className="bg-wood-800 border border-border-subtle rounded-lg p-6 text-center">
-          <p className="text-5xl text-brand-orange font-heading font-bold mb-2">{activeSubscriptions.length}</p>
-          <p className="text-text-sub font-bold uppercase tracking-wider text-sm">Active Plans</p>
+        <div className="bg-[#111111] border border-white/10 rounded-lg p-6 text-center">
+          <p className="text-5xl text-brand-gold font-heading font-bold mb-2">{activeSubscriptions.length}</p>
+          <p className="text-[#a0a0a0] font-bold uppercase tracking-wider text-sm">Active Plans</p>
         </div>
-        <div className="bg-wood-800 border border-border-subtle rounded-lg p-6 text-center">
-          <p className="text-5xl text-brand-orange font-heading font-bold mb-2">{pendingRequests.length + activeWorkOrders.length}</p>
-          <p className="text-text-sub font-bold uppercase tracking-wider text-sm">Open Quotes & Work Orders</p>
+        <div className="bg-[#111111] border border-white/10 rounded-lg p-6 text-center">
+          <p className="text-5xl text-brand-gold font-heading font-bold mb-2">{pendingRequests.length + activeWorkOrders.length}</p>
+          <p className="text-[#a0a0a0] font-bold uppercase tracking-wider text-sm">Open Quotes & Work Orders</p>
         </div>
       </div>
 
       {activeSubscriptions.length > 0 && (
         <div className="mb-12">
-          <h3 className="text-2xl text-text-main font-heading font-bold uppercase tracking-wider mb-6 border-b border-border-subtle pb-4">Your Subscriptions</h3>
+          <h3 className="text-2xl text-white font-heading font-bold uppercase tracking-wider mb-6 border-b border-white/10 pb-4">Your Subscriptions</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {activeSubscriptions.map((sub) => (
-              <div key={sub.id} className="bg-wood-800 border-l-4 border-brand-orange rounded-lg p-6 shadow-md flex justify-between items-center">
+              <div key={sub.id} className="bg-[#111111] border-l-4 border-brand-gold rounded-lg p-6 shadow-md flex justify-between items-center">
                 <div>
-                  <h4 className="text-xl text-text-main font-heading font-bold uppercase tracking-wider mb-1">{sub.subscription_tiers?.name || sub.tier_id}</h4>
-                  <p className="text-brand-orange font-bold tracking-widest text-sm capitalize">{sub.status}</p>
+                  <h4 className="text-xl text-white font-heading font-bold uppercase tracking-wider mb-1">{sub.subscription_tiers?.name || sub.tier_id}</h4>
+                  <p className="text-brand-gold font-bold tracking-widest text-sm capitalize">{sub.status}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-bold text-text-main">${((sub.subscription_tiers?.price_cents || 0) / 100).toFixed(0)}<span className="text-sm text-text-sub font-normal">/mo</span></p>
+                  <p className="text-2xl font-bold text-white">${((sub.subscription_tiers?.price_cents || 0) / 100).toFixed(0)}<span className="text-sm text-[#a0a0a0] font-normal">/mo</span></p>
                 </div>
               </div>
             ))}
@@ -151,18 +151,18 @@ function OverviewTab({ profile, properties, subscriptions, submissions, workOrde
 
       {submissions.length > 0 && (
         <div>
-          <h3 className="text-2xl text-text-main font-heading font-bold uppercase tracking-wider mb-6 border-b border-border-subtle pb-4">Recent Requests</h3>
+          <h3 className="text-2xl text-white font-heading font-bold uppercase tracking-wider mb-6 border-b border-white/10 pb-4">Recent Requests</h3>
           <div className="space-y-4">
             {submissions.slice(0, 3).map((s) => (
-              <div key={s.id} className="bg-wood-800 border border-border-subtle rounded-lg p-6">
+              <div key={s.id} className="bg-[#111111] border border-white/10 rounded-lg p-6">
                 <div className="flex justify-between items-start mb-4">
-                  <span className={`px-3 py-1 rounded text-xs font-bold uppercase tracking-wider ${s.status === 'new' ? 'bg-brand-orange/20 text-brand-orange border border-brand-orange/50' : 'bg-wood-700 text-text-sub border border-border-subtle'}`}>
+                  <span className={`px-3 py-1 rounded text-xs font-bold uppercase tracking-wider ${s.status === 'new' ? 'bg-brand-gold text-[#0A0A0A]/20 text-brand-gold border border-brand-gold/50' : 'bg-[#222222] text-[#a0a0a0] border border-white/10'}`}>
                     {s.status}
                   </span>
-                  <span className="text-xl font-bold text-brand-orange">${(s.offered_price / 100).toFixed(0)}</span>
+                  <span className="text-xl font-bold text-brand-gold">${(s.offered_price / 100).toFixed(0)}</span>
                 </div>
-                <p className="text-text-main leading-relaxed mb-4">{s.description.substring(0, 120)}{s.description.length > 120 ? '...' : ''}</p>
-                <p className="text-text-sub text-sm italic">Submitted {new Date(s.created_at).toLocaleDateString()}</p>
+                <p className="text-white leading-relaxed mb-4">{s.description.substring(0, 120)}{s.description.length > 120 ? '...' : ''}</p>
+                <p className="text-[#a0a0a0] text-sm italic">Submitted {new Date(s.created_at).toLocaleDateString()}</p>
               </div>
             ))}
           </div>
@@ -193,10 +193,10 @@ function PropertiesTab({ properties, userId, onRefresh }) {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8 border-b border-border-subtle pb-4">
-        <h2 className="text-2xl text-text-main font-heading font-bold uppercase tracking-wider">My Properties</h2>
+      <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
+        <h2 className="text-2xl text-white font-heading font-bold uppercase tracking-wider">My Properties</h2>
         <button 
-          className="border-2 border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-wood-900 font-heading font-bold uppercase tracking-wider px-4 py-2 rounded transition-colors text-sm" 
+          className="border-2 border-brand-gold text-brand-gold hover:bg-brand-gold text-[#0A0A0A] hover:text-wood-900 font-heading font-bold uppercase tracking-wider px-4 py-2 rounded transition-colors text-sm" 
           onClick={() => setAdding(!adding)}
         >
           {adding ? 'Cancel' : '+ Add Property'}
@@ -204,34 +204,34 @@ function PropertiesTab({ properties, userId, onRefresh }) {
       </div>
 
       {adding && (
-        <form className="bg-wood-800 p-8 rounded-xl shadow-[8px_8px_16px_rgba(0,0,0,0.6),-4px_-4px_12px_rgba(255,255,255,0.02)] border border-wood-700/50 mb-8" onSubmit={addProperty}>
-          <h3 className="text-xl text-text-main font-heading font-bold uppercase tracking-wider mb-6">New Property Details</h3>
+        <form className="bg-[#111111] p-8 rounded-xl shadow-[8px_8px_16px_rgba(0,0,0,0.6),-4px_-4px_12px_rgba(255,255,255,0.02)] border border-white/10/50 mb-8" onSubmit={addProperty}>
+          <h3 className="text-xl text-white font-heading font-bold uppercase tracking-wider mb-6">New Property Details</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <label className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">Label</label>
-              <input className="w-full bg-wood-900 border-none rounded-md p-3 text-text-main shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" placeholder="e.g. Primary, Rental #1" value={form.label} onChange={(e) => setForm({ ...form, label: e.target.value })} required />
+              <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">Label</label>
+              <input className="w-full bg-[#0A0A0A] border-none rounded-md p-3 text-white shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" placeholder="e.g. Primary, Rental #1" value={form.label} onChange={(e) => setForm({ ...form, label: e.target.value })} required />
             </div>
             <div>
-              <label className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">Street Address</label>
-              <input className="w-full bg-wood-900 border-none rounded-md p-3 text-text-main shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" placeholder="123 Main St" value={form.address_line1} onChange={(e) => setForm({ ...form, address_line1: e.target.value })} required />
+              <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">Street Address</label>
+              <input className="w-full bg-[#0A0A0A] border-none rounded-md p-3 text-white shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" placeholder="123 Main St" value={form.address_line1} onChange={(e) => setForm({ ...form, address_line1: e.target.value })} required />
             </div>
             <div>
-              <label className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">City</label>
-              <input className="w-full bg-wood-900 border-none rounded-md p-3 text-text-main shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" placeholder="Rome" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
+              <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">City</label>
+              <input className="w-full bg-[#0A0A0A] border-none rounded-md p-3 text-white shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" placeholder="Rome" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">State</label>
-                <input className="w-full bg-wood-900 border-none rounded-md p-3 text-text-main shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" placeholder="GA" value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} />
+                <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">State</label>
+                <input className="w-full bg-[#0A0A0A] border-none rounded-md p-3 text-white shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" placeholder="GA" value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} />
               </div>
               <div>
-                <label className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">ZIP</label>
-                <input className="w-full bg-wood-900 border-none rounded-md p-3 text-text-main shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" placeholder="30161" value={form.zip} onChange={(e) => setForm({ ...form, zip: e.target.value })} required />
+                <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">ZIP</label>
+                <input className="w-full bg-[#0A0A0A] border-none rounded-md p-3 text-white shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" placeholder="30161" value={form.zip} onChange={(e) => setForm({ ...form, zip: e.target.value })} required />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">Area</label>
-              <select className="w-full bg-wood-900 border-none rounded-md p-3 text-text-main shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow appearance-none" value={form.area} onChange={(e) => setForm({ ...form, area: e.target.value })}>
+              <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">Area</label>
+              <select className="w-full bg-[#0A0A0A] border-none rounded-md p-3 text-white shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow appearance-none" value={form.area} onChange={(e) => setForm({ ...form, area: e.target.value })}>
                 <option value="">Select area (optional)</option>
                 <option value="West Rome">West Rome</option>
                 <option value="North Rome">North Rome</option>
@@ -242,36 +242,36 @@ function PropertiesTab({ properties, userId, onRefresh }) {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">Type</label>
-              <select className="w-full bg-wood-900 border-none rounded-md p-3 text-text-main shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow appearance-none" value={form.property_type} onChange={(e) => setForm({ ...form, property_type: e.target.value })}>
+              <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">Type</label>
+              <select className="w-full bg-[#0A0A0A] border-none rounded-md p-3 text-white shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow appearance-none" value={form.property_type} onChange={(e) => setForm({ ...form, property_type: e.target.value })}>
                 <option value="residential">Residential</option>
                 <option value="commercial">Commercial</option>
                 <option value="multi-unit">Multi-Unit</option>
               </select>
             </div>
           </div>
-          <button type="submit" className="bg-brand-orange hover:bg-brand-hover text-wood-900 font-heading font-bold uppercase tracking-wider px-6 py-3 rounded transition-colors text-sm">Save Property</button>
+          <button type="submit" className="bg-brand-gold text-[#0A0A0A] hover:opacity-90 text-wood-900 font-heading font-bold uppercase tracking-wider px-6 py-3 rounded transition-colors text-sm">Save Property</button>
         </form>
       )}
 
       {properties.length === 0 && !adding ? (
-        <div className="bg-wood-800 border border-border-subtle rounded-lg p-12 text-center">
-          <p className="text-text-sub text-lg mb-6">No properties added yet. Add one to get started with subscriptions and service tracking.</p>
-          <button className="bg-brand-orange hover:bg-brand-hover text-wood-900 font-heading font-bold uppercase tracking-wider px-6 py-3 rounded transition-colors" onClick={() => setAdding(true)}>+ Add Property</button>
+        <div className="bg-[#111111] border border-white/10 rounded-lg p-12 text-center">
+          <p className="text-[#a0a0a0] text-lg mb-6">No properties added yet. Add one to get started with subscriptions and service tracking.</p>
+          <button className="bg-brand-gold text-[#0A0A0A] hover:opacity-90 text-wood-900 font-heading font-bold uppercase tracking-wider px-6 py-3 rounded transition-colors" onClick={() => setAdding(true)}>+ Add Property</button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {properties.map((p) => (
-            <div key={p.id} className="bg-wood-800 border border-border-subtle rounded-lg p-6 shadow-md hover:border-brand-orange/50 transition-colors">
-              <div className="flex justify-between items-start mb-4 border-b border-border-subtle pb-4">
-                <h4 className="text-xl text-text-main font-heading font-bold uppercase tracking-wider">{p.label}</h4>
+            <div key={p.id} className="bg-[#111111] border border-white/10 rounded-lg p-6 shadow-md hover:border-brand-gold/50 transition-colors">
+              <div className="flex justify-between items-start mb-4 border-b border-white/10 pb-4">
+                <h4 className="text-xl text-white font-heading font-bold uppercase tracking-wider">{p.label}</h4>
                 <button className="text-red-400 hover:text-red-300 font-bold uppercase text-xs tracking-wider border border-red-900/50 hover:bg-red-900/20 px-3 py-1 rounded transition-colors" onClick={() => deleteProperty(p.id)}>Remove</button>
               </div>
-              <p className="text-text-main font-bold mb-1">{p.address_line1}</p>
-              <p className="text-text-sub mb-4">{p.city}, {p.state} {p.zip}</p>
+              <p className="text-white font-bold mb-1">{p.address_line1}</p>
+              <p className="text-[#a0a0a0] mb-4">{p.city}, {p.state} {p.zip}</p>
               <div className="flex gap-2">
-                {p.area && <span className="bg-wood-700 text-text-sub px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">{p.area}</span>}
-                <span className="bg-wood-700 text-text-sub px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">{p.property_type}</span>
+                {p.area && <span className="bg-[#222222] text-[#a0a0a0] px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">{p.area}</span>}
+                <span className="bg-[#222222] text-[#a0a0a0] px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">{p.property_type}</span>
               </div>
             </div>
           ))}
@@ -286,9 +286,9 @@ function RequestsTab({ submissions, workOrders }) {
 
   if (!hasItems) {
     return (
-      <div className="bg-wood-800 border border-border-subtle rounded-lg p-12 text-center">
-        <p className="text-text-sub text-lg mb-6">No requests or work orders yet.</p>
-        <Link to="/#name-your-price" className="bg-brand-orange hover:bg-brand-hover text-wood-900 font-heading font-bold uppercase tracking-wider px-6 py-3 rounded transition-colors inline-block">Request a Quote</Link>
+      <div className="bg-[#111111] border border-white/10 rounded-lg p-12 text-center">
+        <p className="text-[#a0a0a0] text-lg mb-6">No requests or work orders yet.</p>
+        <Link to="/#name-your-price" className="bg-brand-gold text-[#0A0A0A] hover:opacity-90 text-wood-900 font-heading font-bold uppercase tracking-wider px-6 py-3 rounded transition-colors inline-block">Request a Quote</Link>
       </div>
     );
   }
@@ -297,37 +297,37 @@ function RequestsTab({ submissions, workOrders }) {
     <div>
       {workOrders && workOrders.length > 0 && (
         <div className="mb-12">
-          <h2 className="text-2xl text-text-main font-heading font-bold uppercase tracking-wider mb-8 border-b border-border-subtle pb-4">My Work Orders</h2>
+          <h2 className="text-2xl text-white font-heading font-bold uppercase tracking-wider mb-8 border-b border-white/10 pb-4">My Work Orders</h2>
           <div className="space-y-6">
             {workOrders.map((wo) => (
-              <div key={wo.id} className="bg-wood-800 border border-border-subtle rounded-lg p-6 shadow-md border-l-4 border-l-brand-orange">
-                <div className="flex flex-col md:flex-row justify-between md:items-center mb-4 border-b border-border-subtle pb-4 gap-4">
+              <div key={wo.id} className="bg-[#111111] border border-white/10 rounded-lg p-6 shadow-md border-l-4 border-l-brand-orange">
+                <div className="flex flex-col md:flex-row justify-between md:items-center mb-4 border-b border-white/10 pb-4 gap-4">
                   <div>
-                    <h3 className="text-xl font-heading font-bold text-text-main">{wo.title}</h3>
-                    <p className="text-sm text-text-sub">{wo.properties?.address_line_1}</p>
+                    <h3 className="text-xl font-heading font-bold text-white">{wo.title}</h3>
+                    <p className="text-sm text-[#a0a0a0]">{wo.properties?.address_line_1}</p>
                   </div>
                   <span className={`px-3 py-1 rounded text-xs font-bold uppercase tracking-wider ${
                     wo.status === 'completed' ? 'bg-green-900/30 text-green-500 border border-green-700/50' : 
                     wo.status === 'scheduled' ? 'bg-blue-900/30 text-blue-500 border border-blue-700/50' :
                     wo.status === 'in_progress' ? 'bg-purple-900/30 text-purple-500 border border-purple-700/50' :
-                    'bg-brand-orange/20 text-brand-orange border border-brand-orange/50'
+                    'bg-brand-gold text-[#0A0A0A]/20 text-brand-gold border border-brand-gold/50'
                   }`}>
                     {wo.status.replace('_', ' ')}
                   </span>
                 </div>
-                <p className="text-text-main leading-relaxed mb-4">{wo.description}</p>
+                <p className="text-white leading-relaxed mb-4">{wo.description}</p>
                 {wo.scheduled_date && (
-                  <div className="bg-wood-900 p-3 rounded border border-border-subtle flex items-center gap-3">
-                    <span className="text-brand-orange text-lg">📅</span>
-                    <span className="text-sm text-text-main">
+                  <div className="bg-[#0A0A0A] p-3 rounded border border-white/10 flex items-center gap-3">
+                    <span className="text-brand-gold text-lg">📅</span>
+                    <span className="text-sm text-white">
                       <strong>Scheduled:</strong> {new Date(wo.scheduled_date).toLocaleDateString()} {wo.scheduled_time && `at ${wo.scheduled_time}`}
                     </span>
                   </div>
                 )}
                 {wo.technician_notes && (
-                  <div className="mt-4 bg-brand-orange/10 border border-brand-orange/30 p-4 rounded">
-                    <strong className="text-brand-orange uppercase tracking-wider font-heading text-sm block mb-1">Update from Tech:</strong>
-                    <p className="text-text-main text-sm">{wo.technician_notes}</p>
+                  <div className="mt-4 bg-brand-gold text-[#0A0A0A]/10 border border-brand-gold/30 p-4 rounded">
+                    <strong className="text-brand-gold uppercase tracking-wider font-heading text-sm block mb-1">Update from Tech:</strong>
+                    <p className="text-white text-sm">{wo.technician_notes}</p>
                   </div>
                 )}
               </div>
@@ -336,34 +336,34 @@ function RequestsTab({ submissions, workOrders }) {
         </div>
       )}
 
-      <h2 className="text-2xl text-text-main font-heading font-bold uppercase tracking-wider mb-8 border-b border-border-subtle pb-4">My Quotes</h2>
+      <h2 className="text-2xl text-white font-heading font-bold uppercase tracking-wider mb-8 border-b border-white/10 pb-4">My Quotes</h2>
       <div className="space-y-6">
         {submissions.map((s) => (
-          <div key={s.id} className="bg-wood-800 border border-border-subtle rounded-lg p-6 shadow-md">
-            <div className="flex flex-col md:flex-row justify-between md:items-center mb-6 border-b border-border-subtle pb-4 gap-4">
-              <span className={`px-3 py-1 rounded text-xs font-bold uppercase tracking-wider self-start ${s.status === 'new' ? 'bg-brand-orange/20 text-brand-orange border border-brand-orange/50' : 'bg-wood-700 text-text-sub border border-border-subtle'}`}>
+          <div key={s.id} className="bg-[#111111] border border-white/10 rounded-lg p-6 shadow-md">
+            <div className="flex flex-col md:flex-row justify-between md:items-center mb-6 border-b border-white/10 pb-4 gap-4">
+              <span className={`px-3 py-1 rounded text-xs font-bold uppercase tracking-wider self-start ${s.status === 'new' ? 'bg-brand-gold text-[#0A0A0A]/20 text-brand-gold border border-brand-gold/50' : 'bg-[#222222] text-[#a0a0a0] border border-white/10'}`}>
                 {s.status}
               </span>
               <div className="text-right">
-                <span className="text-text-sub font-bold uppercase text-xs mr-2">Your Offer:</span>
-                <span className="text-2xl font-bold text-brand-orange">${(s.offered_price / 100).toFixed(0)}</span>
+                <span className="text-[#a0a0a0] font-bold uppercase text-xs mr-2">Your Offer:</span>
+                <span className="text-2xl font-bold text-brand-gold">${(s.offered_price / 100).toFixed(0)}</span>
               </div>
             </div>
-            <p className="text-text-main leading-relaxed mb-6 bg-wood-900 p-4 rounded border border-border-subtle">{s.description}</p>
+            <p className="text-white leading-relaxed mb-6 bg-[#0A0A0A] p-4 rounded border border-white/10">{s.description}</p>
             
             {(s.counter_price || s.admin_notes) && (
-              <div className="bg-brand-orange/10 border border-brand-orange/30 p-4 rounded mb-6">
+              <div className="bg-brand-gold text-[#0A0A0A]/10 border border-brand-gold/30 p-4 rounded mb-6">
                 {s.counter_price && (
-                  <p className="text-text-main mb-2"><strong className="text-brand-orange uppercase tracking-wider font-heading text-sm mr-2">Counter-offer:</strong> <span className="text-xl font-bold">${(s.counter_price / 100).toFixed(0)}</span></p>
+                  <p className="text-white mb-2"><strong className="text-brand-gold uppercase tracking-wider font-heading text-sm mr-2">Counter-offer:</strong> <span className="text-xl font-bold">${(s.counter_price / 100).toFixed(0)}</span></p>
                 )}
-                {s.admin_notes && <p className="text-text-main"><strong className="text-brand-orange uppercase tracking-wider font-heading text-sm mr-2">Notes:</strong> {s.admin_notes}</p>}
+                {s.admin_notes && <p className="text-white"><strong className="text-brand-gold uppercase tracking-wider font-heading text-sm mr-2">Notes:</strong> {s.admin_notes}</p>}
               </div>
             )}
             
-            <p className="text-text-sub text-sm italic">Submitted {new Date(s.created_at).toLocaleDateString()}</p>
+            <p className="text-[#a0a0a0] text-sm italic">Submitted {new Date(s.created_at).toLocaleDateString()}</p>
           </div>
         ))}
-        {submissions.length === 0 && <p className="text-text-sub">No quote requests found.</p>}
+        {submissions.length === 0 && <p className="text-[#a0a0a0]">No quote requests found.</p>}
       </div>
     </div>
   );
@@ -392,23 +392,23 @@ function RequestsTab({ submissions, workOrders }) {
 
   return (
     <div>
-      <h2 className="text-2xl text-text-main font-heading font-bold uppercase tracking-wider mb-8 border-b border-border-subtle pb-4">Account Settings</h2>
-      <form className="max-w-2xl bg-wood-800 p-8 rounded-xl shadow-[8px_8px_16px_rgba(0,0,0,0.6),-4px_-4px_12px_rgba(255,255,255,0.02)] border border-wood-700/50" onSubmit={saveProfile}>
+      <h2 className="text-2xl text-white font-heading font-bold uppercase tracking-wider mb-8 border-b border-white/10 pb-4">Account Settings</h2>
+      <form className="max-w-2xl bg-[#111111] p-8 rounded-xl shadow-[8px_8px_16px_rgba(0,0,0,0.6),-4px_-4px_12px_rgba(255,255,255,0.02)] border border-white/10/50" onSubmit={saveProfile}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
-            <label className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">First Name</label>
-            <input className="w-full bg-wood-900 border-none rounded-md p-3 text-text-main shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" value={form.first_name} onChange={(e) => setForm({ ...form, first_name: e.target.value })} />
+            <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">First Name</label>
+            <input className="w-full bg-[#0A0A0A] border-none rounded-md p-3 text-white shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" value={form.first_name} onChange={(e) => setForm({ ...form, first_name: e.target.value })} />
           </div>
           <div>
-            <label className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">Last Name</label>
-            <input className="w-full bg-wood-900 border-none rounded-md p-3 text-text-main shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" value={form.last_name} onChange={(e) => setForm({ ...form, last_name: e.target.value })} />
+            <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">Last Name</label>
+            <input className="w-full bg-[#0A0A0A] border-none rounded-md p-3 text-white shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" value={form.last_name} onChange={(e) => setForm({ ...form, last_name: e.target.value })} />
           </div>
         </div>
         <div className="mb-8">
-          <label className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">Phone Number</label>
-          <input className="w-full bg-wood-900 border-none rounded-md p-3 text-text-main shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+          <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">Phone Number</label>
+          <input className="w-full bg-[#0A0A0A] border-none rounded-md p-3 text-white shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
         </div>
-        <button type="submit" className="bg-brand-orange hover:bg-brand-hover text-wood-900 font-heading font-bold uppercase tracking-wider px-8 py-3 rounded transition-colors shadow-[0_0_15px_rgba(255,95,31,0.3)]">
+        <button type="submit" className="bg-brand-gold text-[#0A0A0A] hover:opacity-90 text-wood-900 font-heading font-bold uppercase tracking-wider px-8 py-3 rounded transition-colors shadow-[0_0_15px_rgba(255,95,31,0.3)]">
           {saved ? '✓ Saved' : 'Save Changes'}
         </button>
       </form>

@@ -475,7 +475,8 @@ function CustomersPanel() {
       subscription_tier: form.subscription_tier,
       notes: form.notes || null,
     });
-    if (!error) {
+      if (error) { alert('Error inserting customer: ' + error.message); return; }
+      if (!error) {
       fetchCustomers();
       setView('list');
       resetForm();
@@ -1897,7 +1898,15 @@ function QuotesPanel() {
   const [adminNotes, setAdminNotes] = useState('');
   const [counterPrice, setCounterPrice] = useState('');
 
-  useEffect(() => { fetchSubmissions(); }, []);
+  useEffect(() => { 
+    fetchSubmissions(); 
+    const channel = supabase.channel('nyp-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'name_your_price' }, () => {
+        fetchSubmissions();
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); }
+  }, []);
 
   async function fetchSubmissions() {
     const { data } = await supabase

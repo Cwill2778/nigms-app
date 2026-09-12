@@ -1,16 +1,16 @@
 /* Admin Global Variables & Layout */
 .admin, .admin-login {
-  --admin-bg: #202428;
-  --admin-panel: #2E3339;
-  --admin-card: rgba(46, 51, 57, 0.96);
-  --admin-border: rgba(255, 255, 255, 0.12);
-  --admin-accent: #FF5F1F;
-  --admin-accent-hover: #FF773D;
-  --admin-accent-glow: rgba(255, 95, 31, 0.3);
-  --admin-text: #FDFBF7;
-  --admin-text-sub: #BCC1C8;
-  --heading: 'Oswald', 'Bebas Neue', system-ui, sans-serif;
-  --sans: 'Inter', system-ui, sans-serif;
+  --admin-bg: #0A0A0A;
+  --admin-panel: #111111;
+  --admin-card: rgba(17, 17, 17, 0.96);
+  --admin-border: rgba(255, 255, 255, 0.05);
+  --admin-accent: #C5A059;
+  --admin-accent-hover: #DFBA73;
+  --admin-accent-glow: rgba(197, 160, 89, 0.3);
+  --admin-text: #FFFFFF;
+  --admin-text-sub: #A0A0A0;
+  --heading: 'Playfair Display', 'Playfair Display', system-ui, sans-serif;
+  --sans: 'Montserrat', system-ui, sans-serif;
 
   color: var(--admin-text);
 }
@@ -130,7 +130,7 @@
   font-family: monospace;
   font-weight: 600;
   background: rgba(255, 95, 31, 0.15);
-  border: 1px solid rgba(255, 95, 31, 0.3);
+  border: 1px solid rgba(197, 160, 89, 0.3);
   padding: 2px 6px;
   border-radius: 4px;
 }
@@ -359,7 +359,7 @@
   box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
 }
 
-.status-badge--new { background: #FF5F1F; color: #120C08; }
+.status-badge--new { background: #C5A059; color: #120C08; }
 .status-badge--viewed { background: #2196f3; }
 .status-badge--accepted { background: #4caf50; }
 .status-badge--countered { background: #ff9800; }

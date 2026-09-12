@@ -53,32 +53,32 @@ function CheckoutForm({ selectedTier }) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div>
-        <label className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">Full Name</label>
-        <input type="text" {...register('name')} placeholder="John Doe" className="w-full bg-wood-900 border border-border-subtle rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors" />
+        <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">Full Name</label>
+        <input type="text" {...register('name')} placeholder="John Doe" className="w-full bg-[#0A0A0A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-brand-gold transition-colors" />
         {errors.name && <span className="text-red-500 text-xs mt-1 block">{errors.name.message}</span>}
       </div>
 
       <div>
-        <label className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">Email Address</label>
-        <input type="email" {...register('email')} placeholder="john@example.com" className="w-full bg-wood-900 border border-border-subtle rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors" />
+        <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">Email Address</label>
+        <input type="email" {...register('email')} placeholder="john@example.com" className="w-full bg-[#0A0A0A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-brand-gold transition-colors" />
         {errors.email && <span className="text-red-500 text-xs mt-1 block">{errors.email.message}</span>}
       </div>
 
       <div>
-        <label className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">Phone Number</label>
-        <input type="tel" {...register('phone')} placeholder="(555) 555-5555" className="w-full bg-wood-900 border border-border-subtle rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors" />
+        <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">Phone Number</label>
+        <input type="tel" {...register('phone')} placeholder="(555) 555-5555" className="w-full bg-[#0A0A0A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-brand-gold transition-colors" />
         {errors.phone && <span className="text-red-500 text-xs mt-1 block">{errors.phone.message}</span>}
       </div>
 
       <div>
-        <label className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">Property Address</label>
-        <input type="text" {...register('address')} placeholder="123 Main St, Rome, GA" className="w-full bg-wood-900 border border-border-subtle rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors" />
+        <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">Property Address</label>
+        <input type="text" {...register('address')} placeholder="123 Main St, Rome, GA" className="w-full bg-[#0A0A0A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-brand-gold transition-colors" />
         {errors.address && <span className="text-red-500 text-xs mt-1 block">{errors.address.message}</span>}
       </div>
 
       <div>
-        <label className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">Credit Card Details</label>
-        <div className="w-full bg-wood-900 border border-border-subtle rounded-md px-4 py-4 text-text-main focus-within:border-brand-orange transition-colors">
+        <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">Credit Card Details</label>
+        <div className="w-full bg-[#0A0A0A] border border-white/10 rounded-md px-4 py-4 text-white focus-within:border-brand-gold transition-colors">
           <CardElement options={{
             style: {
               base: {
@@ -93,7 +93,7 @@ function CheckoutForm({ selectedTier }) {
         </div>
       </div>
 
-      <button type="submit" disabled={!stripe || isProcessing} className="w-full bg-brand-orange hover:bg-brand-hover text-wood-900 font-heading font-bold uppercase tracking-wider px-8 py-4 rounded-md transition-all text-lg shadow-[0_0_15px_rgba(255,95,31,0.3)] hover:shadow-[0_0_20px_rgba(255,95,31,0.5)] disabled:opacity-70 disabled:cursor-not-allowed mt-8">
+      <button type="submit" disabled={!stripe || isProcessing} className="w-full bg-brand-gold text-[#0A0A0A] hover:opacity-90 text-wood-900 font-heading font-bold uppercase tracking-wider px-8 py-4 rounded-md transition-all text-lg shadow-[0_0_15px_rgba(255,95,31,0.3)] hover:shadow-[0_0_20px_rgba(255,95,31,0.5)] disabled:opacity-70 disabled:cursor-not-allowed mt-8">
         {isProcessing ? 'Processing...' : `Subscribe for ${planDetails[selectedTier].price}`}
       </button>
     </form>
@@ -108,30 +108,30 @@ function Checkout() {
 
   if (!planDetails[tier]) {
     return (
-      <div className="w-full bg-wood-900 min-h-screen py-24 flex items-center justify-center">
+      <div className="w-full bg-[#0A0A0A] min-h-screen py-24 flex items-center justify-center">
         <div className="max-w-md w-full px-4 text-center">
-          <h2 className="text-3xl text-text-main font-heading font-bold uppercase tracking-wider mb-4">Invalid Plan</h2>
-          <p className="text-text-sub">Please return to the subscriptions page and select a valid plan.</p>
+          <h2 className="text-3xl text-white font-heading font-bold uppercase tracking-wider mb-4">Invalid Plan</h2>
+          <p className="text-[#a0a0a0]">Please return to the subscriptions page and select a valid plan.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full bg-wood-900 min-h-screen py-24">
+    <div className="w-full bg-[#0A0A0A] min-h-screen py-24">
       <div className="max-w-3xl mx-auto px-4">
-        <div className="bg-wood-card border border-border-subtle p-8 md:p-12 rounded-xl shadow-2xl">
+        <div className="bg-[#111111] border border-white/10 p-8 md:p-12 rounded-xl shadow-2xl">
           
           <div className="text-center mb-10">
-            <h2 className="text-3xl text-text-main font-heading font-bold uppercase tracking-wider mb-2">Complete Your Subscription</h2>
-            <div className="h-1 w-16 bg-brand-orange mx-auto mb-6"></div>
+            <h2 className="text-3xl text-white font-heading font-bold uppercase tracking-wider mb-2">Complete Your Subscription</h2>
+            <div className="h-1 w-16 bg-brand-gold text-[#0A0A0A] mx-auto mb-6"></div>
             
-            <div className="bg-wood-800 border-2 border-brand-orange p-6 rounded-lg inline-block text-center shadow-lg mb-4">
-              <h3 className="text-2xl text-text-main font-heading font-bold uppercase tracking-wider">{planDetails[tier].name} Plan</h3>
-              <p className="text-brand-orange text-xl font-bold mt-1">{planDetails[tier].price}</p>
+            <div className="bg-[#111111] border-2 border-brand-gold p-6 rounded-lg inline-block text-center shadow-lg mb-4">
+              <h3 className="text-2xl text-white font-heading font-bold uppercase tracking-wider">{planDetails[tier].name} Plan</h3>
+              <p className="text-brand-gold text-xl font-bold mt-1">{planDetails[tier].price}</p>
             </div>
             
-            <p className="text-sm text-text-sub flex items-center justify-center mt-4">
+            <p className="text-sm text-[#a0a0a0] flex items-center justify-center mt-4">
               <span className="mr-2">🔒</span> Secure checkout powered by Stripe
             </p>
           </div>

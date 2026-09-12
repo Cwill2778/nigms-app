@@ -29,9 +29,9 @@ function TestimonialCarousel() {
             key={i} 
             className={`transition-opacity duration-1000 ease-in-out absolute inset-0 flex flex-col justify-center items-center w-full ${i === current ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none z-0'}`}
           >
-            <p className="text-brand-orange text-2xl mb-4 tracking-widest">{'★'.repeat(t.stars)}</p>
-            <p className="text-xl md:text-2xl text-text-main font-body italic leading-relaxed text-center mb-6 max-w-3xl px-4">&ldquo;{t.text}&rdquo;</p>
-            <p className="text-text-sub font-heading font-bold uppercase tracking-wider">— {t.name}</p>
+            <p className="text-brand-gold text-2xl mb-4 tracking-widest">{'★'.repeat(t.stars)}</p>
+            <p className="text-xl md:text-2xl text-white font-body italic leading-relaxed text-center mb-6 max-w-3xl px-4">&ldquo;{t.text}&rdquo;</p>
+            <p className="text-[#a0a0a0] font-heading font-bold uppercase tracking-wider">— {t.name}</p>
           </div>
         ))}
       </div>
@@ -39,7 +39,7 @@ function TestimonialCarousel() {
         {testimonials.map((_, i) => (
           <button 
             key={i} 
-            className={`w-3 h-3 rounded-full transition-colors duration-300 ${i === current ? 'bg-brand-orange' : 'bg-wood-800 border border-border-subtle hover:bg-wood-800/80'}`}
+            className={`w-3 h-3 rounded-full transition-colors duration-300 ${i === current ? 'bg-brand-gold text-[#0A0A0A]' : 'bg-[#111111] border border-white/10 hover:bg-[#111111]/80'}`}
             onClick={() => setCurrent(i)} 
             aria-label={`View review ${i + 1}`} 
           />

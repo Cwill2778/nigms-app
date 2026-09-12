@@ -8,7 +8,7 @@ import ApplianceRepair from './pages/ApplianceRepair';
 import EmergencyMaintenance from './pages/EmergencyMaintenance';
 import MaintenancePlans from './pages/MaintenancePlans';
 import LandlordSolutions from './pages/LandlordSolutions';
-import AboutUs from './pages/AboutUs';
+import WhatWeDo from './pages/WhatWeDo';
 import Services from './pages/Services';
 import Reviews from './pages/Reviews';
 import Contact from './pages/Contact';
@@ -41,7 +41,7 @@ function App() {
             {/* Core Pages */}
             <Route path="maintenance-plans" element={<MaintenancePlans />} />
             <Route path="landlord-solutions" element={<LandlordSolutions />} />
-            <Route path="about-us" element={<AboutUs />} />
+            <Route path="what-we-do" element={<WhatWeDo />} />
             
             {/* Other Existing Pages */}
             <Route path="reviews" element={<Reviews />} />

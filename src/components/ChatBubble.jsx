@@ -84,18 +84,18 @@ function ChatBubble() {
   return (
     <div className="fixed z-50 bottom-6 right-6 md:bottom-8 md:right-8 font-body flex flex-col items-end">
       {open && (
-        <div className="mb-6 w-[340px] max-w-[calc(100vw-32px)] bg-wood-800 border border-border-subtle rounded-xl shadow-[0_12px_40px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col animate-[pageFadeIn_0.2s_ease-out]">
+        <div className="mb-6 w-[340px] max-w-[calc(100vw-32px)] bg-[#111111] border border-white/10 rounded-xl shadow-[0_12px_40px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col animate-[pageFadeIn_0.2s_ease-out]">
           
-          <div className="bg-wood-card border-b border-border-subtle px-5 py-4 flex justify-between items-center">
+          <div className="bg-[#111111] border-b border-white/10 px-5 py-4 flex justify-between items-center">
             <div>
-              <p className="font-heading font-bold uppercase tracking-wider text-sm text-text-main">Nailed It Support</p>
+              <p className="font-heading font-bold uppercase tracking-wider text-sm text-white">Nailed It Support</p>
               <div className="flex items-center gap-2 mt-1">
                 <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                <span className="text-xs text-text-sub">Online</span>
+                <span className="text-xs text-[#a0a0a0]">Online</span>
               </div>
             </div>
             <button 
-              className="text-text-sub hover:text-brand-orange text-2xl leading-none transition-colors" 
+              className="text-[#a0a0a0] hover:text-brand-gold text-2xl leading-none transition-colors" 
               onClick={() => setOpen(false)}
             >
               &times;
@@ -103,21 +103,21 @@ function ChatBubble() {
           </div>
 
           {!started ? (
-            <form className="p-6 flex flex-col gap-4 bg-wood-800" onSubmit={startChat}>
-              <p className="text-sm text-center text-text-main mb-2">Have a question? Chat with us live.</p>
+            <form className="p-6 flex flex-col gap-4 bg-[#111111]" onSubmit={startChat}>
+              <p className="text-sm text-center text-white mb-2">Have a question? Chat with us live.</p>
               <input
-                className="w-full bg-wood-900 border border-border-subtle text-text-main px-4 py-3 rounded focus:outline-none focus:border-brand-orange text-sm"
+                className="w-full bg-[#0A0A0A] border border-white/10 text-white px-4 py-3 rounded focus:outline-none focus:border-brand-gold text-sm"
                 placeholder="Your name (optional)"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
-              <button type="submit" className="w-full bg-brand-orange hover:bg-brand-hover text-wood-900 font-heading font-bold uppercase tracking-wider py-3 rounded transition-colors mt-2">
+              <button type="submit" className="w-full bg-brand-gold text-[#0A0A0A] hover:opacity-90 text-wood-900 font-heading font-bold uppercase tracking-wider py-3 rounded transition-colors mt-2">
                 Start Chat
               </button>
             </form>
           ) : (
             <>
-              <div className="p-5 overflow-y-auto flex flex-col gap-4 bg-wood-800 min-h-[250px] max-h-[350px]">
+              <div className="p-5 overflow-y-auto flex flex-col gap-4 bg-[#111111] min-h-[250px] max-h-[350px]">
                 {messages.map((msg) => {
                   let displayMsg = msg.message;
                   let agentName = null;
@@ -131,23 +131,23 @@ function ChatBubble() {
                   const isVisitor = msg.sender === 'visitor';
                   
                   return (
-                    <div key={msg.id} className={`max-w-[85%] p-3 rounded-lg text-sm leading-relaxed ${isVisitor ? 'self-end bg-brand-orange text-wood-900 rounded-br-sm' : 'self-start bg-wood-900 border border-border-subtle text-text-main rounded-bl-sm'}`}>
-                      {agentName && <span className="block text-xs font-bold text-brand-orange mb-1 uppercase tracking-wide">{agentName}</span>}
+                    <div key={msg.id} className={`max-w-[85%] p-3 rounded-lg text-sm leading-relaxed ${isVisitor ? 'self-end bg-brand-gold text-[#0A0A0A] text-wood-900 rounded-br-sm' : 'self-start bg-[#0A0A0A] border border-white/10 text-white rounded-bl-sm'}`}>
+                      {agentName && <span className="block text-xs font-bold text-brand-gold mb-1 uppercase tracking-wide">{agentName}</span>}
                       {displayMsg}
                     </div>
                   );
                 })}
                 <div ref={messagesEndRef} />
               </div>
-              <form className="p-4 border-t border-border-subtle bg-wood-card flex gap-2" onSubmit={sendMessage}>
+              <form className="p-4 border-t border-white/10 bg-[#111111] flex gap-2" onSubmit={sendMessage}>
                 <input
-                  className="flex-1 bg-wood-900 border border-border-subtle text-text-main px-3 py-2 rounded focus:outline-none focus:border-brand-orange text-sm"
+                  className="flex-1 bg-[#0A0A0A] border border-white/10 text-white px-3 py-2 rounded focus:outline-none focus:border-brand-gold text-sm"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Type a message..."
                   autoFocus
                 />
-                <button type="submit" className="bg-brand-orange hover:bg-brand-hover text-wood-900 font-bold px-4 py-2 rounded transition-colors text-sm">
+                <button type="submit" className="bg-brand-gold text-[#0A0A0A] hover:opacity-90 text-wood-900 font-bold px-4 py-2 rounded transition-colors text-sm">
                   Send
                 </button>
               </form>
@@ -157,7 +157,7 @@ function ChatBubble() {
       )}
 
       <button
-        className="relative w-16 h-16 rounded-full bg-brand-orange hover:bg-brand-hover flex items-center justify-center text-wood-900 border-4 border-wood-900 shadow-[0_0_0_2px_rgba(255,95,31,0.3),_0_8px_24px_rgba(0,0,0,0.6)] hover:shadow-[0_0_0_4px_rgba(255,95,31,0.4),_0_12px_28px_rgba(0,0,0,0.8)] transition-all hover:scale-105"
+        className="relative w-16 h-16 rounded-full bg-brand-gold text-[#0A0A0A] hover:opacity-90 flex items-center justify-center text-wood-900 border-4 border-wood-900 shadow-[0_0_0_2px_rgba(255,95,31,0.3),_0_8px_24px_rgba(0,0,0,0.6)] hover:shadow-[0_0_0_4px_rgba(255,95,31,0.4),_0_12px_28px_rgba(0,0,0,0.8)] transition-all hover:scale-105"
         onClick={() => { setOpen(!open); setUnread(false); }}
         aria-label="Open live chat"
       >

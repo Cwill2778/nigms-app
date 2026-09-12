@@ -68,24 +68,24 @@ function Reviews() {
   const renderStars = (count) => '★'.repeat(count) + '☆'.repeat(5 - count);
 
   return (
-    <div className="w-full bg-wood-900 min-h-screen pb-24">
+    <div className="w-full bg-[#0A0A0A] min-h-screen pb-24">
       {/* Hero Section */}
       <section className="max-w-4xl mx-auto px-4 py-24 text-center">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl text-text-main font-heading font-bold uppercase tracking-wider mb-6">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl text-white font-heading font-bold uppercase tracking-wider mb-6">
           What Our Clients Say
         </h1>
-        <div className="h-1 w-24 bg-brand-orange mx-auto mb-10"></div>
-        <p className="text-xl text-text-sub leading-relaxed max-w-2xl mx-auto mb-12">
+        <div className="h-1 w-24 bg-brand-gold text-[#0A0A0A] mx-auto mb-10"></div>
+        <p className="text-xl text-[#a0a0a0] leading-relaxed max-w-2xl mx-auto mb-12">
           Real feedback from real property owners in the Rome, GA community. We earn our reputation one job at a time.
         </p>
         
-        <div className="bg-wood-card border-2 border-brand-orange p-8 rounded-xl shadow-[0_0_30px_rgba(255,95,31,0.15)] max-w-2xl mx-auto">
-          <p className="text-lg text-text-main font-bold mb-6">Had a great experience? Leave us a review on Google — it helps your neighbors find honest property care.</p>
+        <div className="bg-[#111111] border-2 border-brand-gold p-8 rounded-xl shadow-[0_0_30px_rgba(255,95,31,0.15)] max-w-2xl mx-auto">
+          <p className="text-lg text-white font-bold mb-6">Had a great experience? Leave us a review on Google — it helps your neighbors find honest property care.</p>
           <a
             href={GOOGLE_REVIEW_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-brand-orange hover:bg-brand-hover text-wood-900 font-heading font-bold uppercase tracking-wider px-8 py-4 rounded-md transition-all inline-block shadow-[0_0_15px_rgba(255,95,31,0.3)] hover:shadow-[0_0_20px_rgba(255,95,31,0.5)]"
+            className="bg-brand-gold text-[#0A0A0A] hover:opacity-90 text-wood-900 font-heading font-bold uppercase tracking-wider px-8 py-4 rounded-md transition-all inline-block shadow-[0_0_15px_rgba(255,95,31,0.3)] hover:shadow-[0_0_20px_rgba(255,95,31,0.5)]"
           >
             Leave a Google Review
           </a>
@@ -94,35 +94,35 @@ function Reviews() {
 
       {/* Reviews Grid */}
       <section className="max-w-6xl mx-auto px-4 mb-24">
-        <h2 className="text-3xl text-text-main font-heading font-bold uppercase tracking-wider mb-6 text-center">Recent Reviews</h2>
-        <div className="h-1 w-16 bg-brand-orange mx-auto mb-12"></div>
+        <h2 className="text-3xl text-white font-heading font-bold uppercase tracking-wider mb-6 text-center">Recent Reviews</h2>
+        <div className="h-1 w-16 bg-brand-gold text-[#0A0A0A] mx-auto mb-12"></div>
         
         {reviews.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {reviews.map((review, index) => (
-              <div key={index} className="bg-wood-800 border border-border-subtle p-8 rounded-xl shadow-lg flex flex-col h-full hover:border-brand-orange/50 transition-colors">
-                <div className="text-brand-orange text-2xl mb-4 tracking-widest">{renderStars(review.stars)}</div>
-                <p className="text-text-sub leading-relaxed mb-6 flex-grow italic">&ldquo;{review.text}&rdquo;</p>
-                <div className="border-t border-border-subtle pt-4 mt-auto">
-                  <p className="text-text-main font-heading font-bold uppercase tracking-wider">{review.name}</p>
-                  <p className="text-sm text-text-sub">{review.date}</p>
+              <div key={index} className="bg-[#111111] border border-white/10 p-8 rounded-xl shadow-lg flex flex-col h-full hover:border-brand-gold/50 transition-colors">
+                <div className="text-brand-gold text-2xl mb-4 tracking-widest">{renderStars(review.stars)}</div>
+                <p className="text-[#a0a0a0] leading-relaxed mb-6 flex-grow italic">&ldquo;{review.text}&rdquo;</p>
+                <div className="border-t border-white/10 pt-4 mt-auto">
+                  <p className="text-white font-heading font-bold uppercase tracking-wider">{review.name}</p>
+                  <p className="text-sm text-[#a0a0a0]">{review.date}</p>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-center text-text-sub">Loading reviews...</p>
+          <p className="text-center text-[#a0a0a0]">Loading reviews...</p>
         )}
       </section>
 
       {/* Review Form */}
       <section className="max-w-2xl mx-auto px-4">
-        <div className="bg-wood-card border border-border-subtle p-8 md:p-12 rounded-xl shadow-2xl">
-          <h2 className="text-2xl text-text-main font-heading font-bold uppercase tracking-wider mb-8 text-center">Share Your Experience</h2>
+        <div className="bg-[#111111] border border-white/10 p-8 md:p-12 rounded-xl shadow-2xl">
+          <h2 className="text-2xl text-white font-heading font-bold uppercase tracking-wider mb-8 text-center">Share Your Experience</h2>
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="review-name" className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">Your Name</label>
+              <label htmlFor="review-name" className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">Your Name</label>
               <input
                 type="text"
                 id="review-name"
@@ -130,19 +130,19 @@ function Reviews() {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="w-full bg-wood-900 border border-border-subtle rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors"
+                className="w-full bg-[#0A0A0A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-brand-gold transition-colors"
               />
             </div>
 
             <div>
-              <label htmlFor="review-rating" className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">Rating</label>
+              <label htmlFor="review-rating" className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">Rating</label>
               <select
                 id="review-rating"
                 name="rating"
                 value={formData.rating}
                 onChange={handleChange}
                 required
-                className="w-full bg-wood-900 border border-border-subtle rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors appearance-none"
+                className="w-full bg-[#0A0A0A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-brand-gold transition-colors appearance-none"
               >
                 <option value="">Select a rating</option>
                 <option value="5">★★★★★ — Excellent</option>
@@ -154,7 +154,7 @@ function Reviews() {
             </div>
 
             <div>
-              <label htmlFor="review-text" className="block text-sm font-bold text-text-sub uppercase tracking-wider mb-2">Your Review</label>
+              <label htmlFor="review-text" className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">Your Review</label>
               <textarea
                 id="review-text"
                 name="review"
@@ -162,14 +162,14 @@ function Reviews() {
                 value={formData.review}
                 onChange={handleChange}
                 required
-                className="w-full bg-wood-900 border border-border-subtle rounded-md px-4 py-3 text-text-main focus:outline-none focus:border-brand-orange transition-colors"
+                className="w-full bg-[#0A0A0A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-brand-gold transition-colors"
               ></textarea>
             </div>
 
             <button 
               type="submit" 
               disabled={isSubmitting}
-              className="w-full bg-brand-orange hover:bg-brand-hover text-wood-900 font-heading font-bold uppercase tracking-wider px-8 py-4 rounded-md transition-all text-lg shadow-[0_0_15px_rgba(255,95,31,0.3)] hover:shadow-[0_0_20px_rgba(255,95,31,0.5)] disabled:opacity-70 disabled:cursor-not-allowed"
+              className="w-full bg-brand-gold text-[#0A0A0A] hover:opacity-90 text-wood-900 font-heading font-bold uppercase tracking-wider px-8 py-4 rounded-md transition-all text-lg shadow-[0_0_15px_rgba(255,95,31,0.3)] hover:shadow-[0_0_20px_rgba(255,95,31,0.5)] disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {isSubmitting ? 'Submitting...' : 'Submit Review'}
             </button>

@@ -11,18 +11,18 @@ function Terms() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-16 page-fade-in">
       <section className="text-center mb-16 reveal">
-        <h1 className="text-4xl md:text-6xl text-text-main font-heading font-bold uppercase tracking-wider mb-6">Terms &amp; Policies</h1>
-        <p className="text-lg text-text-sub max-w-2xl mx-auto">
+        <h1 className="text-4xl md:text-6xl text-white font-heading font-bold uppercase tracking-wider mb-6">Terms &amp; Policies</h1>
+        <p className="text-lg text-[#a0a0a0] max-w-2xl mx-auto">
           This page contains all legal terms, policies, and disclosures governing
           your use of the Nailed It Property Solutions website and services.
         </p>
       </section>
 
-      <section className="bg-wood-800 p-8 md:p-12 rounded-xl border border-wood-700/50 shadow-[8px_8px_16px_rgba(0,0,0,0.6),-4px_-4px_12px_rgba(255,255,255,0.02)] reveal" id="name-your-price-terms">
-        <h2 className="text-2xl md:text-3xl text-brand-orange font-heading font-bold uppercase tracking-wider mb-4 border-b border-border-subtle pb-4">Terms of Submission for &ldquo;Name Your Price&rdquo; Requests</h2>
-        <p className="text-sm text-text-sub font-heading tracking-widest uppercase mb-8">Last Updated: June 26, 2026</p>
+      <section className="bg-[#111111] p-8 md:p-12 rounded-xl border border-white/10/50 shadow-[8px_8px_16px_rgba(0,0,0,0.6),-4px_-4px_12px_rgba(255,255,255,0.02)] reveal" id="name-your-price-terms">
+        <h2 className="text-2xl md:text-3xl text-brand-gold font-heading font-bold uppercase tracking-wider mb-4 border-b border-white/10 pb-4">Terms of Submission for &ldquo;Name Your Price&rdquo; Requests</h2>
+        <p className="text-sm text-[#a0a0a0] font-heading tracking-widest uppercase mb-8">Last Updated: June 26, 2026</p>
         
-        <div className="space-y-6 text-text-main leading-relaxed">
+        <div className="space-y-6 text-white leading-relaxed">
           <p>
             By clicking &ldquo;Submit,&rdquo; &ldquo;Send Bid,&rdquo; or otherwise submitting the
             Name Your Price form, you (the &ldquo;Customer&rdquo;) expressly agree to the following
@@ -31,7 +31,7 @@ function Terms() {
           </p>
 
           <div>
-            <h3 className="text-xl font-heading font-bold uppercase tracking-wide text-brand-orange mt-8 mb-2">1. Nature of the Submission</h3>
+            <h3 className="text-xl font-heading font-bold uppercase tracking-wide text-brand-gold mt-8 mb-2">1. Nature of the Submission</h3>
             <p className="mb-2">
               <strong>1.1 Not a Binding Contract:</strong> The submission of this form, including any
               proposed price, job description, or uploaded media, does not constitute a binding legal
@@ -45,7 +45,7 @@ function Terms() {
           </div>
 
           <div>
-            <h3 className="text-xl font-heading font-bold uppercase tracking-wide text-brand-orange mt-8 mb-2">2. Review and Response Process</h3>
+            <h3 className="text-xl font-heading font-bold uppercase tracking-wide text-brand-gold mt-8 mb-2">2. Review and Response Process</h3>
             <p className="mb-2">
               <strong>2.1 Right to Reject:</strong> Nailed It Property Solutions reserves the absolute
               right to reject any submitted price, project, or request at its sole discretion, without
@@ -63,7 +63,7 @@ function Terms() {
           </div>
 
           <div>
-            <h3 className="text-xl font-heading font-bold uppercase tracking-wide text-brand-orange mt-8 mb-2">3. Accuracy of Information and Scope of Work</h3>
+            <h3 className="text-xl font-heading font-bold uppercase tracking-wide text-brand-gold mt-8 mb-2">3. Accuracy of Information and Scope of Work</h3>
             <p className="mb-2">
               <strong>3.1 Customer Responsibility:</strong> The Customer agrees to provide accurate,
               truthful, and complete information regarding the scope of work, property conditions, and
@@ -83,7 +83,7 @@ function Terms() {
           </div>
 
           <div>
-            <h3 className="text-xl font-heading font-bold uppercase tracking-wide text-brand-orange mt-8 mb-2">4. Subscription Tier Pricing (If Applicable)</h3>
+            <h3 className="text-xl font-heading font-bold uppercase tracking-wide text-brand-gold mt-8 mb-2">4. Subscription Tier Pricing (If Applicable)</h3>
             <p>
               If the Customer is an active subscriber to a Nailed It Property Solutions maintenance plan,
               any priority routing or exclusive discounts applied to the &ldquo;Name Your Price&rdquo; tool
@@ -93,7 +93,7 @@ function Terms() {
           </div>
 
           <div>
-            <h3 className="text-xl font-heading font-bold uppercase tracking-wide text-brand-orange mt-8 mb-2">5. Limitation of Liability</h3>
+            <h3 className="text-xl font-heading font-bold uppercase tracking-wide text-brand-gold mt-8 mb-2">5. Limitation of Liability</h3>
             <p>
               To the maximum extent permitted by law, Nailed It Property Solutions shall not be held liable
               for any direct, indirect, incidental, or consequential damages arising from the use of this
@@ -103,7 +103,7 @@ function Terms() {
           </div>
 
           <div>
-            <h3 className="text-xl font-heading font-bold uppercase tracking-wide text-brand-orange mt-8 mb-2">6. Governing Law</h3>
+            <h3 className="text-xl font-heading font-bold uppercase tracking-wide text-brand-gold mt-8 mb-2">6. Governing Law</h3>
             <p>
               These terms shall be governed by and construed in accordance with the laws of the State of
               Georgia. Any disputes arising from this preliminary submission process shall be subject to
@@ -112,7 +112,7 @@ function Terms() {
           </div>
 
           <div>
-            <h3 className="text-xl font-heading font-bold uppercase tracking-wide text-brand-orange mt-8 mb-2">7. Acknowledgment</h3>
+            <h3 className="text-xl font-heading font-bold uppercase tracking-wide text-brand-gold mt-8 mb-2">7. Acknowledgment</h3>
             <p>
               By submitting this form, you acknowledge that you have read, understood, and agree to be
               bound by these Terms of Submission. You further acknowledge that no work will commence, and
