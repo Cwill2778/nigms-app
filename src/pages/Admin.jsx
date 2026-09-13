@@ -466,6 +466,10 @@ function CustomersPanel() {
 
   async function handleAddCustomer(e) {
     e.preventDefault();
+    if (!form.first_name || !form.last_name || !form.email) {
+      alert('Please fill out First Name, Last Name, and Email.');
+      return;
+    }
     const { error } = await supabase.from('customers').insert({
       first_name: form.first_name,
       last_name: form.last_name,
@@ -477,8 +481,8 @@ function CustomersPanel() {
       subscription_tier: form.subscription_tier,
       notes: form.notes || null,
     });
-      if (error) { alert('Error inserting customer: ' + error.message); return; }
-      if (!error) {
+    if (error) { alert('Error inserting customer: ' + error.message); return; }
+    if (!error) {
       fetchCustomers();
       setView('list');
       resetForm();
@@ -487,6 +491,10 @@ function CustomersPanel() {
 
   async function handleEditCustomer(e) {
     e.preventDefault();
+    if (!form.first_name || !form.last_name || !form.email) {
+      alert('Please fill out First Name, Last Name, and Email.');
+      return;
+    }
     const { error } = await supabase.from('customers').update({
       first_name: form.first_name,
       last_name: form.last_name,
@@ -515,6 +523,10 @@ function CustomersPanel() {
 
   async function handleAddProperty(e) {
     e.preventDefault();
+    if (!propertyForm.address_line_1 || !propertyForm.city || !propertyForm.state || !propertyForm.zip_code) {
+      alert('Please fill out all required fields.');
+      return;
+    }
     const { error } = await supabase.from('properties').insert({ ...propertyForm, owner_id: selected.id });
     if (!error) {
       fetchProperties(selected.id);
@@ -648,16 +660,16 @@ function CustomersPanel() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                   <div>
                     <label>First Name *</label>
-                    <input type="text" value={form.first_name} onChange={(e) => setForm({ ...form, first_name: e.target.value })} required />
+                    <input type="text" value={form.first_name} onChange={(e) => setForm({ ...form, first_name: e.target.value })} />
                   </div>
                   <div>
                     <label>Last Name *</label>
-                    <input type="text" value={form.last_name} onChange={(e) => setForm({ ...form, last_name: e.target.value })} required />
+                    <input type="text" value={form.last_name} onChange={(e) => setForm({ ...form, last_name: e.target.value })} />
                   </div>
                 </div>
                 <div>
                   <label>Email *</label>
-                  <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
+                  <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                   <div>
@@ -756,7 +768,7 @@ function CustomersPanel() {
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                         <div>
                           <label>Address Line 1 *</label>
-                          <input type="text" value={propertyForm.address_line_1} onChange={(e) => setPropertyForm({ ...propertyForm, address_line_1: e.target.value })} required />
+                          <input type="text" value={propertyForm.address_line_1} onChange={(e) => setPropertyForm({ ...propertyForm, address_line_1: e.target.value })} />
                         </div>
                         <div>
                           <label>Address Line 2</label>
@@ -766,11 +778,11 @@ function CustomersPanel() {
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
                         <div>
                           <label>City *</label>
-                          <input type="text" value={propertyForm.city} onChange={(e) => setPropertyForm({ ...propertyForm, city: e.target.value })} required />
+                          <input type="text" value={propertyForm.city} onChange={(e) => setPropertyForm({ ...propertyForm, city: e.target.value })} />
                         </div>
                         <div>
                           <label>State *</label>
-                          <input type="text" value={propertyForm.state} onChange={(e) => setPropertyForm({ ...propertyForm, state: e.target.value })} required />
+                          <input type="text" value={propertyForm.state} onChange={(e) => setPropertyForm({ ...propertyForm, state: e.target.value })} />
                         </div>
                         <div>
                           <label>Zip Code</label>
@@ -1477,11 +1489,11 @@ function ReviewsPanel() {
     <>
       <h2>Add Review</h2>
       <form className="admin-form" onSubmit={addReview}>
-        <input placeholder="Name" value={newReview.name} onChange={(e) => setNewReview({ ...newReview, name: e.target.value })} required />
+        <input placeholder="Name" value={newReview.name} onChange={(e) => setNewReview({ ...newReview, name: e.target.value })} />
         <select value={newReview.stars} onChange={(e) => setNewReview({ ...newReview, stars: parseInt(e.target.value) })}>
           <option value={5}>5 Stars</option><option value={4}>4 Stars</option><option value={3}>3 Stars</option>
         </select>
-        <textarea placeholder="Review text" value={newReview.text} onChange={(e) => setNewReview({ ...newReview, text: e.target.value })} required />
+        <textarea placeholder="Review text" value={newReview.text} onChange={(e) => setNewReview({ ...newReview, text: e.target.value })} />
         <input placeholder="Date (e.g. June 2026)" value={newReview.date} onChange={(e) => setNewReview({ ...newReview, date: e.target.value })} />
         <button type="submit" className="cta-button">Add Review</button>
       </form>
@@ -1544,8 +1556,8 @@ function FAQPanel() {
     <>
       <h2>Add FAQ</h2>
       <form className="admin-form" onSubmit={addFaq}>
-        <input placeholder="Question" value={newFaq.question} onChange={(e) => setNewFaq({ ...newFaq, question: e.target.value })} required />
-        <textarea placeholder="Answer" value={newFaq.answer} onChange={(e) => setNewFaq({ ...newFaq, answer: e.target.value })} required />
+        <input placeholder="Question" value={newFaq.question} onChange={(e) => setNewFaq({ ...newFaq, question: e.target.value })} />
+        <textarea placeholder="Answer" value={newFaq.answer} onChange={(e) => setNewFaq({ ...newFaq, answer: e.target.value })} />
         <button type="submit" className="cta-button">Add FAQ</button>
       </form>
 
@@ -2051,3 +2063,4 @@ function QuotesPanel() {
 }
 
 export default Admin;
+

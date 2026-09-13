@@ -43,6 +43,7 @@ function Footer() {
               <li><Link to="/" className="text-[#a0a0a0] hover:text-brand-gold font-body text-xs uppercase tracking-wider transition-colors">Home</Link></li>
               <li><Link to="/services" className="text-[#a0a0a0] hover:text-brand-gold font-body text-xs uppercase tracking-wider transition-colors">Services</Link></li>
               <li><Link to="/what-we-do" className="text-[#a0a0a0] hover:text-brand-gold font-body text-xs uppercase tracking-wider transition-colors">What We Do</Link></li>
+              <li><Link to="/careers" className="text-[#a0a0a0] hover:text-brand-gold font-body text-xs uppercase tracking-wider transition-colors">Careers</Link></li>
               <li><Link to="/contact" className="text-[#a0a0a0] hover:text-brand-gold font-body text-xs uppercase tracking-wider transition-colors">Contact</Link></li>
             </ul>
           </div>
