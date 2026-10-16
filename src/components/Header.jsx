@@ -1,20 +1,44 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 import logo from '../assets/logo.png';
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [session, setSession] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    closeMenu();
+    navigate('/login');
+  };
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
 
-  const navLinks = [
+  const baseNavLinks = [
     { name: 'Home', path: '/' },
     { name: 'Services', path: '/services' },
     { name: 'What We Do', path: '/what-we-do' },
     { name: 'Contact', path: '/contact' },
-    { name: 'Login', path: '/login' },
   ];
+
+  const navLinks = session
+    ? [...baseNavLinks, { name: 'Portal', path: '/dashboard' }]
+    : [...baseNavLinks, { name: 'Login', path: '/login' }];
 
   return (
     <header className="sticky top-0 z-50 shadow-2xl flex flex-col">
@@ -58,10 +82,20 @@ function Header() {
             </nav>
 
             {/* Desktop CTA */}
-            <div className="hidden lg:flex items-center">
-               <Link to="/contact" className="gold-gradient text-[#0A0A0A] px-6 py-2.5 font-body font-bold tracking-widest text-xs rounded-sm hover:opacity-90 transition-opacity shadow-lg">
-                 REQUEST QUOTE
-               </Link>
+            <div className="hidden lg:flex items-center gap-3">
+              <Link to="/contact" className="gold-gradient text-[#0A0A0A] px-6 py-2.5 font-body font-bold tracking-widest text-xs rounded-sm hover:opacity-90 transition-opacity shadow-lg">
+                REQUEST QUOTE
+              </Link>
+              {session && (
+                <button
+                  onClick={handleLogout}
+                  className="bg-[#1a1a1a] hover:bg-[#252525] border border-white/10 text-[#a0a0a0] hover:text-red-400 font-heading font-bold uppercase tracking-wider px-3.5 py-2.5 rounded-sm transition-colors text-xs cursor-pointer flex items-center gap-1"
+                  title="Sign Out"
+                >
+                  <span>🚪</span>
+                  <span>Sign Out</span>
+                </button>
+              )}
             </div>
 
             {/* Mobile menu button */}
@@ -96,10 +130,18 @@ function Header() {
                 {link.name}
               </Link>
             ))}
-            <div className="pt-4 px-4">
+            <div className="pt-4 px-4 space-y-2">
                <Link to="/contact" onClick={closeMenu} className="block gold-gradient text-[#0A0A0A] w-full px-6 py-3 font-body font-bold tracking-widest text-sm rounded-sm shadow-lg">
                  REQUEST QUOTE
                </Link>
+               {session && (
+                 <button
+                   onClick={handleLogout}
+                   className="block w-full bg-[#1a1a1a] hover:bg-[#252525] border border-white/10 text-[#a0a0a0] hover:text-red-400 font-heading font-bold uppercase tracking-wider px-6 py-2.5 rounded-sm transition-colors text-xs cursor-pointer text-center"
+                 >
+                   🚪 Sign Out
+                 </button>
+               )}
             </div>
           </div>
         </div>

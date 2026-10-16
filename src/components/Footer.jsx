@@ -64,10 +64,15 @@ function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-white/10 pt-6 text-center">
+        <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
           <p className="text-[10px] text-[#666666] font-body tracking-wider uppercase">
-            &copy; {currentYear} Nailed It Property Solutions. All rights reserved.
+            &copy; {currentYear} Nailed It Property Solutions LLC. All rights reserved.
           </p>
+          <div className="flex items-center gap-4 text-[10px] text-[#444] font-body tracking-wider uppercase">
+            <Link to="/privacy" className="hover:text-brand-gold transition-colors">Privacy Policy</Link>
+            <span>&bull;</span>
+            <Link to="/terms" className="hover:text-brand-gold transition-colors">Terms of Use</Link>
+          </div>
         </div>
       </div>
     </footer>
