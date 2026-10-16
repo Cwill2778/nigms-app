@@ -1,4 +1,4 @@
-﻿-- ==============================================================================
+-- ==============================================================================
 -- Migration: 20261015_clean_rbac_rls.sql
 -- Description: Clean-slate wipe, grant fix, and rebuild of Supabase RBAC & RLS
 -- Target: naileditpropertysolutions.com (Supabase)
@@ -537,31 +537,49 @@ CREATE POLICY "lead_attribution_staff_all" ON public.lead_attribution FOR ALL TO
 -- ==============================================================================
 
 DO $$
+DECLARE
+    pol RECORD;
 BEGIN
-  IF EXISTS (SELECT 1 FROM storage.buckets WHERE id = 'nyp-attachments') THEN
+    -- Dynamically drop any existing storage policies for these buckets
+    FOR pol IN (
+        SELECT policyname 
+        FROM pg_policies 
+        WHERE schemaname = 'storage' AND tablename = 'objects'
+          AND (
+            policyname ILIKE '%nyp%' 
+            OR policyname ILIKE '%property%record%'
+          )
+    ) LOOP
+        EXECUTE format('DROP POLICY IF EXISTS %I ON storage.objects;', pol.policyname);
+    END LOOP;
+
+    -- Explicit drops for all known policy names
     DROP POLICY IF EXISTS "Public can upload nyp attachments" ON storage.objects;
     DROP POLICY IF EXISTS "Public can read nyp attachments" ON storage.objects;
     DROP POLICY IF EXISTS "Admin can delete nyp attachments" ON storage.objects;
-
-    CREATE POLICY "Public can upload nyp attachments" ON storage.objects 
-      FOR INSERT TO public WITH CHECK (bucket_id = 'nyp-attachments');
-    CREATE POLICY "Public can read nyp attachments" ON storage.objects 
-      FOR SELECT TO public USING (bucket_id = 'nyp-attachments');
-    CREATE POLICY "Staff can delete nyp attachments" ON storage.objects 
-      FOR DELETE TO authenticated USING (bucket_id = 'nyp-attachments' AND public.is_staff());
-  END IF;
-
-  IF EXISTS (SELECT 1 FROM storage.buckets WHERE id = 'property-records') THEN
+    DROP POLICY IF EXISTS "Staff can delete nyp attachments" ON storage.objects;
     DROP POLICY IF EXISTS "Give public access to property records bucket" ON storage.objects;
     DROP POLICY IF EXISTS "Give admins upload access to property records bucket" ON storage.objects;
+    DROP POLICY IF EXISTS "Staff can upload property records" ON storage.objects;
+    DROP POLICY IF EXISTS "Staff can delete property records" ON storage.objects;
 
-    CREATE POLICY "Give public access to property records bucket" ON storage.objects 
-      FOR SELECT TO public USING (bucket_id = 'property-records');
-    CREATE POLICY "Staff can upload property records" ON storage.objects 
-      FOR INSERT TO authenticated WITH CHECK (bucket_id = 'property-records' AND public.is_staff());
-    CREATE POLICY "Staff can delete property records" ON storage.objects 
-      FOR DELETE TO authenticated USING (bucket_id = 'property-records' AND public.is_staff());
-  END IF;
+    IF EXISTS (SELECT 1 FROM storage.buckets WHERE id = 'nyp-attachments') THEN
+      CREATE POLICY "Public can upload nyp attachments" ON storage.objects 
+        FOR INSERT TO public WITH CHECK (bucket_id = 'nyp-attachments');
+      CREATE POLICY "Public can read nyp attachments" ON storage.objects 
+        FOR SELECT TO public USING (bucket_id = 'nyp-attachments');
+      CREATE POLICY "Staff can delete nyp attachments" ON storage.objects 
+        FOR DELETE TO authenticated USING (bucket_id = 'nyp-attachments' AND public.is_staff());
+    END IF;
+
+    IF EXISTS (SELECT 1 FROM storage.buckets WHERE id = 'property-records') THEN
+      CREATE POLICY "Give public access to property records bucket" ON storage.objects 
+        FOR SELECT TO public USING (bucket_id = 'property-records');
+      CREATE POLICY "Staff can upload property records" ON storage.objects 
+        FOR INSERT TO authenticated WITH CHECK (bucket_id = 'property-records' AND public.is_staff());
+      CREATE POLICY "Staff can delete property records" ON storage.objects 
+        FOR DELETE TO authenticated USING (bucket_id = 'property-records' AND public.is_staff());
+    END IF;
 END $$;
 
 COMMIT;
