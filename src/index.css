@@ -70,7 +70,8 @@
     print-color-adjust: exact !important;
   }
 
-  /* Hide web application navigation, footer, chat, toasts */
+  /* Hide the entire React #root application so NO dark background, dashboard, or screen elements can ever print */
+  #root,
   header,
   footer,
   nav,
@@ -82,11 +83,12 @@
     display: none !important;
   }
 
-  /* Reset modal containers when printing */
+  /* Reset modal containers when portaled to body */
   .dossier-modal-overlay {
     position: static !important;
     inset: auto !important;
     background: transparent !important;
+    background-color: transparent !important;
     backdrop-filter: none !important;
     padding: 0 !important;
     margin: 0 !important;
@@ -99,6 +101,7 @@
 
   .dossier-modal-container {
     background: transparent !important;
+    background-color: transparent !important;
     border: none !important;
     box-shadow: none !important;
     padding: 0 !important;

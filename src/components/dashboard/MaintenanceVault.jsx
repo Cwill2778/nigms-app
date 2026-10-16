@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { supabase } from '../../lib/supabase';
 import { toast } from 'sonner';
 import logo from '../../assets/logo.png';
@@ -14,6 +15,61 @@ export function MaintenanceVault({ properties = [], userProfile }) {
   const [expandedRecordId, setExpandedRecordId] = useState(null);
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+
+  function handlePrintDossier() {
+    const printElement = document.getElementById('certified-dossier-sheet');
+    if (!printElement) {
+      window.print();
+      return;
+    }
+    let iframe = document.getElementById('nips-dossier-print-frame');
+    if (!iframe) {
+      iframe = document.createElement('iframe');
+      iframe.id = 'nips-dossier-print-frame';
+      iframe.style.position = 'fixed';
+      iframe.style.right = '0';
+      iframe.style.bottom = '0';
+      iframe.style.width = '0';
+      iframe.style.height = '0';
+      iframe.style.border = '0';
+      document.body.appendChild(iframe);
+    }
+    const doc = iframe.contentWindow.document;
+    doc.open();
+    doc.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Certified Property Dossier - Nailed It Property Solutions</title>
+          <link rel="preconnect" href="https://fonts.googleapis.com">
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+          <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+          <style>
+            @page { size: letter portrait; margin: 8mm 10mm 8mm 10mm; }
+            *, *::before, *::after { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            html, body { margin: 0 !important; padding: 0 !important; background: #ffffff !important; color: #0f172a !important; font-family: 'Montserrat', sans-serif; font-size: 9.5pt; line-height: 1.25; }
+            .font-serif { font-family: 'Playfair Display', Georgia, serif; }
+            .font-mono { font-family: monospace; }
+            table { border-collapse: collapse; width: 100%; }
+            tr { page-break-inside: avoid !important; break-inside: avoid !important; }
+            thead { display: table-header-group !important; }
+            .ledger-avoid-break { page-break-inside: avoid !important; break-inside: avoid !important; }
+          </style>
+          ${Array.from(document.querySelectorAll('style, link[rel="stylesheet"]')).map(el => el.outerHTML).join('\\n')}
+        </head>
+        <body style="background: #ffffff !important; padding: 0; margin: 0;">
+          <div style="background: #ffffff !important; padding: 0; margin: 0; width: 100%;">
+            ${printElement.outerHTML}
+          </div>
+        </body>
+      </html>
+    `);
+    doc.close();
+    setTimeout(() => {
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+    }, 300);
+  }
 
   useEffect(() => {
     setDossierPropertyId(selectedPropertyId);
@@ -444,7 +500,7 @@ export function MaintenanceVault({ properties = [], userProfile }) {
         const issuanceDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
         const auditId = `NIPS-${userProfile?.account_number || '100644'}-${dossierPropertyId === 'all' ? 'ALL' : dossierPropertyId.slice(0, 6).toUpperCase()}`;
 
-        return (
+        return createPortal(
           <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto dossier-modal-overlay">
             <div className="bg-[#111111] border border-white/20 rounded-2xl max-w-4xl w-full p-6 md:p-10 shadow-2xl space-y-6 my-8 text-white relative dossier-modal-container">
               {/* ACTION BAR (HIDDEN IN PRINT) */}
@@ -473,7 +529,7 @@ export function MaintenanceVault({ properties = [], userProfile }) {
                   </div>
 
                   <button
-                    onClick={() => window.print()}
+                    onClick={handlePrintDossier}
                     className="bg-brand-gold text-[#0A0A0A] font-heading font-bold uppercase tracking-wider text-xs px-5 py-2.5 rounded-lg hover:opacity-90 transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(255,95,31,0.25)] cursor-pointer"
                   >
                     <span>🖨️</span>
@@ -489,7 +545,7 @@ export function MaintenanceVault({ properties = [], userProfile }) {
               </div>
 
               {/* PRINTABLE DOSSIER SHEET (COMPACT CERTIFIED DOCUMENTATION) */}
-              <div className="bg-white text-slate-900 border-2 border-slate-900 p-1.5 rounded-sm shadow-xl font-sans dossier-sheet">
+              <div id="certified-dossier-sheet" className="bg-white text-slate-900 border-2 border-slate-900 p-1.5 rounded-sm shadow-xl font-sans dossier-sheet">
                 <div className="border border-slate-300 p-5 sm:p-6 space-y-3.5">
                   {/* TOP CERTIFIED BANNER */}
                   <div className="border-b border-slate-300 pb-1 flex justify-between items-center text-[9px] font-mono tracking-widest uppercase text-slate-500 font-bold">
@@ -652,7 +708,8 @@ export function MaintenanceVault({ properties = [], userProfile }) {
                 </div>
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         );
       })()}
     </div>
