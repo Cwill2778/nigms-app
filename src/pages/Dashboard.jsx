@@ -161,12 +161,12 @@ function Dashboard() {
               <p className="text-[#a0a0a0] text-sm mt-1">{session.user.email}</p>
             </div>
             <div className="flex items-center gap-3">
-              <Link
-                to="/#name-your-price"
-                className="bg-brand-gold hover:opacity-90 text-[#0A0A0A] font-heading font-bold uppercase tracking-wider px-5 py-2.5 rounded-lg transition-all text-xs shadow-[0_0_15px_rgba(255,95,31,0.25)]"
+              <button
+                onClick={() => setTab('support')}
+                className="bg-brand-gold hover:opacity-90 text-[#0A0A0A] font-heading font-bold uppercase tracking-wider px-5 py-2.5 rounded-lg transition-all text-xs shadow-[0_0_15px_rgba(255,95,31,0.25)] cursor-pointer"
               >
-                + New Request
-              </Link>
+                📞 Customer Service
+              </button>
               <button
                 className="bg-[#1a1a1a] hover:bg-[#0A0A0A] border border-white/10 text-white hover:text-brand-gold font-heading font-bold uppercase tracking-wider px-5 py-2.5 rounded-lg transition-colors text-xs cursor-pointer"
                 onClick={handleLogout}
@@ -345,13 +345,13 @@ function WelcomeTab({ profile, properties, subscriptions, submissions, workOrder
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <Link
-              to="/#name-your-price"
-              className="bg-brand-gold hover:opacity-90 text-[#0A0A0A] font-heading font-bold uppercase tracking-wider px-6 py-3 rounded-lg transition-all text-xs shadow-[0_0_15px_rgba(255,95,31,0.25)] flex items-center gap-2"
+            <button
+              onClick={() => onSelectTab('tracker')}
+              className="bg-brand-gold hover:opacity-90 text-[#0A0A0A] font-heading font-bold uppercase tracking-wider px-6 py-3 rounded-lg transition-all text-xs shadow-[0_0_15px_rgba(255,95,31,0.25)] flex items-center gap-2 cursor-pointer"
             >
-              <span>🔨</span>
-              <span>Name Your Price</span>
-            </Link>
+              <span>🛠️</span>
+              <span>Command Center</span>
+            </button>
             <button
               onClick={onLogout}
               className="bg-[#1a1a1a] hover:bg-[#252525] border border-white/10 text-[#a0a0a0] hover:text-red-400 font-heading font-bold uppercase tracking-wider px-4 py-3 rounded-lg transition-colors text-xs flex items-center gap-1.5 cursor-pointer"
@@ -650,12 +650,13 @@ function SupportTab({ profile, session, onSelectTab, onLogout }) {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Link
-            to="/#name-your-price"
-            className="bg-brand-gold text-[#0A0A0A] font-heading font-bold uppercase tracking-wider text-xs px-5 py-3 rounded-lg hover:opacity-90 transition-all shadow-md whitespace-nowrap"
+          <a
+            href="tel:7062378184"
+            className="bg-brand-gold text-[#0A0A0A] font-heading font-bold uppercase tracking-wider text-xs px-5 py-3 rounded-lg hover:opacity-90 transition-all shadow-md whitespace-nowrap flex items-center gap-1.5"
           >
-            + New Service Quote
-          </Link>
+            <span>📞</span>
+            <span>Call Field Dispatch</span>
+          </a>
         </div>
       </div>
     </div>

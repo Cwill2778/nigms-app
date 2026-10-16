@@ -41,6 +41,7 @@ function Footer() {
             <h4 className="text-white font-heading font-bold text-lg mb-4">Quick Links</h4>
             <ul className="space-y-2">
               <li><Link to="/" className="text-[#a0a0a0] hover:text-brand-gold font-body text-xs uppercase tracking-wider transition-colors">Home</Link></li>
+              <li><Link to="/name-your-price" className="text-brand-gold hover:text-white font-body text-xs uppercase tracking-wider font-bold transition-colors">Name Your Price</Link></li>
               <li><Link to="/services" className="text-[#a0a0a0] hover:text-brand-gold font-body text-xs uppercase tracking-wider transition-colors">Services</Link></li>
               <li><Link to="/what-we-do" className="text-[#a0a0a0] hover:text-brand-gold font-body text-xs uppercase tracking-wider transition-colors">What We Do</Link></li>
               <li><Link to="/careers" className="text-[#a0a0a0] hover:text-brand-gold font-body text-xs uppercase tracking-wider transition-colors">Careers</Link></li>

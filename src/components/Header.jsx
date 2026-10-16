@@ -32,6 +32,7 @@ function Header() {
   const baseNavLinks = [
     { name: 'Home', path: '/' },
     { name: 'Services', path: '/services' },
+    { name: 'Name Your Price', path: '/name-your-price' },
     { name: 'What We Do', path: '/what-we-do' },
     { name: 'Contact', path: '/contact' },
   ];

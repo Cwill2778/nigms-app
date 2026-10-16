@@ -3,6 +3,7 @@ import useScrollReveal from '../hooks/useScrollReveal';
 import usePageMeta from '../hooks/usePageMeta';
 import logoSeal from '../assets/logo.png';
 import heroImage from '../assets/skyOverRome.jpg';
+import NameYourPrice from '../components/NameYourPrice';
 
 function Home() {
   useScrollReveal();
@@ -34,9 +35,14 @@ function Home() {
             <img src={logoSeal} alt="Nailed It Seal" className="w-full h-full object-contain drop-shadow-lg" />
           </div>
 
-          <Link to="/contact" className="inline-block gold-gradient text-[#0A0A0A] font-body font-bold tracking-widest text-sm uppercase px-10 py-4 rounded-full hover:scale-105 transition-transform shadow-[0_10px_30px_rgba(212,175,55,0.2)]">
-            REQUEST A FREE QUOTE
-          </Link>
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <Link to="/contact" className="inline-block gold-gradient text-[#0A0A0A] font-body font-bold tracking-widest text-sm uppercase px-10 py-4 rounded-full hover:scale-105 transition-transform shadow-[0_10px_30px_rgba(212,175,55,0.2)]">
+              REQUEST A FREE QUOTE
+            </Link>
+            <a href="#name-your-price" className="inline-block bg-[#111111]/80 hover:bg-[#1a1a1a] border border-brand-gold/60 text-brand-gold font-body font-bold tracking-widest text-sm uppercase px-8 py-4 rounded-full hover:scale-105 transition-transform">
+              NAME YOUR PRICE
+            </a>
+          </div>
         </div>
       </section>
 
@@ -79,6 +85,11 @@ function Home() {
               <p className="text-[#a0a0a0] text-xs mt-4">Detailed records and condition reports to support sales, refinancing, and insurance.</p>
             </div>
 
+          </div>
+
+          {/* NAME YOUR PRICE TOOL (Public Estimator & Bidding) */}
+          <div className="mb-24">
+            <NameYourPrice />
           </div>
 
           {/* TRUST & PROCESS */}
