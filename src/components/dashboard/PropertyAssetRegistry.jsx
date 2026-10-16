@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { toast } from 'sonner';
+import { AuditBarcode } from './AuditBarcode';
 
 const EQUIPMENT_CATEGORIES = [
   'HVAC & Air Handler',
@@ -303,6 +304,14 @@ export function PropertyAssetRegistry({ properties = [], userId }) {
                       <span>Not Registered</span>
                     </div>
                   )}
+
+                  {/* ASSET AUDIT BARCODE */}
+                  <div className="mt-3 pt-2.5 border-t border-white/5 flex items-center justify-between">
+                    <span className="text-[10px] font-mono text-[#888]">
+                      EQ #{item.id.slice(0, 8).toUpperCase()}
+                    </span>
+                    <AuditBarcode value={`EQ-${item.id.slice(0, 8).toUpperCase()}`} dark className="h-4" showText={false} />
+                  </div>
                 </div>
               </div>
             );

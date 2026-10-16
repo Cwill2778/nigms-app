@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import { toast } from 'sonner';
+import { AuditBarcode, AuditQRCode } from './AuditBarcode';
 
 const STAGES = [
   { key: 'submitted', label: 'Submitted', color: '#ff8a00', icon: '📝' },
@@ -289,6 +290,14 @@ export function MaintenanceTracker({ workOrders = [], submissions = [], userId, 
                             {wo.technician_notes}
                           </div>
                         )}
+
+                        {/* WORK ORDER AUDIT BARCODE */}
+                        <div className="mt-3 pt-2.5 border-t border-white/5 flex items-center justify-between">
+                          <span className="text-[10px] font-mono text-[#888]">
+                            WO #{wo.id.slice(0, 8).toUpperCase()}
+                          </span>
+                          <AuditBarcode value={`WO-${wo.id.slice(0, 8).toUpperCase()}`} dark className="h-4" showText={false} />
+                        </div>
                       </div>
                     ))
                   )}
@@ -336,6 +345,14 @@ export function MaintenanceTracker({ workOrders = [], submissions = [], userId, 
                       <span>📅 Scheduled: <strong className="text-white">{new Date(wo.scheduled_date).toLocaleDateString()} {wo.scheduled_time || ''}</strong></span>
                     )}
                   </div>
+                </div>
+
+                <div className="flex items-center gap-4 self-end md:self-center flex-shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-white/10 w-full md:w-auto justify-between md:justify-end">
+                  <div className="text-right">
+                    <span className="text-[9px] font-mono text-[#888] block uppercase">AUDIT VERIFICATION</span>
+                    <span className="text-xs font-mono font-bold text-brand-gold">WO-NIPS-{wo.id.slice(0, 8).toUpperCase()}</span>
+                  </div>
+                  <AuditQRCode value={`WO-NIPS-${wo.id}`} size={46} label="VERIFY" dark />
                 </div>
               </div>
             ))
