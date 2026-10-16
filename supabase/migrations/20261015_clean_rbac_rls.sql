@@ -7,10 +7,18 @@
 BEGIN;
 
 -- ==============================================================================
--- 1. BASE TABLE & SCHEMA PRIVILEGES (PREVENT ERROR 42501)
+-- 1. BASE TABLE & SCHEMA PRIVILEGES (PREVENT ERROR 42501 & LOCK OUT ANON)
 -- ==============================================================================
 
+-- First, completely strip all base permissions from anon across all tables/sequences in public schema
+REVOKE ALL ON ALL TABLES IN SCHEMA public FROM anon;
+REVOKE ALL ON ALL SEQUENCES IN SCHEMA public FROM anon;
+REVOKE ALL ON ALL ROUTINES IN SCHEMA public FROM anon;
+
+-- Ensure schema usage is available
 GRANT USAGE ON SCHEMA public TO authenticated, anon;
+
+-- Authenticated users (logged-in clients, staff, admins) have base access subject to RLS
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO authenticated;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO authenticated;
 
@@ -18,7 +26,7 @@ GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO authenticated;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO authenticated;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO authenticated;
 
--- Specific permissions for anonymous (public) visitors
+-- Whitelist ONLY public content for anonymous (unauthenticated) visitors
 GRANT SELECT ON TABLE 
   public.reviews, 
   public.faqs, 
@@ -26,6 +34,7 @@ GRANT SELECT ON TABLE
   public.subscription_tiers 
 TO anon;
 
+-- Whitelist ONLY public forms (insert only) for anonymous visitors
 GRANT INSERT ON TABLE 
   public.contact_submissions, 
   public.career_applications, 
@@ -40,12 +49,11 @@ GRANT INSERT ON TABLE
   public.lead_attribution
 TO anon;
 
+-- Whitelist live chat for anonymous visitors
 GRANT INSERT, SELECT, UPDATE ON TABLE 
   public.chat_conversations, 
   public.chat_messages 
 TO anon;
-
-GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO anon;
 
 
 -- ==============================================================================
@@ -78,7 +86,7 @@ SELECT
   COALESCE(role, 'admin')::text AS role
 FROM public.admin_profiles;
 
-GRANT SELECT ON public.user_profiles TO authenticated, anon;
+GRANT SELECT ON public.user_profiles TO authenticated;
 
 -- Cached, non-recursive SECURITY DEFINER role lookup
 -- Bypasses RLS on underlying profile tables and never accesses auth.users directly
