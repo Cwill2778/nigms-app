@@ -34,7 +34,7 @@ function Signup() {
       if (signUpError) throw signUpError;
 
       if (data.user) {
-        navigate('/dashboard');
+        navigate('/check-email', { state: { email } });
       }
     } catch (error) {
       setError(error.message);
