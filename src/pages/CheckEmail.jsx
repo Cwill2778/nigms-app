@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import usePageMeta from '../hooks/usePageMeta';
@@ -20,11 +20,19 @@ function CheckEmail() {
       const { error } = await supabase.auth.resend({
         type: 'signup',
         email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/dashboard`,
+        },
       });
       if (error) throw error;
       toast.success('Activation link resent! Please check your inbox.');
     } catch (err) {
-      toast.error(err.message || 'Failed to resend activation link.');
+      console.error('Resend error:', err);
+      if (err.message?.toLowerCase().includes('error sending confirmation email') || err.status === 500) {
+        toast.error('Supabase email limit reached (max 3/hr) or custom SMTP failed. Disable "Confirm email" in Supabase settings or configure custom SMTP.');
+      } else {
+        toast.error(err.message || 'Failed to resend activation link.');
+      }
     } finally {
       setResending(false);
     }

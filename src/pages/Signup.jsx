@@ -24,6 +24,7 @@ function Signup() {
         email,
         password,
         options: {
+          emailRedirectTo: `${window.location.origin}/dashboard`,
           data: {
             first_name: firstName,
             last_name: lastName
@@ -33,11 +34,20 @@ function Signup() {
 
       if (signUpError) throw signUpError;
 
-      if (data.user) {
+      if (data.session) {
+        // If email confirmation is disabled or auto-confirmed, go directly to dashboard
+        navigate('/dashboard');
+      } else if (data.user) {
+        // If confirmation email was dispatched, guide user to check email
         navigate('/check-email', { state: { email } });
       }
     } catch (error) {
-      setError(error.message);
+      console.error('Signup error:', error);
+      if (error.message?.toLowerCase().includes('error sending confirmation email') || error.status === 500) {
+        setError('Supabase email service limit reached (max 3/hr) or custom SMTP credentials failed. In your Supabase Dashboard -> Authentication -> Providers -> Email, disable "Confirm email" or set up custom SMTP.');
+      } else {
+        setError(error.message);
+      }
     } finally {
       setLoading(false);
     }
