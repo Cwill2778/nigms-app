@@ -488,151 +488,166 @@ export function MaintenanceVault({ properties = [], userProfile }) {
                 </div>
               </div>
 
-              {/* PRINTABLE DOSSIER SHEET */}
-              <div className="bg-white text-gray-900 p-8 md:p-12 rounded-xl shadow-lg font-sans space-y-8 print:shadow-none print:p-0 dossier-sheet">
-                {/* LETTERHEAD */}
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b-2 border-gray-900 pb-6 gap-6">
-                  <div className="flex items-center gap-4">
-                    <img src={logo} alt="Nailed It Property Solutions" className="w-16 h-16 object-contain flex-shrink-0" />
-                    <div>
-                      <h1 className="text-2xl font-black uppercase tracking-wider text-gray-900 font-serif">
-                        NAILED IT PROPERTY SOLUTIONS
-                      </h1>
-                      <p className="text-xs uppercase font-bold tracking-widest text-gray-600">
-                        Certified Home Health &amp; Property Upkeep Dossier
+              {/* PRINTABLE DOSSIER SHEET (COMPACT CERTIFIED DOCUMENTATION) */}
+              <div className="bg-white text-slate-900 border-2 border-slate-900 p-1.5 rounded-sm shadow-xl font-sans dossier-sheet">
+                <div className="border border-slate-300 p-5 sm:p-6 space-y-3.5">
+                  {/* TOP CERTIFIED BANNER */}
+                  <div className="border-b border-slate-300 pb-1 flex justify-between items-center text-[9px] font-mono tracking-widest uppercase text-slate-500 font-bold">
+                    <span>★ OFFICIAL PROPERTY RECORD • CITY OF ROME &amp; FLOYD COUNTY, GA ★</span>
+                    <span>REGISTRY ID: {auditId}</span>
+                  </div>
+
+                  {/* LETTERHEAD */}
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-3 border-b-2 border-slate-900 gap-4">
+                    <div className="flex items-center gap-3">
+                      <img src={logo} alt="Nailed It Property Solutions" className="w-12 h-12 object-contain flex-shrink-0" />
+                      <div>
+                        <h1 className="text-xl sm:text-2xl font-black uppercase tracking-wider text-slate-950 font-serif leading-none">
+                          NAILED IT PROPERTY SOLUTIONS
+                        </h1>
+                        <p className="text-[10px] uppercase font-bold tracking-widest text-slate-700 mt-1">
+                          Certified Home Health &amp; Property Upkeep Dossier
+                        </p>
+                        <p className="text-[9.5px] text-slate-500 mt-0.5">
+                          Rome &amp; Floyd County, GA • (706) 237-8184 • support@naileditpropertysolutions.com
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 text-right border-l sm:border-l-2 border-slate-300 pl-4 flex-shrink-0">
+                      <AuditQRCode value={`NIPS-AUDIT-${auditId}`} size={44} label="AUDIT TRAIL" />
+                      <div>
+                        <span className="inline-block px-2 py-0.5 bg-green-100 text-green-900 text-[10px] font-bold uppercase rounded tracking-wider border border-green-300">
+                          ✓ Certified Audit Trail
+                        </span>
+                        <p className="text-[10px] text-slate-600 mt-1">
+                          Issued: <strong className="text-slate-900">{issuanceDate}</strong>
+                        </p>
+                        <p className="text-[10px] text-slate-600 font-mono">
+                          Account: <strong className="text-slate-900">{userProfile?.account_number || '100644-CLIENT'}</strong>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CLIENT & PROPERTY SUMMARY */}
+                  <div className="ledger-avoid-break grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-50/80 p-3 rounded border border-slate-300 text-xs">
+                    <div className="space-y-0.5">
+                      <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Property Owner</p>
+                      <p className="font-bold text-slate-900 text-sm">
+                        {userProfile?.first_name} {userProfile?.last_name || 'Client'}
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">
-                        Rome &amp; Floyd County, GA • (706) 237-8184 • support@naileditpropertysolutions.com
+                      <p className="text-[10px] text-slate-600">{userProfile?.email}</p>
+                    </div>
+                    <div className="space-y-0.5">
+                      <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">Inspected Property</p>
+                      <p className="font-bold text-slate-900 text-sm">
+                        {dossierPropertyId === 'all'
+                          ? 'Portfolio (All Managed Properties)'
+                          : properties.find((p) => p.id === dossierPropertyId)?.address_line1 || 'Primary Property'}
+                      </p>
+                      <p className="text-[10px] text-slate-600">
+                        {dossierTargetProperty ? `${dossierTargetProperty.city || 'Rome'}, GA ${dossierTargetProperty.zip || ''}` : 'Rome & Floyd County, GA'}
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4 text-right border-l sm:border-l-2 border-gray-200 pl-5 flex-shrink-0">
-                    <AuditQRCode value={`NIPS-AUDIT-${auditId}`} size={56} label="AUDIT TRAIL" />
-                    <div>
-                      <span className="inline-block px-3 py-1 bg-green-100 text-green-800 text-xs font-bold uppercase rounded-full">
-                        ✓ Verified Audit Trail
+                  {/* VERIFIED LEDGER TABLE */}
+                  <div>
+                    <div className="flex justify-between items-center mb-1.5 border-b border-slate-300 pb-1">
+                      <h2 className="text-xs font-bold uppercase tracking-wider text-slate-900">
+                        Chronological Service &amp; Maintenance Ledger
+                      </h2>
+                      <span className="text-[10px] text-slate-500 font-mono font-bold">
+                        {dossierRecords.length} Authenticated Entries
                       </span>
-                      <p className="text-xs text-gray-500 mt-1.5">
-                        Issued: <strong className="text-gray-900">{issuanceDate}</strong>
-                      </p>
-                      <p className="text-xs text-gray-500 font-mono">
-                        Account: <strong className="text-gray-900">{userProfile?.account_number || '100644-CLIENT'}</strong>
-                      </p>
                     </div>
-                  </div>
-                </div>
 
-                {/* CLIENT & PROPERTY SUMMARY */}
-                <div className="ledger-avoid-break grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50 p-5 rounded-lg border border-gray-200 text-sm">
-                  <div>
-                    <p className="text-xs font-bold uppercase text-gray-500">Property Owner</p>
-                    <p className="font-bold text-gray-900 text-base">
-                      {userProfile?.first_name} {userProfile?.last_name || 'Client'}
-                    </p>
-                    <p className="text-xs text-gray-600">{userProfile?.email}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold uppercase text-gray-500">Inspected Property</p>
-                    <p className="font-bold text-gray-900 text-base">
-                      {dossierPropertyId === 'all'
-                        ? 'Portfolio (All Managed Properties)'
-                        : properties.find((p) => p.id === dossierPropertyId)?.address_line1 || 'Primary Property'}
-                    </p>
-                    <p className="text-xs text-gray-600">
-                      {dossierTargetProperty ? `${dossierTargetProperty.city || 'Rome'}, GA ${dossierTargetProperty.zip || ''}` : 'Rome, GA'}
-                    </p>
-                  </div>
-                </div>
-
-                {/* VERIFIED LEDGER TABLE */}
-                <div>
-                  <div className="flex justify-between items-center mb-3 border-b border-gray-300 pb-1">
-                    <h2 className="text-sm font-bold uppercase tracking-wider text-gray-900">
-                      Chronological Service Ledger
-                    </h2>
-                    <span className="text-xs text-gray-500 font-mono">
-                      {dossierRecords.length} Documented Entries
-                    </span>
-                  </div>
-
-                  <table className="ledger-table w-full text-left text-xs border-collapse">
-                    <thead>
-                      <tr className="border-b-2 border-gray-900 bg-gray-100 text-gray-700">
-                        <th className="py-2.5 px-3">Date</th>
-                        <th className="py-2.5 px-3">Service Category</th>
-                        <th className="py-2.5 px-3">Description &amp; Scope</th>
-                        <th className="py-2.5 px-3">Technician</th>
-                        <th className="py-2.5 px-3 text-right">Cost</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {dossierRecords.length === 0 ? (
-                        <tr className="border-b border-gray-200">
-                          <td colSpan={5} className="py-8 text-center text-gray-500 text-xs">
-                            <p className="font-bold text-gray-700 uppercase mb-1">Clean Property Record Initialized</p>
-                            <p>No active repairs or open work orders recorded.</p>
-                          </td>
+                    <table className="ledger-table w-full text-left text-xs border border-slate-300 border-collapse">
+                      <thead>
+                        <tr className="border-b-2 border-slate-900 bg-slate-100 text-slate-800 text-[10px] uppercase tracking-wider font-bold">
+                          <th className="py-1.5 px-2.5">Date</th>
+                          <th className="py-1.5 px-2.5">Service Category</th>
+                          <th className="py-1.5 px-2.5">Description &amp; Scope of Work</th>
+                          <th className="py-1.5 px-2.5">Technician</th>
+                          <th className="py-1.5 px-2.5 text-right">Cost</th>
                         </tr>
-                      ) : (
-                        dossierRecords.map((r, i) => (
-                          <tr key={r.id} className={`ledger-avoid-break ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50 border-t border-gray-200'}`}>
-                            <td className="py-2.5 px-3 font-mono whitespace-nowrap align-top">
-                              {new Date(r.service_date).toLocaleDateString()}
-                            </td>
-                            <td className="py-2.5 px-3 font-bold align-top whitespace-nowrap">
-                              {r.service_type}
-                            </td>
-                            <td className="py-2.5 px-3 text-gray-700 align-top">
-                              <p className="font-medium text-gray-900">{r.description}</p>
-                              {r.customer_properties?.address_line1 && dossierPropertyId === 'all' && (
-                                <span className="text-[10px] text-gray-500 font-mono block mt-0.5">
-                                  Location: {r.customer_properties.address_line1}
-                                </span>
-                              )}
-                            </td>
-                            <td className="py-2.5 px-3 text-gray-600 align-top whitespace-nowrap">
-                              {r.performed_by || 'Nailed It Team'}
-                            </td>
-                            <td className="py-2.5 px-3 text-right font-mono font-bold align-top whitespace-nowrap">
-                              {r.cost ? `$${(r.cost / 100).toFixed(2)}` : 'Plan Included'}
+                      </thead>
+                      <tbody>
+                        {dossierRecords.length === 0 ? (
+                          <tr className="border-b border-slate-200">
+                            <td colSpan={5} className="py-5 text-center text-slate-500 text-xs">
+                              <p className="font-bold text-slate-700 uppercase mb-0.5">Clean Property Record Initialized</p>
+                              <p className="text-[10px]">No active repairs or open work orders recorded in registry.</p>
                             </td>
                           </tr>
-                        ))
-                      )}
-                    </tbody>
-                    <tfoot>
-                      <tr className="ledger-avoid-break border-t-2 border-gray-900 font-bold text-gray-900 bg-gray-50">
-                        <td colSpan={4} className="py-3 px-3 text-right uppercase">
-                          Documented Upkeep Investment:
-                        </td>
-                        <td className="py-3 px-3 text-right font-mono text-sm font-bold">
-                          ${(dossierTotalCost / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        </td>
-                      </tr>
-                    </tfoot>
-                  </table>
-                </div>
+                        ) : (
+                          dossierRecords.map((r, i) => (
+                            <tr key={r.id} className={`ledger-avoid-break border-b border-slate-200 ${i % 2 === 0 ? 'bg-white' : 'bg-slate-50/70'}`}>
+                              <td className="py-1.5 px-2.5 font-mono text-[10.5px] whitespace-nowrap align-top">
+                                {new Date(r.service_date).toLocaleDateString()}
+                              </td>
+                              <td className="py-1.5 px-2.5 font-bold text-[10.5px] text-slate-900 align-top whitespace-nowrap">
+                                {r.service_type}
+                              </td>
+                              <td className="py-1.5 px-2.5 text-slate-800 align-top text-[11px]">
+                                <p className="font-semibold text-slate-950">{r.description}</p>
+                                {r.customer_properties?.address_line1 && dossierPropertyId === 'all' && (
+                                  <span className="text-[9.5px] text-slate-500 font-mono block mt-0.5">
+                                    Location: {r.customer_properties.address_line1}
+                                  </span>
+                                )}
+                              </td>
+                              <td className="py-1.5 px-2.5 text-slate-600 text-[10.5px] align-top whitespace-nowrap">
+                                {r.performed_by || 'Nailed It Team'}
+                              </td>
+                              <td className="py-1.5 px-2.5 text-right font-mono font-bold text-[11px] text-slate-950 align-top whitespace-nowrap">
+                                {r.cost ? `$${(r.cost / 100).toFixed(2)}` : 'Plan Included'}
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                      <tfoot>
+                        <tr className="ledger-avoid-break border-t-2 border-slate-900 font-bold text-slate-900 bg-slate-100">
+                          <td colSpan={4} className="py-1.5 px-2.5 text-right uppercase text-[10.5px] tracking-wider">
+                            Documented Upkeep Investment:
+                          </td>
+                          <td className="py-1.5 px-2.5 text-right font-mono text-xs sm:text-sm font-black text-slate-950">
+                            ${(dossierTotalCost / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
 
-                {/* CERTIFICATE SEAL & SIGNATURE BLOCK */}
-                <div className="ledger-avoid-break pt-6 border-t-2 border-gray-300 grid grid-cols-1 sm:grid-cols-2 gap-8 items-end text-xs text-gray-600">
-                  <div className="space-y-2">
-                    <p className="font-bold text-gray-900 uppercase">Audit &amp; Inspection Guarantee</p>
-                    <p>
-                      All services listed above have been executed according to manufacturer specifications and municipal residential codes. This record is sealed and guaranteed by Nailed It Property Solutions LLC.
-                    </p>
-                    <div className="pt-2 flex flex-col gap-1">
-                      <AuditBarcode value={`NIPS-${userProfile?.account_number || 'CLIENT'}-${dossierRecords.length}`} className="h-7" />
-                      <p className="text-[10px] text-gray-400 font-mono">
-                        Digital Hash: NIPS-VAULT-{userProfile?.id?.slice(0, 8) || 'VERIFIED'}
+                  {/* CERTIFICATE SEAL & SIGNATURE BLOCK */}
+                  <div className="ledger-avoid-break pt-3 border-t-2 border-slate-300 grid grid-cols-1 sm:grid-cols-2 gap-4 items-end text-xs text-slate-600">
+                    <div className="space-y-1">
+                      <p className="font-bold text-slate-900 uppercase text-[10.5px] tracking-wider">
+                        Audit &amp; Inspection Guarantee
                       </p>
+                      <p className="text-[10px] text-slate-600 leading-snug">
+                        All services listed above have been executed according to manufacturer specifications and municipal residential codes. This record is sealed and guaranteed by Nailed It Property Solutions LLC.
+                      </p>
+                      <div className="pt-1.5 flex items-center gap-3">
+                        <AuditBarcode value={`NIPS-${userProfile?.account_number || 'CLIENT'}-${dossierRecords.length}`} className="h-6" />
+                        <p className="text-[9px] text-slate-500 font-mono">
+                          Digital Hash: NIPS-VAULT-{userProfile?.id?.slice(0, 8) || 'VERIFIED'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="inline-block border-b-2 border-slate-900 w-48 mb-1"></div>
+                      <p className="font-bold text-slate-900 text-xs">Charles &amp; Inspection Operations Team</p>
+                      <p className="text-[10px] text-slate-500">Director of Field Services, Nailed It Property Solutions</p>
+                      <p className="text-[9px] text-green-800 font-bold uppercase mt-0.5">✓ Certified Audit Sign-off</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="inline-block border-b-2 border-gray-900 w-48 mb-2"></div>
-                    <p className="font-bold text-gray-900">Charles &amp; Inspection Operations Team</p>
-                    <p className="text-[11px] text-gray-500">Director of Field Services, Nailed It Property Solutions</p>
-                    <p className="text-[9px] text-green-700 font-bold uppercase mt-1">✓ Verified Sign-off</p>
+
+                  {/* BOTTOM SECURITY NOTICE */}
+                  <div className="border-t border-slate-300 pt-1 text-center text-[8.5px] font-mono tracking-wider text-slate-400 uppercase">
+                    NAILED IT PROPERTY SOLUTIONS LLC • OFFICIAL CERTIFIED RESIDENTIAL UPKEEP DOSSIER • DO NOT ALTER
                   </div>
                 </div>
               </div>
