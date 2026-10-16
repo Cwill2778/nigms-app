@@ -2,11 +2,26 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import usePageMeta from '../hooks/usePageMeta';
-import { RecordsTab } from '../components/dashboard/RecordsTab';
 import { toast } from 'sonner';
 
+import { MaintenanceTracker } from '../components/dashboard/MaintenanceTracker';
+import { MaintenanceVault } from '../components/dashboard/MaintenanceVault';
+import { SubscriptionManager } from '../components/dashboard/SubscriptionManager';
+import { PropertyAssetRegistry } from '../components/dashboard/PropertyAssetRegistry';
+import { BillingLedger } from '../components/dashboard/BillingLedger';
+
+const TABS = [
+  { id: 'tracker', label: 'Command Center', icon: '🛠️' },
+  { id: 'vault', label: 'The Vault', icon: '📜' },
+  { id: 'subscription', label: 'Subscriptions', icon: '⚡' },
+  { id: 'properties', label: 'Properties & Assets', icon: '🏠' },
+  { id: 'billing', label: 'Billing & Receipts', icon: '💳' },
+  { id: 'overview', label: 'Overview', icon: '📊' },
+  { id: 'settings', label: 'Settings', icon: '⚙️' },
+];
+
 function Dashboard() {
-  usePageMeta('My Account | Nailed It Property Solutions', 'Manage your properties, subscriptions, and service requests.');
+  usePageMeta('My Account | Nailed It Property Solutions', 'Manage your properties, subscriptions, and active maintenance operations.');
 
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -15,7 +30,7 @@ function Dashboard() {
   const [subscriptions, setSubscriptions] = useState([]);
   const [submissions, setSubmissions] = useState([]);
   const [workOrders, setWorkOrders] = useState([]);
-  const [tab, setTab] = useState('overview');
+  const [tab, setTab] = useState('tracker');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,42 +51,47 @@ function Dashboard() {
   async function loadData(userId, currentSession) {
     const activeSession = currentSession || session;
     setLoading(true);
-    const [profileRes, propsRes, subsRes, nypsRes, woRes] = await Promise.all([
-      supabase.from('customer_profiles').select('*').eq('id', userId).maybeSingle(),
-      supabase.from('customer_properties').select('*').eq('customer_id', userId),
-      supabase.from('customer_subscriptions').select('*, subscription_tiers(*)').eq('customer_id', userId),
-      supabase.from('name_your_price').select('*').eq('customer_email', activeSession?.user?.email).order('created_at', { ascending: false }),
-      supabase.from('work_orders').select('*, properties(*)').eq('customer_id', userId).order('created_at', { ascending: false }),
-    ]);
+    try {
+      const [profileRes, propsRes, subsRes, nypsRes, woRes] = await Promise.all([
+        supabase.from('customer_profiles').select('*').eq('id', userId).maybeSingle(),
+        supabase.from('customer_properties').select('*').eq('customer_id', userId),
+        supabase.from('customer_subscriptions').select('*, subscription_tiers(*)').eq('customer_id', userId),
+        supabase.from('name_your_price').select('*').eq('customer_email', activeSession?.user?.email).order('created_at', { ascending: false }),
+        supabase.from('work_orders').select('*').eq('customer_id', userId).order('created_at', { ascending: false }),
+      ]);
 
-    let userProfile = profileRes.data;
+      let userProfile = profileRes.data;
 
-    // Self-healing: if the user profile doesn't exist yet, automatically create it
-    if (!userProfile && activeSession?.user) {
-      const meta = activeSession.user.user_metadata || {};
-      const { data: createdProfile, error: createErr } = await supabase
-        .from('customer_profiles')
-        .upsert({
-          id: userId,
-          email: activeSession.user.email,
-          first_name: meta.first_name || '',
-          last_name: meta.last_name || '',
-          role: 'client'
-        }, { onConflict: 'id' })
-        .select()
-        .maybeSingle();
+      // Self-healing: if the user profile doesn't exist yet, automatically create it
+      if (!userProfile && activeSession?.user) {
+        const meta = activeSession.user.user_metadata || {};
+        const { data: createdProfile, error: createErr } = await supabase
+          .from('customer_profiles')
+          .upsert({
+            id: userId,
+            email: activeSession.user.email,
+            first_name: meta.first_name || '',
+            last_name: meta.last_name || '',
+            role: 'client'
+          }, { onConflict: 'id' })
+          .select()
+          .maybeSingle();
 
-      if (!createErr && createdProfile) {
-        userProfile = createdProfile;
+        if (!createErr && createdProfile) {
+          userProfile = createdProfile;
+        }
       }
-    }
 
-    setProfile(userProfile);
-    setProperties(propsRes.data || []);
-    setSubscriptions(subsRes.data || []);
-    setSubmissions(nypsRes.data || []);
-    setWorkOrders(woRes.data || []);
-    setLoading(false);
+      setProfile(userProfile);
+      setProperties(propsRes.data || []);
+      setSubscriptions(subsRes.data || []);
+      setSubmissions(nypsRes.data || []);
+      setWorkOrders(woRes.data || []);
+    } catch (err) {
+      console.error('Error loading dashboard data:', err);
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleLogout() {
@@ -79,7 +99,15 @@ function Dashboard() {
     navigate('/');
   }
 
-  if (loading) return <div className="w-full bg-[#0A0A0A] min-h-screen py-24 flex justify-center items-center"><p className="text-brand-gold font-bold font-heading uppercase tracking-widest animate-pulse text-xl">Loading Account...</p></div>;
+  if (loading) {
+    return (
+      <div className="w-full bg-[#0A0A0A] min-h-screen py-24 flex justify-center items-center">
+        <p className="text-brand-gold font-bold font-heading uppercase tracking-widest animate-pulse text-xl">
+          Loading Account Operations...
+        </p>
+      </div>
+    );
+  }
 
   if (!session) {
     return (
@@ -88,108 +116,279 @@ function Dashboard() {
           <div className="bg-[#111111] border border-white/10 p-8 md:p-12 rounded-xl shadow-2xl">
             <h1 className="text-3xl text-white font-heading font-bold uppercase tracking-wider mb-4">My Account</h1>
             <div className="h-1 w-16 bg-brand-gold text-[#0A0A0A] mx-auto mb-6"></div>
-            <p className="text-[#a0a0a0] leading-relaxed mb-8">Sign in to manage your properties, subscriptions, and service requests.</p>
-            <Link to="/login" className="w-full bg-brand-gold text-[#0A0A0A] hover:opacity-90 text-wood-900 font-heading font-bold uppercase tracking-wider px-8 py-4 rounded-md transition-all text-lg shadow-[0_0_15px_rgba(255,95,31,0.3)] hover:-translate-y-1 inline-block mb-6">Sign In</Link>
-            <p className="text-[#a0a0a0]">Don&rsquo;t have an account? <Link to="/signup" className="text-brand-gold hover:text-white font-bold uppercase tracking-wider ml-2">Create one</Link></p>
+            <p className="text-[#a0a0a0] leading-relaxed mb-8">
+              Sign in to manage your properties, active maintenance operations, and warranty vaults.
+            </p>
+            <Link to="/login" className="w-full bg-brand-gold text-[#0A0A0A] hover:opacity-90 font-heading font-bold uppercase tracking-wider px-8 py-4 rounded-md transition-all text-lg shadow-[0_0_15px_rgba(255,95,31,0.3)] hover:-translate-y-1 inline-block mb-6">
+              Sign In
+            </Link>
+            <p className="text-[#a0a0a0]">
+              Don&rsquo;t have an account? <Link to="/signup" className="text-brand-gold hover:text-white font-bold uppercase tracking-wider ml-2">Create one</Link>
+            </p>
           </div>
         </div>
       </div>
     );
   }
 
+  // Pending items requiring client sign-off
+  const pendingApprovalsCount = [
+    ...workOrders.filter((wo) => wo.status === 'pending_approval' || (wo.estimated_cost && !wo.approved && wo.status === 'scheduled')),
+    ...submissions.filter((s) => s.status === 'countered')
+  ].length;
+
   return (
     <div className="w-full bg-[#0A0A0A] min-h-screen py-24">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="bg-[#111111] border border-white/10 p-8 md:p-12 rounded-xl shadow-2xl mb-8">
+      <div className="max-w-7xl mx-auto px-4">
+        {/* TOP WELCOME BAR */}
+        <div className="bg-[#111111] border border-white/10 p-8 md:p-10 rounded-2xl shadow-2xl mb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div>
-              <h1 className="text-3xl md:text-4xl text-white font-heading font-bold uppercase tracking-wider mb-2">Welcome back{profile?.first_name ? `, ${profile.first_name}` : ''}</h1>
-              <p className="text-brand-gold font-bold tracking-widest uppercase text-sm mb-1">{session.user.email}</p>
-              {profile?.account_number && <p className="text-[#a0a0a0] text-sm">Account: {profile.account_number}</p>}
+              <div className="flex items-center gap-3 mb-1">
+                <span className="text-xs px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider bg-brand-gold/20 text-brand-gold border border-brand-gold/40">
+                  {profile?.role === 'staff' || profile?.role === 'admin' ? 'Staff Portal' : 'Customer Command Portal'}
+                </span>
+                {profile?.account_number && (
+                  <span className="text-xs text-[#a0a0a0] font-mono">
+                    Account: <strong className="text-white">{profile.account_number}</strong>
+                  </span>
+                )}
+              </div>
+              <h1 className="text-3xl md:text-4xl text-white font-heading font-bold uppercase tracking-wider">
+                Welcome back{profile?.first_name ? `, ${profile.first_name}` : ''}
+              </h1>
+              <p className="text-[#a0a0a0] text-sm mt-1">{session.user.email}</p>
             </div>
-            <button className="bg-[#111111] hover:bg-[#0A0A0A] border border-white/10 text-white hover:text-brand-gold font-heading font-bold uppercase tracking-wider px-6 py-2 rounded transition-colors" onClick={handleLogout}>Sign Out</button>
+            <div className="flex items-center gap-3">
+              <Link
+                to="/#name-your-price"
+                className="bg-brand-gold hover:opacity-90 text-[#0A0A0A] font-heading font-bold uppercase tracking-wider px-5 py-2.5 rounded-lg transition-all text-xs shadow-[0_0_15px_rgba(255,95,31,0.25)]"
+              >
+                + New Request
+              </Link>
+              <button
+                className="bg-[#1a1a1a] hover:bg-[#0A0A0A] border border-white/10 text-white hover:text-brand-gold font-heading font-bold uppercase tracking-wider px-5 py-2.5 rounded-lg transition-colors text-xs cursor-pointer"
+                onClick={handleLogout}
+              >
+                Sign Out
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-8 border-b border-white/10 pb-4">
-          {['overview', 'properties', 'records', 'requests', 'settings'].map((t) => (
-            <button
-              key={t}
-              className={`font-heading font-bold uppercase tracking-wider px-6 py-3 rounded-t-md transition-colors ${tab === t ? 'bg-brand-gold text-[#0A0A0A] text-wood-900' : 'text-[#a0a0a0] hover:text-brand-gold bg-[#111111] border-t border-x border-white/10'}`}
-              onClick={() => setTab(t)}
-            >
-              {t}
-            </button>
-          ))}
+        {/* TAB NAVIGATION PILLS */}
+        <div className="flex overflow-x-auto gap-2 mb-8 border-b border-white/10 pb-4 no-scrollbar">
+          {TABS.map((t) => {
+            const isActive = tab === t.id;
+            return (
+              <button
+                key={t.id}
+                onClick={() => setTab(t.id)}
+                className={`font-heading font-bold uppercase tracking-wider px-5 py-3 rounded-xl transition-all flex items-center gap-2 whitespace-nowrap text-xs cursor-pointer ${
+                  isActive
+                    ? 'bg-brand-gold text-[#0A0A0A] shadow-[0_4px_12px_rgba(255,95,31,0.25)]'
+                    : 'text-[#a0a0a0] hover:text-white bg-[#111111] hover:bg-[#161616] border border-white/10'
+                }`}
+              >
+                <span>{t.icon}</span>
+                <span>{t.label}</span>
+                {t.id === 'tracker' && pendingApprovalsCount > 0 && (
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${isActive ? 'bg-[#0A0A0A] text-brand-gold' : 'bg-brand-gold text-[#0A0A0A]'}`}>
+                    {pendingApprovalsCount}
+                  </span>
+                )}
+                {t.id === 'properties' && properties.length > 0 && (
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${isActive ? 'bg-[#0A0A0A] text-brand-gold' : 'bg-white/10 text-white/70'}`}>
+                    {properties.length}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
 
-        <div className="bg-[#111111] border border-white/10 p-8 rounded-xl shadow-xl min-h-[500px]">
-          {tab === 'overview' && <OverviewTab profile={profile} properties={properties} subscriptions={subscriptions} submissions={submissions} />}
-          {tab === 'properties' && <PropertiesTab properties={properties} userId={session.user.id} session={session} profile={profile} onRefresh={() => loadData(session.user.id, session)} />}
-          {tab === 'records' && <RecordsTab properties={properties} />}
-          {tab === 'requests' && <RequestsTab submissions={submissions} />}
-          {tab === 'settings' && <SettingsTab profile={profile} userId={session.user.id} onRefresh={() => loadData(session.user.id, session)} />}
+        {/* ACTIVE TAB CONTENT CONTAINER */}
+        <div className="bg-[#111111] border border-white/10 p-6 md:p-8 rounded-2xl shadow-xl min-h-[550px]">
+          {tab === 'tracker' && (
+            <MaintenanceTracker
+              workOrders={workOrders}
+              submissions={submissions}
+              userId={session.user.id}
+              onRefresh={() => loadData(session.user.id, session)}
+            />
+          )}
+
+          {tab === 'vault' && (
+            <MaintenanceVault
+              properties={properties}
+              userProfile={profile}
+            />
+          )}
+
+          {tab === 'subscription' && (
+            <SubscriptionManager
+              subscriptions={subscriptions}
+              properties={properties}
+              userId={session.user.id}
+              onRefresh={() => loadData(session.user.id, session)}
+            />
+          )}
+
+          {tab === 'properties' && (
+            <div className="space-y-12">
+              <PropertiesTab
+                properties={properties}
+                userId={session.user.id}
+                session={session}
+                profile={profile}
+                onRefresh={() => loadData(session.user.id, session)}
+              />
+              <div className="pt-8 border-t border-white/10">
+                <PropertyAssetRegistry
+                  properties={properties}
+                  userId={session.user.id}
+                />
+              </div>
+            </div>
+          )}
+
+          {tab === 'billing' && (
+            <BillingLedger
+              subscriptions={subscriptions}
+              profile={profile}
+              userEmail={session.user.email}
+            />
+          )}
+
+          {tab === 'overview' && (
+            <OverviewTab
+              profile={profile}
+              properties={properties}
+              subscriptions={subscriptions}
+              submissions={submissions}
+              workOrders={workOrders}
+              onSelectTab={setTab}
+            />
+          )}
+
+          {tab === 'settings' && (
+            <SettingsTab
+              profile={profile}
+              userId={session.user.id}
+              onRefresh={() => loadData(session.user.id, session)}
+            />
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-function OverviewTab({ profile, properties, subscriptions, submissions, workOrders }) {
+function OverviewTab({ profile, properties, subscriptions, submissions, workOrders, onSelectTab }) {
   const activeSubscriptions = subscriptions.filter((s) => s.status === 'active');
   const pendingRequests = submissions.filter((s) => s.status === 'new' || s.status === 'viewed');
   const activeWorkOrders = workOrders?.filter((wo) => wo.status !== 'completed' && wo.status !== 'cancelled') || [];
 
   return (
-    <div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <div className="bg-[#111111] border border-white/10 rounded-lg p-6 text-center">
+    <div className="space-y-10">
+      {/* 3 STATS PILLARS */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div
+          onClick={() => onSelectTab('properties')}
+          className="bg-[#0A0A0A] border border-white/10 hover:border-brand-gold/50 rounded-xl p-6 text-center cursor-pointer transition-all hover:-translate-y-1"
+        >
+          <span className="text-2xl block mb-1">🏠</span>
           <p className="text-5xl text-brand-gold font-heading font-bold mb-2">{properties.length}</p>
-          <p className="text-[#a0a0a0] font-bold uppercase tracking-wider text-sm">Properties</p>
+          <p className="text-[#a0a0a0] font-bold uppercase tracking-wider text-xs">Registered Properties</p>
         </div>
-        <div className="bg-[#111111] border border-white/10 rounded-lg p-6 text-center">
+
+        <div
+          onClick={() => onSelectTab('subscription')}
+          className="bg-[#0A0A0A] border border-white/10 hover:border-brand-gold/50 rounded-xl p-6 text-center cursor-pointer transition-all hover:-translate-y-1"
+        >
+          <span className="text-2xl block mb-1">⚡</span>
           <p className="text-5xl text-brand-gold font-heading font-bold mb-2">{activeSubscriptions.length}</p>
-          <p className="text-[#a0a0a0] font-bold uppercase tracking-wider text-sm">Active Plans</p>
+          <p className="text-[#a0a0a0] font-bold uppercase tracking-wider text-xs">Active Protection Plans</p>
         </div>
-        <div className="bg-[#111111] border border-white/10 rounded-lg p-6 text-center">
-          <p className="text-5xl text-brand-gold font-heading font-bold mb-2">{pendingRequests.length + activeWorkOrders.length}</p>
-          <p className="text-[#a0a0a0] font-bold uppercase tracking-wider text-sm">Open Quotes & Work Orders</p>
+
+        <div
+          onClick={() => onSelectTab('tracker')}
+          className="bg-[#0A0A0A] border border-white/10 hover:border-brand-gold/50 rounded-xl p-6 text-center cursor-pointer transition-all hover:-translate-y-1"
+        >
+          <span className="text-2xl block mb-1">🛠️</span>
+          <p className="text-5xl text-brand-gold font-heading font-bold mb-2">
+            {pendingRequests.length + activeWorkOrders.length}
+          </p>
+          <p className="text-[#a0a0a0] font-bold uppercase tracking-wider text-xs">Active Jobs & Quotes</p>
         </div>
       </div>
 
+      {/* QUICK COMMAND LAUNCHPAD */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-[#0A0A0A] border border-white/10 p-6 rounded-xl flex flex-col justify-between">
+          <div>
+            <h4 className="text-lg font-heading font-bold uppercase tracking-wider text-white mb-2 flex items-center gap-2">
+              <span>🛠️</span>
+              <span>Command Center Dispatch</span>
+            </h4>
+            <p className="text-xs text-[#a0a0a0] leading-relaxed mb-4">
+              Real-time dispatch tracking, technician notes, and instant sign-off on out-of-scope work order estimates.
+            </p>
+          </div>
+          <button
+            onClick={() => onSelectTab('tracker')}
+            className="w-full bg-brand-gold text-[#0A0A0A] font-heading font-bold uppercase tracking-wider text-xs py-3 rounded-lg hover:opacity-90 transition-all cursor-pointer"
+          >
+            Launch Command Center →
+          </button>
+        </div>
+
+        <div className="bg-[#0A0A0A] border border-white/10 p-6 rounded-xl flex flex-col justify-between">
+          <div>
+            <h4 className="text-lg font-heading font-bold uppercase tracking-wider text-white mb-2 flex items-center gap-2">
+              <span>📜</span>
+              <span>The Maintenance Vault</span>
+            </h4>
+            <p className="text-xs text-[#a0a0a0] leading-relaxed mb-4">
+              Access certified service logs, before/after photos, itemized contractor invoices, and generate certified property dossiers.
+            </p>
+          </div>
+          <button
+            onClick={() => onSelectTab('vault')}
+            className="w-full bg-[#161616] hover:bg-white/10 border border-white/10 text-white font-heading font-bold uppercase tracking-wider text-xs py-3 rounded-lg transition-all cursor-pointer"
+          >
+            Open Upkeep Vault →
+          </button>
+        </div>
+      </div>
+
+      {/* ACTIVE SUBSCRIPTION HIGHLIGHT */}
       {activeSubscriptions.length > 0 && (
-        <div className="mb-12">
-          <h3 className="text-2xl text-white font-heading font-bold uppercase tracking-wider mb-6 border-b border-white/10 pb-4">Your Subscriptions</h3>
+        <div>
+          <h3 className="text-xl text-white font-heading font-bold uppercase tracking-wider mb-4 border-b border-white/10 pb-3">
+            Active Property Care Plans
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {activeSubscriptions.map((sub) => (
-              <div key={sub.id} className="bg-[#111111] border-l-4 border-brand-gold rounded-lg p-6 shadow-md flex justify-between items-center">
+              <div key={sub.id} className="bg-[#0A0A0A] border-l-4 border-brand-gold rounded-xl p-6 shadow-md flex justify-between items-center">
                 <div>
-                  <h4 className="text-xl text-white font-heading font-bold uppercase tracking-wider mb-1">{sub.subscription_tiers?.name || sub.tier_id}</h4>
-                  <p className="text-brand-gold font-bold tracking-widest text-sm capitalize">{sub.status}</p>
+                  <h4 className="text-lg text-white font-heading font-bold uppercase tracking-wider mb-1">
+                    {sub.subscription_tiers?.name || sub.tier_id}
+                  </h4>
+                  <p className="text-brand-gold font-bold tracking-widest text-xs capitalize">{sub.status}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-bold text-white">${((sub.subscription_tiers?.price_cents || 0) / 100).toFixed(0)}<span className="text-sm text-[#a0a0a0] font-normal">/mo</span></p>
+                  <p className="text-2xl font-bold text-white">
+                    ${((sub.subscription_tiers?.price_cents || 0) / 100).toFixed(0)}
+                    <span className="text-xs text-[#a0a0a0] font-normal">/mo</span>
+                  </p>
+                  <button
+                    onClick={() => onSelectTab('subscription')}
+                    className="text-[11px] text-brand-gold hover:underline mt-1 block uppercase font-bold"
+                  >
+                    View Checklist & Hours
+                  </button>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {submissions.length > 0 && (
-        <div>
-          <h3 className="text-2xl text-white font-heading font-bold uppercase tracking-wider mb-6 border-b border-white/10 pb-4">Recent Requests</h3>
-          <div className="space-y-4">
-            {submissions.slice(0, 3).map((s) => (
-              <div key={s.id} className="bg-[#111111] border border-white/10 rounded-lg p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <span className={`px-3 py-1 rounded text-xs font-bold uppercase tracking-wider ${s.status === 'new' ? 'bg-brand-gold text-[#0A0A0A]/20 text-brand-gold border border-brand-gold/50' : 'bg-[#222222] text-[#a0a0a0] border border-white/10'}`}>
-                    {s.status}
-                  </span>
-                  <span className="text-xl font-bold text-brand-gold">${(s.offered_price / 100).toFixed(0)}</span>
-                </div>
-                <p className="text-white leading-relaxed mb-4">{s.description.substring(0, 120)}{s.description.length > 120 ? '...' : ''}</p>
-                <p className="text-[#a0a0a0] text-sm italic">Submitted {new Date(s.created_at).toLocaleDateString()}</p>
               </div>
             ))}
           </div>
@@ -208,7 +407,6 @@ function PropertiesTab({ properties, userId, session, profile, onRefresh }) {
     e.preventDefault();
     setSubmitting(true);
     try {
-      // Ensure customer profile exists before inserting property to satisfy foreign key constraint
       if (!profile) {
         const meta = session?.user?.user_metadata || {};
         await supabase.from('customer_profiles').upsert({
@@ -220,10 +418,10 @@ function PropertiesTab({ properties, userId, session, profile, onRefresh }) {
         }, { onConflict: 'id' });
       }
 
-      const { data, error } = await supabase.from('customer_properties').insert({ 
+      const { error } = await supabase.from('customer_properties').insert({ 
         ...form, 
         customer_id: userId 
-      }).select();
+      });
 
       if (error) {
         console.error('Error adding property:', error);
@@ -231,7 +429,7 @@ function PropertiesTab({ properties, userId, session, profile, onRefresh }) {
         return;
       }
 
-      toast.success('Property added successfully!');
+      toast.success('Property registered successfully!');
       setForm({ label: '', address_line1: '', city: 'Rome', state: 'GA', zip: '', area: '', property_type: 'residential' });
       setAdding(false);
       onRefresh();
@@ -244,7 +442,7 @@ function PropertiesTab({ properties, userId, session, profile, onRefresh }) {
   }
 
   async function deleteProperty(id) {
-    if (confirm('Remove this property?')) {
+    if (confirm('Remove this property from your account? Associated maintenance history will be detached.')) {
       const { error } = await supabase.from('customer_properties').delete().eq('id', id);
       if (error) {
         toast.error(error.message || 'Failed to remove property.');
@@ -257,10 +455,17 @@ function PropertiesTab({ properties, userId, session, profile, onRefresh }) {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
-        <h2 className="text-2xl text-white font-heading font-bold uppercase tracking-wider">My Properties</h2>
+      <div className="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
+        <div>
+          <h2 className="text-2xl text-white font-heading font-bold uppercase tracking-wider">
+            Properties Portfolio
+          </h2>
+          <p className="text-xs text-[#a0a0a0] mt-1">
+            Registered residential and commercial addresses managed under your account.
+          </p>
+        </div>
         <button 
-          className="border-2 border-brand-gold text-brand-gold hover:bg-brand-gold text-[#0A0A0A] hover:text-wood-900 font-heading font-bold uppercase tracking-wider px-4 py-2 rounded transition-colors text-sm" 
+          className="border border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-[#0A0A0A] font-heading font-bold uppercase tracking-wider px-4 py-2 rounded-lg transition-colors text-xs cursor-pointer" 
           onClick={() => setAdding(!adding)}
         >
           {adding ? 'Cancel' : '+ Add Property'}
@@ -268,76 +473,64 @@ function PropertiesTab({ properties, userId, session, profile, onRefresh }) {
       </div>
 
       {adding && (
-        <form className="bg-[#111111] p-8 rounded-xl shadow-[8px_8px_16px_rgba(0,0,0,0.6),-4px_-4px_12px_rgba(255,255,255,0.02)] border border-white/10/50 mb-8" onSubmit={addProperty}>
-          <h3 className="text-xl text-white font-heading font-bold uppercase tracking-wider mb-6">New Property Details</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <form className="bg-[#0A0A0A] p-6 md:p-8 rounded-xl border border-white/10 mb-8 space-y-4" onSubmit={addProperty}>
+          <h3 className="text-lg text-white font-heading font-bold uppercase tracking-wider">New Property Address</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">Label</label>
-              <input className="w-full bg-[#0A0A0A] border-none rounded-md p-3 text-white shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" placeholder="e.g. Primary, Rental #1" value={form.label} onChange={(e) => setForm({ ...form, label: e.target.value })} required />
+              <label className="block text-xs font-bold text-[#a0a0a0] uppercase tracking-wider mb-1">Label</label>
+              <input className="w-full bg-[#111111] border border-white/10 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-brand-gold" placeholder="e.g. Primary Residence, Rental #2" value={form.label} onChange={(e) => setForm({ ...form, label: e.target.value })} required />
             </div>
             <div>
-              <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">Street Address</label>
-              <input className="w-full bg-[#0A0A0A] border-none rounded-md p-3 text-white shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" placeholder="123 Main St" value={form.address_line1} onChange={(e) => setForm({ ...form, address_line1: e.target.value })} required />
+              <label className="block text-xs font-bold text-[#a0a0a0] uppercase tracking-wider mb-1">Street Address</label>
+              <input className="w-full bg-[#111111] border border-white/10 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-brand-gold" placeholder="123 Broad St" value={form.address_line1} onChange={(e) => setForm({ ...form, address_line1: e.target.value })} required />
             </div>
             <div>
-              <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">City</label>
-              <input className="w-full bg-[#0A0A0A] border-none rounded-md p-3 text-white shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" placeholder="Rome" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
+              <label className="block text-xs font-bold text-[#a0a0a0] uppercase tracking-wider mb-1">City</label>
+              <input className="w-full bg-[#111111] border border-white/10 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-brand-gold" placeholder="Rome" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">State</label>
-                <input className="w-full bg-[#0A0A0A] border-none rounded-md p-3 text-white shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" placeholder="GA" value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} />
+                <label className="block text-xs font-bold text-[#a0a0a0] uppercase tracking-wider mb-1">State</label>
+                <input className="w-full bg-[#111111] border border-white/10 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-brand-gold" placeholder="GA" value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} />
               </div>
               <div>
-                <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">ZIP</label>
-                <input className="w-full bg-[#0A0A0A] border-none rounded-md p-3 text-white shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" placeholder="30161" value={form.zip} onChange={(e) => setForm({ ...form, zip: e.target.value })} required />
+                <label className="block text-xs font-bold text-[#a0a0a0] uppercase tracking-wider mb-1">ZIP</label>
+                <input className="w-full bg-[#111111] border border-white/10 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-brand-gold" placeholder="30161" value={form.zip} onChange={(e) => setForm({ ...form, zip: e.target.value })} required />
               </div>
             </div>
-            <div>
-              <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">Area</label>
-              <select className="w-full bg-[#0A0A0A] border-none rounded-md p-3 text-white shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow appearance-none" value={form.area} onChange={(e) => setForm({ ...form, area: e.target.value })}>
-                <option value="">Select area (optional)</option>
-                <option value="West Rome">West Rome</option>
-                <option value="North Rome">North Rome</option>
-                <option value="East Rome">East Rome</option>
-                <option value="South Rome">South Rome</option>
-                <option value="Downtown">Downtown Rome</option>
-                <option value="Clocktower Hill">Clocktower Hill</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">Type</label>
-              <select className="w-full bg-[#0A0A0A] border-none rounded-md p-3 text-white shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow appearance-none" value={form.property_type} onChange={(e) => setForm({ ...form, property_type: e.target.value })}>
-                <option value="residential">Residential</option>
-                <option value="commercial">Commercial</option>
-                <option value="multi-unit">Multi-Unit</option>
-              </select>
-            </div>
           </div>
-          <button type="submit" disabled={submitting} className="bg-brand-gold text-[#0A0A0A] hover:opacity-90 text-wood-900 font-heading font-bold uppercase tracking-wider px-6 py-3 rounded transition-colors text-sm disabled:opacity-50">
-            {submitting ? 'Saving...' : 'Save Property'}
-          </button>
+          <div className="flex justify-end pt-2">
+            <button type="submit" disabled={submitting} className="bg-brand-gold text-[#0A0A0A] font-heading font-bold uppercase tracking-wider px-6 py-2.5 rounded-lg transition-colors text-xs disabled:opacity-50 cursor-pointer">
+              {submitting ? 'Saving...' : 'Save Property'}
+            </button>
+          </div>
         </form>
       )}
 
       {properties.length === 0 && !adding ? (
-        <div className="bg-[#111111] border border-white/10 rounded-lg p-12 text-center">
-          <p className="text-[#a0a0a0] text-lg mb-6">No properties added yet. Add one to get started with subscriptions and service tracking.</p>
-          <button className="bg-brand-gold text-[#0A0A0A] hover:opacity-90 text-wood-900 font-heading font-bold uppercase tracking-wider px-6 py-3 rounded transition-colors" onClick={() => setAdding(true)}>+ Add Property</button>
+        <div className="bg-[#0A0A0A] border border-white/10 rounded-xl p-12 text-center">
+          <p className="text-[#a0a0a0] text-sm mb-4">No properties added yet. Add one to start tracking equipment specs and maintenance logs.</p>
+          <button className="bg-brand-gold text-[#0A0A0A] font-heading font-bold uppercase tracking-wider px-5 py-2.5 rounded-lg transition-colors text-xs cursor-pointer" onClick={() => setAdding(true)}>
+            + Add Property
+          </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {properties.map((p) => (
-            <div key={p.id} className="bg-[#111111] border border-white/10 rounded-lg p-6 shadow-md hover:border-brand-gold/50 transition-colors">
-              <div className="flex justify-between items-start mb-4 border-b border-white/10 pb-4">
-                <h4 className="text-xl text-white font-heading font-bold uppercase tracking-wider">{p.label}</h4>
-                <button className="text-red-400 hover:text-red-300 font-bold uppercase text-xs tracking-wider border border-red-900/50 hover:bg-red-900/20 px-3 py-1 rounded transition-colors" onClick={() => deleteProperty(p.id)}>Remove</button>
+            <div key={p.id} className="bg-[#0A0A0A] border border-white/10 rounded-xl p-6 shadow-md hover:border-brand-gold/50 transition-colors flex flex-col justify-between">
+              <div>
+                <div className="flex justify-between items-start mb-3 border-b border-white/10 pb-3">
+                  <h4 className="text-lg text-white font-heading font-bold uppercase tracking-wider">{p.label}</h4>
+                  <button className="text-red-400 hover:text-red-300 font-bold uppercase text-[11px] tracking-wider border border-red-900/50 hover:bg-red-900/20 px-2.5 py-1 rounded transition-colors cursor-pointer" onClick={() => deleteProperty(p.id)}>
+                    Remove
+                  </button>
+                </div>
+                <p className="text-white font-bold text-sm mb-1">{p.address_line1}</p>
+                <p className="text-[#a0a0a0] text-xs mb-3">{p.city}, {p.state} {p.zip}</p>
               </div>
-              <p className="text-white font-bold mb-1">{p.address_line1}</p>
-              <p className="text-[#a0a0a0] mb-4">{p.city}, {p.state} {p.zip}</p>
-              <div className="flex gap-2">
-                {p.area && <span className="bg-[#222222] text-[#a0a0a0] px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">{p.area}</span>}
-                <span className="bg-[#222222] text-[#a0a0a0] px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">{p.property_type}</span>
+              <div className="flex gap-2 pt-2 border-t border-white/5">
+                {p.area && <span className="bg-[#161616] text-[#a0a0a0] px-2.5 py-0.5 rounded text-[11px] font-mono">{p.area}</span>}
+                <span className="bg-[#161616] text-brand-gold px-2.5 py-0.5 rounded text-[11px] font-mono uppercase">{p.property_type || 'Residential'}</span>
               </div>
             </div>
           ))}
@@ -347,95 +540,7 @@ function PropertiesTab({ properties, userId, session, profile, onRefresh }) {
   );
 }
 
-function RequestsTab({ submissions, workOrders }) {
-  const hasItems = submissions.length > 0 || (workOrders && workOrders.length > 0);
-
-  if (!hasItems) {
-    return (
-      <div className="bg-[#111111] border border-white/10 rounded-lg p-12 text-center">
-        <p className="text-[#a0a0a0] text-lg mb-6">No requests or work orders yet.</p>
-        <Link to="/#name-your-price" className="bg-brand-gold text-[#0A0A0A] hover:opacity-90 text-wood-900 font-heading font-bold uppercase tracking-wider px-6 py-3 rounded transition-colors inline-block">Request a Quote</Link>
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      {workOrders && workOrders.length > 0 && (
-        <div className="mb-12">
-          <h2 className="text-2xl text-white font-heading font-bold uppercase tracking-wider mb-8 border-b border-white/10 pb-4">My Work Orders</h2>
-          <div className="space-y-6">
-            {workOrders.map((wo) => (
-              <div key={wo.id} className="bg-[#111111] border border-white/10 rounded-lg p-6 shadow-md border-l-4 border-l-brand-orange">
-                <div className="flex flex-col md:flex-row justify-between md:items-center mb-4 border-b border-white/10 pb-4 gap-4">
-                  <div>
-                    <h3 className="text-xl font-heading font-bold text-white">{wo.title}</h3>
-                    <p className="text-sm text-[#a0a0a0]">{wo.properties?.address_line_1}</p>
-                  </div>
-                  <span className={`px-3 py-1 rounded text-xs font-bold uppercase tracking-wider ${
-                    wo.status === 'completed' ? 'bg-green-900/30 text-green-500 border border-green-700/50' : 
-                    wo.status === 'scheduled' ? 'bg-blue-900/30 text-blue-500 border border-blue-700/50' :
-                    wo.status === 'in_progress' ? 'bg-purple-900/30 text-purple-500 border border-purple-700/50' :
-                    'bg-brand-gold text-[#0A0A0A]/20 text-brand-gold border border-brand-gold/50'
-                  }`}>
-                    {wo.status.replace('_', ' ')}
-                  </span>
-                </div>
-                <p className="text-white leading-relaxed mb-4">{wo.description}</p>
-                {wo.scheduled_date && (
-                  <div className="bg-[#0A0A0A] p-3 rounded border border-white/10 flex items-center gap-3">
-                    <span className="text-brand-gold text-lg">📅</span>
-                    <span className="text-sm text-white">
-                      <strong>Scheduled:</strong> {new Date(wo.scheduled_date).toLocaleDateString()} {wo.scheduled_time && `at ${wo.scheduled_time}`}
-                    </span>
-                  </div>
-                )}
-                {wo.technician_notes && (
-                  <div className="mt-4 bg-brand-gold text-[#0A0A0A]/10 border border-brand-gold/30 p-4 rounded">
-                    <strong className="text-brand-gold uppercase tracking-wider font-heading text-sm block mb-1">Update from Tech:</strong>
-                    <p className="text-white text-sm">{wo.technician_notes}</p>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <h2 className="text-2xl text-white font-heading font-bold uppercase tracking-wider mb-8 border-b border-white/10 pb-4">My Quotes</h2>
-      <div className="space-y-6">
-        {submissions.map((s) => (
-          <div key={s.id} className="bg-[#111111] border border-white/10 rounded-lg p-6 shadow-md">
-            <div className="flex flex-col md:flex-row justify-between md:items-center mb-6 border-b border-white/10 pb-4 gap-4">
-              <span className={`px-3 py-1 rounded text-xs font-bold uppercase tracking-wider self-start ${s.status === 'new' ? 'bg-brand-gold text-[#0A0A0A]/20 text-brand-gold border border-brand-gold/50' : 'bg-[#222222] text-[#a0a0a0] border border-white/10'}`}>
-                {s.status}
-              </span>
-              <div className="text-right">
-                <span className="text-[#a0a0a0] font-bold uppercase text-xs mr-2">Your Offer:</span>
-                <span className="text-2xl font-bold text-brand-gold">${(s.offered_price / 100).toFixed(0)}</span>
-              </div>
-            </div>
-            <p className="text-white leading-relaxed mb-6 bg-[#0A0A0A] p-4 rounded border border-white/10">{s.description}</p>
-            
-            {(s.counter_price || s.admin_notes) && (
-              <div className="bg-brand-gold text-[#0A0A0A]/10 border border-brand-gold/30 p-4 rounded mb-6">
-                {s.counter_price && (
-                  <p className="text-white mb-2"><strong className="text-brand-gold uppercase tracking-wider font-heading text-sm mr-2">Counter-offer:</strong> <span className="text-xl font-bold">${(s.counter_price / 100).toFixed(0)}</span></p>
-                )}
-                {s.admin_notes && <p className="text-white"><strong className="text-brand-gold uppercase tracking-wider font-heading text-sm mr-2">Notes:</strong> {s.admin_notes}</p>}
-              </div>
-            )}
-            
-            <p className="text-[#a0a0a0] text-sm italic">Submitted {new Date(s.created_at).toLocaleDateString()}</p>
-          </div>
-        ))}
-        {submissions.length === 0 && <p className="text-[#a0a0a0]">No quote requests found.</p>}
-      </div>
-    </div>
-  );
-}
-
-  function SettingsTab({ profile, userId, onRefresh }) {
+function SettingsTab({ profile, userId, onRefresh }) {
   const [form, setForm] = useState({
     first_name: profile?.first_name || '',
     last_name: profile?.last_name || '',
@@ -464,23 +569,25 @@ function RequestsTab({ submissions, workOrders }) {
 
   return (
     <div>
-      <h2 className="text-2xl text-white font-heading font-bold uppercase tracking-wider mb-8 border-b border-white/10 pb-4">Account Settings</h2>
-      <form className="max-w-2xl bg-[#111111] p-8 rounded-xl shadow-[8px_8px_16px_rgba(0,0,0,0.6),-4px_-4px_12px_rgba(255,255,255,0.02)] border border-white/10/50" onSubmit={saveProfile}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <h2 className="text-2xl text-white font-heading font-bold uppercase tracking-wider mb-6 border-b border-white/10 pb-4">
+        Account Settings & Contact
+      </h2>
+      <form className="max-w-2xl bg-[#0A0A0A] p-6 md:p-8 rounded-xl border border-white/10 space-y-6" onSubmit={saveProfile}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">First Name</label>
-            <input className="w-full bg-[#0A0A0A] border-none rounded-md p-3 text-white shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" value={form.first_name} onChange={(e) => setForm({ ...form, first_name: e.target.value })} />
+            <label className="block text-xs font-bold text-[#a0a0a0] uppercase tracking-wider mb-1">First Name</label>
+            <input className="w-full bg-[#111111] border border-white/10 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-brand-gold" value={form.first_name} onChange={(e) => setForm({ ...form, first_name: e.target.value })} />
           </div>
           <div>
-            <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">Last Name</label>
-            <input className="w-full bg-[#0A0A0A] border-none rounded-md p-3 text-white shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" value={form.last_name} onChange={(e) => setForm({ ...form, last_name: e.target.value })} />
+            <label className="block text-xs font-bold text-[#a0a0a0] uppercase tracking-wider mb-1">Last Name</label>
+            <input className="w-full bg-[#111111] border border-white/10 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-brand-gold" value={form.last_name} onChange={(e) => setForm({ ...form, last_name: e.target.value })} />
           </div>
         </div>
-        <div className="mb-8">
-          <label className="block text-sm font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">Phone Number</label>
-          <input className="w-full bg-[#0A0A0A] border-none rounded-md p-3 text-white shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_6px_rgba(255,255,255,0.03)] focus:outline-none focus:ring-1 focus:ring-brand-orange transition-shadow" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+        <div>
+          <label className="block text-xs font-bold text-[#a0a0a0] uppercase tracking-wider mb-1">Phone Number</label>
+          <input className="w-full bg-[#111111] border border-white/10 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-brand-gold" type="tel" placeholder="(706) 555-0192" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
         </div>
-        <button type="submit" className="bg-brand-gold text-[#0A0A0A] hover:opacity-90 text-wood-900 font-heading font-bold uppercase tracking-wider px-8 py-3 rounded transition-colors shadow-[0_0_15px_rgba(255,95,31,0.3)]">
+        <button type="submit" className="bg-brand-gold text-[#0A0A0A] hover:opacity-90 font-heading font-bold uppercase tracking-wider px-6 py-2.5 rounded-lg transition-colors text-xs cursor-pointer shadow-[0_0_15px_rgba(255,95,31,0.2)]">
           {saved ? '✓ Saved' : 'Save Changes'}
         </button>
       </form>
