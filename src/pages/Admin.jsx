@@ -1584,29 +1584,131 @@ function FAQPanel() {
 }
 
 // Contacts Panel
+// Contacts Panel — Realtime Contact Form Submissions
 function ContactsPanel() {
   const [contacts, setContacts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedContact, setSelectedContact] = useState(null);
 
   useEffect(() => {
-    supabase.from('contact_submissions').select('*').order('created_at', { ascending: false }).then(({ data }) => setContacts(data || []));
+    fetchContacts();
+
+    const channel = supabase
+      .channel('admin-contact-submissions')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'contact_submissions' }, () => {
+        fetchContacts();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
+
+  async function fetchContacts() {
+    try {
+      const { data, error } = await supabase
+        .from('contact_submissions')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching contact submissions:', error);
+      } else {
+        setContacts(data || []);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function toggleRead(id, currentStatus) {
+    await supabase.from('contact_submissions').update({ read: !currentStatus }).eq('id', id);
+    fetchContacts();
+  }
 
   return (
     <>
-      <h2>Contact Submissions ({contacts.length})</h2>
-      <table className="admin-table">
-        <thead><tr><th>Name</th><th>Email</th><th>Interest</th><th>Date</th></tr></thead>
-        <tbody>
-          {contacts.map((c) => (
-            <tr key={c.id}>
-              <td>{c.name}</td>
-              <td>{c.email}</td>
-              <td>{c.interest}</td>
-              <td>{new Date(c.created_at).toLocaleDateString()}</td>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+        <h2 style={{ margin: 0 }}>Contact Submissions ({contacts.length})</h2>
+        <button className="btn-sm" onClick={fetchContacts}>🔄 Refresh</button>
+      </div>
+
+      {loading ? (
+        <p className="empty-state">Loading contact requests...</p>
+      ) : contacts.length === 0 ? (
+        <p className="empty-state">No contact submissions found. When visitors fill out the contact form, submissions will appear here in real time.</p>
+      ) : (
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Name</th>
+              <th>Contact Info</th>
+              <th>Interest</th>
+              <th>Date</th>
+              <th>Action</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {contacts.map((c) => (
+              <tr key={c.id} style={{ background: c.read ? 'transparent' : 'rgba(255, 138, 0, 0.05)' }}>
+                <td>
+                  <span className={`status-badge status-badge--${c.read ? 'closed' : 'new'}`} style={{ fontSize: '0.7rem' }}>
+                    {c.read ? 'Read' : 'New'}
+                  </span>
+                </td>
+                <td style={{ fontWeight: c.read ? 'normal' : 'bold' }}>{c.name}</td>
+                <td>
+                  <div>{c.email}</div>
+                  {c.phone && <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-sub)' }}>{c.phone}</div>}
+                </td>
+                <td><span className="customer-badge">{c.interest || 'General'}</span></td>
+                <td>{new Date(c.created_at).toLocaleDateString()}</td>
+                <td>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button
+                      className="btn-sm"
+                      onClick={() => setSelectedContact(selectedContact?.id === c.id ? null : c)}
+                      style={{ fontSize: '0.75rem', padding: '4px 8px' }}
+                    >
+                      {selectedContact?.id === c.id ? 'Hide' : 'View'}
+                    </button>
+                    <button
+                      className="btn-sm"
+                      onClick={() => toggleRead(c.id, c.read)}
+                      style={{ fontSize: '0.75rem', padding: '4px 8px', opacity: 0.8 }}
+                    >
+                      {c.read ? 'Mark Unread' : 'Mark Read'}
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+
+      {selectedContact && (
+        <div style={{ marginTop: '20px', padding: '20px', background: 'var(--admin-panel)', border: '1px solid var(--admin-accent)', borderRadius: '4px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+            <h3 style={{ margin: 0, color: 'var(--admin-accent)' }}>Contact Message from {selectedContact.name}</h3>
+            <button className="btn-sm" onClick={() => setSelectedContact(null)}>✕ Close</button>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginBottom: '16px', fontSize: '0.85rem' }}>
+            <div><strong>Email:</strong> <a href={`mailto:${selectedContact.email}`} style={{ color: 'var(--admin-accent)' }}>{selectedContact.email}</a></div>
+            <div><strong>Phone:</strong> {selectedContact.phone ? <a href={`tel:${selectedContact.phone}`} style={{ color: 'var(--admin-accent)' }}>{selectedContact.phone}</a> : 'Not provided'}</div>
+            <div><strong>Interest:</strong> {selectedContact.interest || 'General'}</div>
+            <div><strong>Received:</strong> {new Date(selectedContact.created_at).toLocaleString()}</div>
+          </div>
+          <div>
+            <strong>Message / Address Details:</strong>
+            <pre style={{ whiteSpace: 'pre-wrap', background: 'var(--admin-bg)', padding: '12px', borderRadius: '4px', border: '1px solid var(--admin-border)', fontSize: '0.85rem', color: 'var(--admin-text)', marginTop: '6px' }}>
+              {selectedContact.message || 'No message content provided.'}
+            </pre>
+          </div>
+        </div>
+      )}
     </>
   );
 }
@@ -1702,12 +1804,15 @@ function ChatPanel({ adminProfile }) {
 
     const channel = supabase
       .channel('admin-chat')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_conversations' }, () => {
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_conversations' }, () => {
         fetchConversations();
       })
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages' }, (payload) => {
-        if (activeConvo && payload.new.conversation_id === activeConvo) {
-          setMessages((prev) => [...prev, payload.new]);
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_messages' }, (payload) => {
+        if (activeConvo && payload.new && payload.new.conversation_id === activeConvo) {
+          setMessages((prev) => {
+            if (prev.some(m => m.id === payload.new.id)) return prev;
+            return [...prev, payload.new];
+          });
         }
         fetchConversations();
       })
@@ -1721,7 +1826,14 @@ function ChatPanel({ adminProfile }) {
       .from('chat_conversations')
       .select('*')
       .order('updated_at', { ascending: false });
-    setConversations(data || []);
+    
+    // Sort active chats first, then by latest update
+    const sorted = [...(data || [])].sort((a, b) => {
+      if (a.status === 'active' && b.status !== 'active') return -1;
+      if (a.status !== 'active' && b.status === 'active') return 1;
+      return new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at);
+    });
+    setConversations(sorted);
   }
 
   async function openConvo(id) {
@@ -1923,11 +2035,19 @@ function QuotesPanel() {
   }, []);
 
   async function fetchSubmissions() {
-    const { data } = await supabase
-      .from('name_your_price')
-      .select('*')
-      .order('created_at', { ascending: false });
-    setSubmissions(data || []);
+    try {
+      const { data, error } = await supabase
+        .from('name_your_price')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) {
+        console.error('Error fetching name_your_price quotes:', error);
+      } else {
+        setSubmissions(data || []);
+      }
+    } catch (err) {
+      console.error('Exception fetching quotes:', err);
+    }
   }
 
   async function updateStatus(id, status) {
