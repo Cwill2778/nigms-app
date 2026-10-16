@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import usePageMeta from '../hooks/usePageMeta';
 import { RecordsTab } from '../components/dashboard/RecordsTab';
+import { toast } from 'sonner';
 
 function Dashboard() {
   usePageMeta('My Account | Nailed It Property Solutions', 'Manage your properties, subscriptions, and service requests.');
@@ -21,27 +22,51 @@ function Dashboard() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       if (!session) { setLoading(false); return; }
-      loadData(session.user.id);
+      loadData(session.user.id, session);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      if (session) loadData(session.user.id);
+      if (session) loadData(session.user.id, session);
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  async function loadData(userId) {
+  async function loadData(userId, currentSession) {
+    const activeSession = currentSession || session;
     setLoading(true);
     const [profileRes, propsRes, subsRes, nypsRes, woRes] = await Promise.all([
-      supabase.from('customer_profiles').select('*').eq('id', userId).single(),
+      supabase.from('customer_profiles').select('*').eq('id', userId).maybeSingle(),
       supabase.from('customer_properties').select('*').eq('customer_id', userId),
       supabase.from('customer_subscriptions').select('*, subscription_tiers(*)').eq('customer_id', userId),
-      supabase.from('name_your_price').select('*').eq('customer_email', session?.user?.email).order('created_at', { ascending: false }),
+      supabase.from('name_your_price').select('*').eq('customer_email', activeSession?.user?.email).order('created_at', { ascending: false }),
       supabase.from('work_orders').select('*, properties(*)').eq('customer_id', userId).order('created_at', { ascending: false }),
     ]);
-    setProfile(profileRes.data);
+
+    let userProfile = profileRes.data;
+
+    // Self-healing: if the user profile doesn't exist yet, automatically create it
+    if (!userProfile && activeSession?.user) {
+      const meta = activeSession.user.user_metadata || {};
+      const { data: createdProfile, error: createErr } = await supabase
+        .from('customer_profiles')
+        .upsert({
+          id: userId,
+          email: activeSession.user.email,
+          first_name: meta.first_name || '',
+          last_name: meta.last_name || '',
+          role: 'client'
+        }, { onConflict: 'id' })
+        .select()
+        .maybeSingle();
+
+      if (!createErr && createdProfile) {
+        userProfile = createdProfile;
+      }
+    }
+
+    setProfile(userProfile);
     setProperties(propsRes.data || []);
     setSubscriptions(subsRes.data || []);
     setSubmissions(nypsRes.data || []);
@@ -100,10 +125,10 @@ function Dashboard() {
 
         <div className="bg-[#111111] border border-white/10 p-8 rounded-xl shadow-xl min-h-[500px]">
           {tab === 'overview' && <OverviewTab profile={profile} properties={properties} subscriptions={subscriptions} submissions={submissions} />}
-          {tab === 'properties' && <PropertiesTab properties={properties} userId={session.user.id} onRefresh={() => loadData(session.user.id)} />}
+          {tab === 'properties' && <PropertiesTab properties={properties} userId={session.user.id} session={session} profile={profile} onRefresh={() => loadData(session.user.id, session)} />}
           {tab === 'records' && <RecordsTab properties={properties} />}
           {tab === 'requests' && <RequestsTab submissions={submissions} />}
-          {tab === 'settings' && <SettingsTab profile={profile} userId={session.user.id} onRefresh={() => loadData(session.user.id)} />}
+          {tab === 'settings' && <SettingsTab profile={profile} userId={session.user.id} onRefresh={() => loadData(session.user.id, session)} />}
         </div>
       </div>
     </div>
@@ -174,22 +199,59 @@ function OverviewTab({ profile, properties, subscriptions, submissions, workOrde
   );
 }
 
-function PropertiesTab({ properties, userId, onRefresh }) {
+function PropertiesTab({ properties, userId, session, profile, onRefresh }) {
   const [adding, setAdding] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({ label: '', address_line1: '', city: 'Rome', state: 'GA', zip: '', area: '', property_type: 'residential' });
 
   async function addProperty(e) {
     e.preventDefault();
-    await supabase.from('customer_properties').insert({ ...form, customer_id: userId });
-    setForm({ label: '', address_line1: '', city: 'Rome', state: 'GA', zip: '', area: '', property_type: 'residential' });
-    setAdding(false);
-    onRefresh();
+    setSubmitting(true);
+    try {
+      // Ensure customer profile exists before inserting property to satisfy foreign key constraint
+      if (!profile) {
+        const meta = session?.user?.user_metadata || {};
+        await supabase.from('customer_profiles').upsert({
+          id: userId,
+          email: session?.user?.email || '',
+          first_name: meta.first_name || '',
+          last_name: meta.last_name || '',
+          role: 'client'
+        }, { onConflict: 'id' });
+      }
+
+      const { data, error } = await supabase.from('customer_properties').insert({ 
+        ...form, 
+        customer_id: userId 
+      }).select();
+
+      if (error) {
+        console.error('Error adding property:', error);
+        toast.error(error.message || 'Failed to add property.');
+        return;
+      }
+
+      toast.success('Property added successfully!');
+      setForm({ label: '', address_line1: '', city: 'Rome', state: 'GA', zip: '', area: '', property_type: 'residential' });
+      setAdding(false);
+      onRefresh();
+    } catch (err) {
+      console.error('Exception adding property:', err);
+      toast.error(err.message || 'Failed to add property.');
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   async function deleteProperty(id) {
     if (confirm('Remove this property?')) {
-      await supabase.from('customer_properties').delete().eq('id', id);
-      onRefresh();
+      const { error } = await supabase.from('customer_properties').delete().eq('id', id);
+      if (error) {
+        toast.error(error.message || 'Failed to remove property.');
+      } else {
+        toast.success('Property removed.');
+        onRefresh();
+      }
     }
   }
 
@@ -252,7 +314,9 @@ function PropertiesTab({ properties, userId, onRefresh }) {
               </select>
             </div>
           </div>
-          <button type="submit" className="bg-brand-gold text-[#0A0A0A] hover:opacity-90 text-wood-900 font-heading font-bold uppercase tracking-wider px-6 py-3 rounded transition-colors text-sm">Save Property</button>
+          <button type="submit" disabled={submitting} className="bg-brand-gold text-[#0A0A0A] hover:opacity-90 text-wood-900 font-heading font-bold uppercase tracking-wider px-6 py-3 rounded transition-colors text-sm disabled:opacity-50">
+            {submitting ? 'Saving...' : 'Save Property'}
+          </button>
         </form>
       )}
 
@@ -381,15 +445,21 @@ function RequestsTab({ submissions, workOrders }) {
 
   async function saveProfile(e) {
     e.preventDefault();
-    await supabase.from('customer_profiles').update({
+    const { error } = await supabase.from('customer_profiles').upsert({
+      id: userId,
       first_name: form.first_name,
       last_name: form.last_name,
       phone: form.phone,
       updated_at: new Date().toISOString(),
-    }).eq('id', userId);
-    setSaved(true);
-    onRefresh();
-    setTimeout(() => setSaved(false), 3000);
+    }, { onConflict: 'id' });
+    if (error) {
+      toast.error(error.message || 'Failed to update profile.');
+    } else {
+      toast.success('Account settings saved!');
+      setSaved(true);
+      onRefresh();
+      setTimeout(() => setSaved(false), 3000);
+    }
   }
 
   return (
