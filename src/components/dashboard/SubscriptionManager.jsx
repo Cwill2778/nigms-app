@@ -124,10 +124,12 @@ export function SubscriptionManager({ subscriptions = [], properties = [], userI
   const handleToggleCheck = (itemId) => {
     const nextState = { ...completedItems, [itemId]: !completedItems[itemId] };
     setCompletedItems(nextState);
-    try {
-      localStorage.setItem(`nips_checklist_${userId}`, JSON.stringify(nextState));
-    } catch (e) {
-      console.warn('LocalStorage error:', e);
+    if (userId) {
+      try {
+        localStorage.setItem(`nips_checklist_${userId}`, JSON.stringify(nextState));
+      } catch (e) {
+        console.warn('LocalStorage error:', e);
+      }
     }
   };
 
@@ -139,9 +141,10 @@ export function SubscriptionManager({ subscriptions = [], properties = [], userI
   // Simulated Labor Hours Tracker
   // (In real production, this is aggregated from work_orders duration this month)
   const totalIncludedHours = currentTierObj.hours || 0;
-  const usedHours = totalIncludedHours > 0 ? (totalIncludedHours * 0.4).toFixed(1) : 0;
-  const remainingHours = Math.max(0, totalIncludedHours - usedHours).toFixed(1);
-  const usagePercentage = totalIncludedHours > 0 ? Math.round((usedHours / totalIncludedHours) * 100) : 0;
+  const usedHoursRaw = totalIncludedHours > 0 ? parseFloat((totalIncludedHours * 0.4).toFixed(1)) : 0;
+  const usedHours = usedHoursRaw.toFixed(1);
+  const remainingHours = Math.max(0, totalIncludedHours - usedHoursRaw).toFixed(1);
+  const usagePercentage = totalIncludedHours > 0 ? Math.round((usedHoursRaw / totalIncludedHours) * 100) : 0;
 
   async function handlePlanAction(targetTier) {
     if (targetTier.id === currentTierId) {

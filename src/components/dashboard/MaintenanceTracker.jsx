@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import { toast } from 'sonner';
 
@@ -13,6 +13,11 @@ export function MaintenanceTracker({ workOrders = [], submissions = [], userId, 
   const [filterUrgency, setFilterUrgency] = useState('all');
   const [viewMode, setViewMode] = useState('pipeline'); // 'pipeline' | 'list'
   const [approvingId, setApprovingId] = useState(null);
+
+  // Keep a stable ref to onRefresh so the Realtime useEffect doesn't need
+  // it in the dep array (which would tear down + resubscribe every render).
+  const onRefreshRef = useRef(onRefresh);
+  useEffect(() => { onRefreshRef.current = onRefresh; }, [onRefresh]);
 
   // Supabase Realtime Listener for instant job updates
   useEffect(() => {
@@ -31,10 +36,10 @@ export function MaintenanceTracker({ workOrders = [], submissions = [], userId, 
         (payload) => {
           if (payload.eventType === 'UPDATE') {
             toast.info(`Work Order "${payload.new.title}" was updated!`, {
-              description: `Status is now: ${payload.new.status.toUpperCase()}`,
+              description: `Status is now: ${payload.new.status?.toUpperCase() ?? 'UPDATED'}`,
             });
           }
-          onRefresh();
+          onRefreshRef.current?.();
         }
       )
       .subscribe();
@@ -42,7 +47,7 @@ export function MaintenanceTracker({ workOrders = [], submissions = [], userId, 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [userId, onRefresh]);
+  }, [userId]); // ← only userId; onRefresh is accessed via ref
 
   // Filter orders by urgency
   const filteredOrders = workOrders.filter((wo) => {
@@ -320,7 +325,7 @@ export function MaintenanceTracker({ workOrders = [], submissions = [], userId, 
                       {wo.priority}
                     </span>
                     <span className="text-xs px-2.5 py-0.5 rounded bg-brand-gold/10 text-brand-gold border border-brand-gold/30 uppercase font-bold">
-                      {wo.status.replace('_', ' ')}
+                      {wo.status?.replace('_', ' ') ?? 'unknown'}
                     </span>
                   </div>
                   <p className="text-sm text-[#a0a0a0] mb-3">{wo.description}</p>
