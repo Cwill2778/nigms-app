@@ -387,8 +387,9 @@ By signing below, both parties acknowledge they have read, understood, and agree
 
 **SERVICE PROVIDER:**
 
-Signature: ___________________________________
-Charles Willis, Nailed It Property Solutions
+Signature:  
+![Charles Willis Signature](../public/charlesSignature.png)  
+Charles Willis, Nailed It Property Solutions  
 Date: ___________________________________
 
 **CLIENT:**

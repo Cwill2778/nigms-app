@@ -4,6 +4,7 @@ import { supabase } from '../../lib/supabase';
 import { toast } from 'sonner';
 import logo from '../../assets/logo.png';
 import { AuditBarcode, AuditQRCode } from './AuditBarcode';
+import { CharlesSignatureBlock } from './CharlesSignature';
 
 export function MaintenanceVault({ properties = [], userProfile }) {
   const [selectedPropertyId, setSelectedPropertyId] = useState('all');
@@ -693,12 +694,10 @@ export function MaintenanceVault({ properties = [], userProfile }) {
                         </p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="inline-block border-b-2 border-slate-900 w-48 mb-1"></div>
-                      <p className="font-bold text-slate-900 text-xs">Charles &amp; Inspection Operations Team</p>
-                      <p className="text-[10px] text-slate-500">Director of Field Services, Nailed It Property Solutions</p>
-                      <p className="text-[9px] text-green-800 font-bold uppercase mt-0.5">✓ Certified Audit Sign-off</p>
-                    </div>
+                    <CharlesSignatureBlock
+                      title="Director of Field Services, Nailed It Property Solutions"
+                      certifiedText="✓ Certified Audit Sign-off"
+                    />
                   </div>
 
                   {/* BOTTOM SECURITY NOTICE */}

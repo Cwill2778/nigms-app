@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import { toast } from 'sonner';
 import { AuditBarcode, AuditQRCode } from './AuditBarcode';
+import { CHARLES_SIGNATURE_SRC } from './CharlesSignature';
 
 const STAGES = [
   { key: 'submitted', label: 'Submitted', color: '#ff8a00', icon: '📝' },
@@ -183,7 +184,15 @@ export function MaintenanceTracker({ workOrders = [], submissions = [], userId, 
                         </p>
                       )}
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-4">
+                      <div className="hidden sm:flex flex-col items-center border-r border-white/10 pr-4">
+                        <img
+                          src={CHARLES_SIGNATURE_SRC}
+                          alt="Charles Willis Signature"
+                          className="h-6 object-contain invert brightness-200 pointer-events-none"
+                        />
+                        <span className="text-[9px] text-[#888] font-mono">Auth: Charles Willis</span>
+                      </div>
                       <button
                         onClick={() => handleApproveWorkOrder(item.id)}
                         disabled={approvingId === item.id}

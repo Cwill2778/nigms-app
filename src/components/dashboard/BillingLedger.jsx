@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { CHARLES_SIGNATURE_SRC } from './CharlesSignature';
 
 export function BillingLedger({ subscriptions = [], profile, userEmail }) {
   const [openingPortal, setOpeningPortal] = useState(false);
@@ -260,6 +261,26 @@ export function BillingLedger({ subscriptions = [], profile, userEmail }) {
               <div className="flex justify-between py-3 border-t-2 border-white/10 text-sm font-bold">
                 <span className="text-white">Amount Paid (USD):</span>
                 <span className="text-brand-gold font-mono">${selectedReceipt.amount}</span>
+              </div>
+
+              {/* AUTHORIZED ISSUER SIGNATURE SECTION */}
+              <div className="pt-3 border-t border-white/10 flex justify-between items-end">
+                <div>
+                  <span className="text-[10px] font-mono text-[#888] uppercase block">ISSUANCE STATUS</span>
+                  <span className="text-xs font-bold text-green-400 font-mono">✓ PAID &amp; RECORDED</span>
+                </div>
+                <div className="text-right flex flex-col items-end">
+                  <div className="w-36 text-center">
+                    <img
+                      src={CHARLES_SIGNATURE_SRC}
+                      alt="Charles Willis Signature"
+                      className="h-8 mx-auto object-contain -mb-1 select-none pointer-events-none invert brightness-200"
+                    />
+                    <div className="border-b border-white/30 w-full mb-0.5"></div>
+                  </div>
+                  <span className="text-[11px] font-bold text-white">Charles Willis</span>
+                  <span className="text-[9.5px] text-[#888]">Owner, Nailed It Property Solutions</span>
+                </div>
               </div>
             </div>
 
