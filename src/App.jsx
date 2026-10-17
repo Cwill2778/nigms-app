@@ -24,6 +24,7 @@ import Signup from './pages/Signup';
 import CheckEmail from './pages/CheckEmail';
 import NotFound from './pages/NotFound';
 import Checkout from './pages/Checkout';
+import HorselegCreek from './pages/HorselegCreek';
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
             <Route path="terms" element={<Terms />} />
             <Route path="privacy" element={<Privacy />} />
             <Route path="name-your-price" element={<NameYourPricePage />} />
+            <Route path="horselegcreek" element={<HorselegCreek />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
