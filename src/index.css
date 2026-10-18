@@ -43,6 +43,13 @@
     background-clip: text;
     color: transparent;
   }
+
+  .font-number,
+  .font-numeric {
+    font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    font-variant-numeric: tabular-nums lining-nums;
+    letter-spacing: 0.01em;
+  }
 }
 
 @keyframes pageFadeIn {
