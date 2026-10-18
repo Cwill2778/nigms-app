@@ -331,7 +331,7 @@ export function HorselegCreek() {
                 Too many neighbors tell me the exact same story: they call a big contractor for a small or medium repair and get ghosted, or someone shows up late, charges ridiculous travel fees, and leaves sawdust all over the floor.
               </p>
               <p>
-                <strong className="text-white">I started Nailed It Property Solutions to change that.</strong> When you call us, you get responsive communication, clean jobsites, and skilled work done right the first time. Use this <strong className="text-brand-gold">$50 credit</strong> on anything you’ve been putting off. Check off what you need below, and I will personally get back to you with a fair, straightforward price.
+                <strong className="text-white">I started Nailed It Property Solutions to change that.</strong> When you call us, you get responsive communication, clean jobsites, and skilled work done right the first time. I am offering this <strong className="text-brand-gold">$50 off your first repair</strong> to use this opportunity to demonstrate the integrity and transparency in a field that has long been struggling in that area. Check off what you need below, and I will personally get back to you with a fair, straightforward price.
               </p>
 
               <div className="pt-2 flex items-center justify-between border-t border-white/10">
@@ -700,10 +700,10 @@ export function HorselegCreek() {
         <div className="space-y-4 text-sm">
           <div className="bg-[#111111] border border-white/10 p-5 rounded-xl">
             <h4 className="font-bold text-white text-base mb-1">
-              How does the $50 discount work?
+              Why are you offering $50 off any first repair?
             </h4>
             <p className="text-[#a0a0a0]">
-              Simply build your punch-list above or give Charles a call at (706) 237-8184. When we provide your estimate and complete the repair, $50 is deducted right off your invoice. No gimmicks, no fine-print traps.
+              I am offering $50 off your first repair to use this opportunity to demonstrate the integrity and transparency in a field that has long been struggling in that area. Simply build your punch-list above or give Charles a call at (706) 237-8184, and $50 is credited directly toward your repair bill. No gimmicks, no fine-print traps.
             </p>
           </div>
 
@@ -721,7 +721,7 @@ export function HorselegCreek() {
               Do you charge for estimates?
             </h4>
             <p className="text-[#a0a0a0]">
-              No. We provide free, transparent pricing before starting any work. You will know the exact cost upfront.
+              Yes, we charge $100 for onsite evaluations, but if you let us do the work we credit that towards your bill. However, for over the phone estimates that do not require onsite, it is free.
             </p>
           </div>
 

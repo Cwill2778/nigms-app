@@ -15,13 +15,24 @@ function FAQ() {
   const [search, setSearch] = useState('');
   const [openIndex, setOpenIndex] = useState(null);
 
+  const ADDITIONAL_FAQS = [
+    {
+      question: 'Do you charge for estimates?',
+      answer: 'Yes, we charge $100 for onsite evaluations, but if you let us do the work we credit that towards your bill. However, for over the phone estimates that do not require onsite, it is free.'
+    }
+  ];
+
   useEffect(() => {
     supabase
       .from('faqs')
       .select('*')
       .eq('published', true)
       .order('sort_order')
-      .then(({ data }) => setFaqs(data || []));
+      .then(({ data }) => {
+        const dbFaqs = data || [];
+        const hasEstimateFaq = dbFaqs.some((f) => f.question.toLowerCase().includes('estimate'));
+        setFaqs(hasEstimateFaq ? dbFaqs : [...dbFaqs, ...ADDITIONAL_FAQS]);
+      });
   }, []);
 
   const filteredFaqs = faqs.filter(
