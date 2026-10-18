@@ -88,8 +88,8 @@ const horselegSchema = z.object({
 export function HorselegCreek() {
   useScrollToTop();
   usePageMeta(
-    '$50 Off First Repair for Horseleg Creek Residents | Nailed It Property Solutions',
-    'Exclusive neighborhood repair voucher for Horseleg Creek residents in Rome, GA. Build your custom repair punch-list and save $50 with Charles Willis.'
+    '$50 Off Final Bill for Horseleg Creek Residents | Nailed It Property Solutions',
+    'Exclusive neighborhood welcome credit for Horseleg Creek residents in Rome, GA. Save $50 off your final bill amount. Bundle your repair tasks with Charles Willis.'
   );
 
   const [selectedPunchItems, setSelectedPunchItems] = useState([]);
@@ -133,10 +133,10 @@ export function HorselegCreek() {
         ? '\n\nSELECTED PUNCH-LIST ITEMS (' + selectedPunchItems.length + '):\n' + selectedPunchItems.map((it, idx) => '  ' + (idx + 1) + '. ' + it).join('\n')
         : '\n\nSELECTED PUNCH-LIST: (None checked - general repair request)';
 
-      const fullMessage = '[HORSELEG CREEK DIRECT-MAIL PROMO - $50 OFF]\n' +
+      const fullMessage = '[HORSELEG CREEK DIRECT-MAIL PROMO - $50 OFF FINAL BILL]\n' +
         'Address: ' + data.address + '\n' +
         'Preferred Scheduling: ' + (data.preferredTime || 'Not specified') + '\n' +
-        'Promo Code: HORSELEG50 ($50.00 Credit Verified)' +
+        'Promo Code: HORSELEG50 ($50.00 Credit Off Final Bill Verified)' +
         punchListFormatted + '\n\n' +
         'Homeowner Notes:\n' + (data.additionalNotes || 'No additional notes provided.');
 
@@ -157,7 +157,7 @@ export function HorselegCreek() {
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
           ...data,
-          promoCode: 'HORSELEG50 ($50 OFF)',
+          promoCode: 'HORSELEG50 ($50 OFF FINAL BILL)',
           punchList: selectedPunchItems,
           source: 'Horseleg Creek Direct Mail Landing Page'
         }),
@@ -171,7 +171,7 @@ export function HorselegCreek() {
     } catch (err) {
       console.error('Submission error:', err);
       toast.error('Could not submit punch-list.', {
-        description: 'Please call Charles directly at (706) 237-8184.'
+        description: 'Please call or text Charles on his cell at (706) 844-8059 or office at (706) 237-8184.'
       });
     } finally {
       setIsSubmitting(false);
@@ -180,14 +180,23 @@ export function HorselegCreek() {
 
   return (
     <div className="w-full bg-[#0A0A0A] text-white min-h-screen">
-      {/* TOP EMERGENCY / CALL BANNER */}
-      <div className="bg-brand-gold text-[#0A0A0A] px-4 py-2.5 text-center text-xs sm:text-sm font-heading font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-md">
+      {/* TOP DIRECT-MAIL CALL BANNER */}
+      <div className="bg-brand-gold text-[#0A0A0A] px-4 py-2.5 text-center text-xs sm:text-sm font-heading font-bold uppercase tracking-wider flex flex-wrap items-center justify-center gap-2 sm:gap-3 shadow-md">
         <span>📮 Letter Recipient Special</span>
         <span className="hidden sm:inline">•</span>
-        <span>Call Charles Willis Directly:</span>
-        <a href="tel:7062378184" className="underline hover:opacity-80 font-black">
-          (706) 237-8184
-        </a>
+        <span>
+          Charles' Cell:{' '}
+          <a href="tel:7068448059" className="underline hover:opacity-80 font-black">
+            (706) 844-8059
+          </a>
+        </span>
+        <span className="hidden md:inline">•</span>
+        <span className="hidden md:inline">
+          Office:{' '}
+          <a href="tel:7062378184" className="underline hover:opacity-80 font-bold">
+            (706) 237-8184
+          </a>
+        </span>
       </div>
 
       {/* HERO SECTION */}
@@ -210,7 +219,7 @@ export function HorselegCreek() {
           <div className="h-1.5 w-24 bg-brand-gold mx-auto"></div>
 
           <p className="text-base sm:text-xl text-[#ccc] max-w-2xl mx-auto leading-relaxed">
-            I’m <strong className="text-white">Charles Willis</strong>, owner of <strong className="text-brand-gold">Nailed It Property Solutions</strong> right here in Rome. I sent a letter to your home along Horseleg Creek offering <span className="text-brand-gold font-bold underline">$50 OFF any first repair or upkeep task</span>.
+            I’m <strong className="text-white">Charles Willis</strong>, owner of <strong className="text-brand-gold">Nailed It Property Solutions</strong> right here in Rome. I sent a letter to your home along Horseleg Creek offering <span className="text-brand-gold font-bold underline">$50 OFF your final bill amount</span>. We suggest bundling tasks together into one call for the best value, but if you only have one repair, that’s completely fine too!
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
@@ -218,20 +227,24 @@ export function HorselegCreek() {
               href="#punch-list-builder"
               className="w-full sm:w-auto bg-brand-gold text-[#0A0A0A] font-heading font-bold uppercase tracking-wider text-sm sm:text-base px-8 py-4 rounded-lg hover:opacity-90 transition-all shadow-[0_0_20px_rgba(255,95,31,0.35)] cursor-pointer text-center"
             >
-              Build Your Punch-List ($50 Off)
+              Build Your Punch-List ($50 Off Bill)
             </a>
             <a
-              href="tel:7062378184"
+              href="tel:7068448059"
               className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white font-heading font-bold uppercase tracking-wider text-sm sm:text-base px-8 py-4 rounded-lg border border-white/20 transition-all flex items-center justify-center gap-2 text-center"
             >
-              <span>📞</span>
-              <span>Call (706) 237-8184</span>
+              <span>📱</span>
+              <span>Call Charles' Cell (706) 844-8059</span>
             </a>
           </div>
 
-          <p className="text-xs text-[#888] font-mono tracking-wider pt-2">
-            PROMO CODE: <span className="text-brand-gold font-bold">HORSELEG50</span> • ZERO OBLIGATION • HONEST LOCAL PRICING
-          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-[#888] font-mono tracking-wider pt-2">
+            <span>PROMO CODE: <strong className="text-brand-gold font-bold">HORSELEG50</strong></span>
+            <span>•</span>
+            <span>$50 OFF FINAL BILL</span>
+            <span>•</span>
+            <span>OFFICE: <a href="tel:7062378184" className="text-white hover:underline">(706) 237-8184</a></span>
+          </div>
         </div>
       </section>
 
@@ -254,10 +267,10 @@ export function HorselegCreek() {
                     NEIGHBORHOOD WELCOME VOUCHER
                   </span>
                   <h3 className="text-xl sm:text-2xl font-black font-heading uppercase text-slate-950 tracking-wider">
-                    HORSELEG CREEK HOME REPAIR CREDIT
+                    HORSELEG CREEK $50 FINAL BILL CREDIT
                   </h3>
                   <p className="text-xs text-slate-600 mt-0.5">
-                    Valid for any single repair, maintenance visit, or punch-list project.
+                    $50 deducted directly from your final bill amount. Bundling multiple tasks in one visit is suggested for maximum savings.
                   </p>
                 </div>
               </div>
@@ -284,7 +297,7 @@ export function HorselegCreek() {
               </div>
 
               <div className="flex items-center justify-start md:justify-center">
-                <AuditBarcode value="HORSELEG50-MAILER" className="h-7" />
+                <AuditBarcode value="HORSELEG50-FINAL-BILL" className="h-7" />
               </div>
 
               <div className="flex flex-col items-start md:items-end text-left md:text-right">
@@ -331,13 +344,22 @@ export function HorselegCreek() {
                 Too many neighbors tell me the exact same story: they call a big contractor for a small or medium repair and get ghosted, or someone shows up late, charges ridiculous travel fees, and leaves sawdust all over the floor.
               </p>
               <p>
-                <strong className="text-white">I started Nailed It Property Solutions to change that.</strong> When you call us, you get responsive communication, clean jobsites, and skilled work done right the first time. I am offering this <strong className="text-brand-gold">$50 off your first repair</strong> to use this opportunity to demonstrate the integrity and transparency in a field that has long been struggling in that area. Check off what you need below, and I will personally get back to you with a fair, straightforward price.
+                <strong className="text-white">I started Nailed It Property Solutions to change that.</strong> When you call us, you get responsive communication, clean jobsites, and skilled work done right the first time. I am offering this <strong className="text-brand-gold">$50 off your final bill amount</strong> to use this opportunity to demonstrate the integrity and transparency in a field that has long been struggling in that area. We suggest bundling your punch-list tasks together in one call to get the most value out of our visit, but if you only have one item that needs attention, that is fine too. Check off what you need below, and I will personally get back to you with a fair, straightforward price.
               </p>
 
-              <div className="pt-2 flex items-center justify-between border-t border-white/10">
-                <div>
+              <div className="pt-3 flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-white/10 gap-3">
+                <div className="space-y-0.5">
                   <p className="text-white font-bold text-sm">Charles Willis</p>
-                  <p className="text-xs text-[#888]">Direct Cell: <a href="tel:7062378184" className="text-brand-gold font-bold hover:underline">(706) 237-8184</a></p>
+                  <p className="text-xs text-[#888]">
+                    Direct Cell:{' '}
+                    <a href="tel:7068448059" className="text-brand-gold font-bold hover:underline">
+                      (706) 844-8059
+                    </a>
+                    {' '}• Office:{' '}
+                    <a href="tel:7062378184" className="text-white/80 hover:underline">
+                      (706) 237-8184
+                    </a>
+                  </p>
                 </div>
                 <img
                   src={CHARLES_SIGNATURE_SRC}
@@ -360,7 +382,7 @@ export function HorselegCreek() {
             Choose What Needs Fixing
           </h2>
           <p className="text-sm text-[#a0a0a0]">
-            Select any tasks around your home that need attention. We will review your list, apply your <strong>$50 mailer discount</strong>, and get back to you quickly with an honest, itemized quote.
+            Select any tasks around your home that need attention. <strong className="text-white">We suggest bundling tasks together in 1 call</strong> for the highest value, but single tasks are welcome too! We will review your list, apply your <strong>$50 discount directly to the final bill amount</strong>, and get back to you quickly with an honest quote.
           </p>
         </div>
 
@@ -444,7 +466,7 @@ export function HorselegCreek() {
             </div>
             <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-xs font-bold font-mono">
               <span>✓</span>
-              <span>$50.00 DISCOUNT CODE APPLIED</span>
+              <span>$50.00 OFF FINAL BILL APPLIED</span>
             </div>
           </div>
 
@@ -452,11 +474,11 @@ export function HorselegCreek() {
           <div>
             {selectedPunchItems.length === 0 ? (
               <div className="bg-[#181818] p-4 rounded-lg border border-white/10 text-center text-xs text-[#888]">
-                No specific items selected above yet. You can still submit the form below with your description, or click any items above to build your punch-list!
+                No specific items selected above yet. We suggest bundling tasks into 1 call, but you can also submit with a single project in the description below!
               </div>
             ) : (
               <div className="space-y-2">
-                <p className="text-xs text-[#a0a0a0]">Items ready for Charles to quote:</p>
+                <p className="text-xs text-[#a0a0a0]">Items ready for Charles to review:</p>
                 <div className="flex flex-wrap gap-2">
                   {selectedPunchItems.map((item) => (
                     <span
@@ -489,14 +511,14 @@ export function HorselegCreek() {
                 Punch-List &amp; $50 Voucher Received!
               </h4>
               <p className="text-sm text-[#ccc] max-w-lg mx-auto">
-                Thank you! Charles Willis has received your Horseleg Creek repair request. He will review your selected items and reach out directly with your discounted quote.
+                Thank you! Charles Willis has received your Horseleg Creek punch-list. He will review your selected items and reach out directly with your discounted quote.
               </p>
               <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <a
-                  href="tel:7062378184"
+                  href="tel:7068448059"
                   className="bg-brand-gold text-[#0A0A0A] font-heading font-bold uppercase tracking-wider text-xs px-6 py-3 rounded-lg hover:opacity-90 transition-all"
                 >
-                  Need Immediate Help? Call (706) 237-8184
+                  Need Immediate Help? Call Charles' Cell (706) 844-8059
                 </a>
                 <button
                   type="button"
@@ -597,14 +619,14 @@ export function HorselegCreek() {
                   <div className="text-xl">🎟️</div>
                   <div>
                     <span className="text-xs font-bold text-white block">
-                      Promotion Locked In: $50 OFF First Job
+                      Promotion Locked In: $50 OFF Final Bill Amount
                     </span>
                     <span className="text-[11px] text-[#888]">
-                      Applied via direct mailer code: <strong className="text-brand-gold">HORSELEG50</strong>
+                      Applied via direct mailer code: <strong className="text-brand-gold">HORSELEG50</strong> • Bundling suggested for maximum savings
                     </span>
                   </div>
                 </div>
-                <span className="text-xs font-mono font-bold text-green-400">-$50.00 Applied</span>
+                <span className="text-xs font-mono font-bold text-green-400">-$50.00 Off Final Bill</span>
               </div>
 
               <button
@@ -612,7 +634,7 @@ export function HorselegCreek() {
                 disabled={isSubmitting}
                 className="w-full bg-brand-gold hover:opacity-90 text-[#0A0A0A] font-heading font-bold uppercase tracking-wider text-base py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(255,95,31,0.3)] disabled:opacity-50 cursor-pointer"
               >
-                {isSubmitting ? 'Sending Punch-List to Charles...' : 'Send Punch-List & Claim $50 Off'}
+                {isSubmitting ? 'Sending Punch-List to Charles...' : 'Send Punch-List & Claim $50 Off Final Bill'}
               </button>
 
               <p className="text-center text-xs text-[#888]">
@@ -700,19 +722,19 @@ export function HorselegCreek() {
         <div className="space-y-4 text-sm">
           <div className="bg-[#111111] border border-white/10 p-5 rounded-xl">
             <h4 className="font-bold text-white text-base mb-1">
-              Why are you offering $50 off any first repair?
+              Why are you offering $50 off and how does it work?
             </h4>
             <p className="text-[#a0a0a0]">
-              I am offering $50 off your first repair to use this opportunity to demonstrate the integrity and transparency in a field that has long been struggling in that area. Simply build your punch-list above or give Charles a call at (706) 237-8184, and $50 is credited directly toward your repair bill. No gimmicks, no fine-print traps.
+              I am offering $50 off your final bill amount to use this opportunity to demonstrate the integrity and transparency in a field that has long been struggling in that area. Simply build your punch-list above or give Charles a call on his cell at (706) 844-8059, and $50 is credited directly toward your final invoice. No gimmicks, no fine-print traps.
             </p>
           </div>
 
           <div className="bg-[#111111] border border-white/10 p-5 rounded-xl">
             <h4 className="font-bold text-white text-base mb-1">
-              What if I only have one small repair?
+              What if I only have one small repair? Do I need multiple items?
             </h4>
             <p className="text-[#a0a0a0]">
-              That’s completely fine! Whether it’s just a running toilet, a stuck deadbolt, or an entire afternoon punch-list of 6 different tasks, the $50 credit applies to your first visit.
+              Instead of one small task, we suggest bundling your home tasks together in one call so you get the most value out of our visit and your $50 discount off the final bill amount. But if you only have one repair right now, that is completely fine too! The $50 credit applies directly to your final bill either way.
             </p>
           </div>
 
@@ -730,7 +752,7 @@ export function HorselegCreek() {
               Can I just call you right now instead of filling out the form?
             </h4>
             <p className="text-[#a0a0a0]">
-              Absolutely. Charles' direct line is <a href="tel:7062378184" className="text-brand-gold font-bold underline">(706) 237-8184</a>. Mention you received the Horseleg Creek letter, and we’ll take care of you immediately.
+              Absolutely. You can call or text Charles directly on his cell phone at <a href="tel:7068448059" className="text-brand-gold font-bold underline">(706) 844-8059</a>, or reach our office line at <a href="tel:7062378184" className="text-white hover:underline">(706) 237-8184</a>. Mention you received the Horseleg Creek letter, and we will take care of you immediately.
             </p>
           </div>
         </div>
@@ -741,14 +763,20 @@ export function HorselegCreek() {
             Ready to Take Care of That To-Do List?
           </h3>
           <p className="text-sm text-[#ccc] max-w-md mx-auto">
-            Call Charles Willis today or scroll up to submit your punch-list and claim your $50 credit.
+            Call Charles Willis directly on his cell or submit your punch-list to claim your $50 final bill credit.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
             <a
-              href="tel:7062378184"
+              href="tel:7068448059"
               className="bg-brand-gold text-[#0A0A0A] font-heading font-bold uppercase tracking-wider text-xs px-6 py-3 rounded-lg hover:opacity-90 transition-all shadow-md"
             >
-              📞 Call (706) 237-8184
+              📱 Call Charles' Cell (706) 844-8059
+            </a>
+            <a
+              href="tel:7062378184"
+              className="bg-white/10 hover:bg-white/20 text-white font-heading font-bold uppercase tracking-wider text-xs px-6 py-3 rounded-lg transition-all border border-white/20"
+            >
+              🏢 Office (706) 237-8184
             </a>
             <a
               href="#punch-list-builder"
